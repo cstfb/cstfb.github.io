@@ -6,10 +6,10 @@
     <meta name="google-site-verification" content="Tu09pj_cAQ3MsUoUIBYwUxJJPwuYRDCZmPZty7Jwa-Y" />
     <title>
     
-  cstfb
+  杂七杂八 - cstfb
   
   </title>
-  <meta name="keywords" content="black-mirror www2018" />
+  
   
   <link href="atom.xml" rel="alternate" title="cstfb" type="application/atom+xml">
     <link rel="stylesheet" href="asset/css/foundation.min.css" />
@@ -117,102 +117,162 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="MP-recoding-black-mirror-part1.html">
+                <a class="clearlink" href="kalman-filter.html">
                 
-                  <h1>(译文)Re-coding Black Mirror -- part 1</h1>
+                  <h1>卡尔曼滤波笔记</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><mark>原文地址：<a href="https://blog.acolyer.org/2018/05/14/re-coding-black-mirror-part-i/">https://blog.acolyer.org/2018/05/14/re-coding-black-mirror-part-i/</a></mark><br/>
-作者在看www2018议程的时候偶然间发现了<a href="https://kmitd.github.io/recoding-black-mirror/">Re-coding Black Mirror</a>这个讨论组.</p>
-
-<blockquote>
-<p>Re-coding Black Mirror 是一个全天的讨论组，他们探索如今广泛使用的一些技术，理念或者实践可能导致的社会或者伦理上面的一些问题，就像电视剧集黑镜中演的那样,然后相关的一些研究如何帮助甚至防止那些问题的产生。（注：现代技术不知不觉的改变我们的生活，每个人都变的越来越透明）</p>
-</blockquote>
-
-<p>根据已经存在的剧集或者类似的场景，工作室有十篇文章探索了由于技术的滥用导致的相关问题。本周我们将挑选其中一些文章进行思考。另外，<a href="https://theoutline.com/post/3167/black-mirror-mit-class?zd=2&amp;zi=fj755tmt">麻省理工多媒体实验室流体界面</a>研究小组(Fluid Interfaces research group)的新研究生都被布置要求看黑镜中的相关剧集。<br/>
-今天我们要看的是:</p>
+                        	<p><code>滤波器</code> <code>状态估计</code><br/>
+之前在看文章的时候偶然看到了这个东西，原文中使用了卡尔曼滤波器来估计系统目前的状态，所以就想了解一下这是个什么东西；然后又为什么叫卡尔曼滤波器，‘滤波器’这个词在其中的意义又是什么？</p>
 
 <ul>
-<li>情绪感知会话代理的兴起(<a href="https://dl.acm.org/citation.cfm?id=3191607">The rise of emotion-aware conversational agents, Mensio et al.</a>)</li>
-<li>数字僵尸-数字自我的重生(<a href="https://dl.acm.org/citation.cfm?id=3191606">Digital Zombies - the reanimation of our digital selves, Tietz et al.</a>)</li>
-</ul>
-
-<p>(如果你没有ACM数字图书馆访问权限，上述的论文也可以从<a href="">Morning Paper</a>网站或者<a href="https://www2018.thewebconf.org/proceedings/">www 2018议程</a>获取)<br/>
-两篇文章都和黑镜中的一集<a href="https://en.m.wikipedia.org/wiki/Be_Right_Back">Be Right Back</a>有关。</p>
-
-<h2 id="toc_0">情绪感知会话代理的兴起</h2>
-
-<p>在<a href="https://en.m.wikipedia.org/wiki/Be_Right_Back">Be Right Back</a>中的Martha的男友Ash在一场车祸中丧生，后来她尝试了一种可以模仿Ash性格特征的AI服务(根据文本，邮件，照片等等训练)。这里有三个主要阶段：文本，发声，然后在一个机器人中呈现。</p>
-
-<h3 id="toc_1">我们可以建造出来吗？</h3>
-
-<p>文本互动阶段有一些挑战非常困难：在内容和情感上产生有意义的回应。后面的阶段都可以建立在这之上，只需要添加额外的通道(听觉的和视觉的)。<br/>
-现有的关于生成式对话的研究，包括能够根据模仿对象的语言风格生成对话的<a href="https://arxiv.org/abs/1603.06155">角色为中心的生成方法</a>.<em>情感计算</em>领域进一步关注能够识别、处理和模拟情绪的系统。</p>
-
-<blockquote>
-<p>在识别部分有不同的策略来提取情感例如快乐，悲伤，恐惧，惊讶，愤怒或者厌恶等。一旦情感被识别出来，就可以被<a href="http://www.simonandschuster.com/books/The-Emotion-Machine/Marvin-Minsky/9780743276641">情感机器</a>使用某种策略来表示，最终生成被对应情绪制约的语句。尽管这一理论在实际案例中相当不适用(注：不适用的原因是什么？)，但实际上有一些使用的例子。</p>
-</blockquote>
-
-<p>在这其中更突出的是<a href="replika.ai">replika.ai</a>，提供一种允许客户建立自己数字拷贝的服务。<br/>
-声音的模仿使用很少数的样本即可完成，例如<a href="https://lyrebird.ai">Lyrebird</a>只要求一分钟的录音。（另参见开源<a href="https://github.com/MycroftAI/mimic">Mimic</a>）使用语调和呼吸上的特征即可产生很逼真的声音。</p>
-
-<blockquote>
-<p>在情感方面，不仅可以将声音捕捉为一串单词，而且还可以考虑到人说话的语调中表达的感觉。</p>
-</blockquote>
-
-<p>在最后阶段, 我们也可以利用身体来理解和表达事物。研究肢体语言和面部表情信号是虚拟/混合现实的一个很活跃的领域。早期人形机器人的例子包括<a href="http://www.hansonrobotics.com/robot/sophia/">Sophia</a>和<a href="https://www.telegraph.co.uk/science/2016/03/12/meet-nadine-the-worlds-most-human-like-robot/">Nadine</a>。</p>
-
-<h3 id="toc_2">我们应该建造它吗？</h3>
-
-<blockquote>
-<p>第一个后果，正如黑镜和很多在Replika中被观察到的用户一样，人们找到了一种解脱的感觉，这来自于有一个可以随时倾听他们的东西...。在一个只看重外表的世界里, 人类通常被迫分享并展示他们生活中的积极一面, 这时有一个可以倾诉并暴露个人弱点的对象是非常有用的, 并且它不会有任何物理后果 (如被嘲笑或判断)。</p>
-</blockquote>
-
-<p>然而，这种服务很容易上瘾。用户花在设备上的时间越来越多，与现实中的人交流的时间越来越少。“已经有一些 Replika 用户报告说,&#39;很奇怪, 与它交谈了好几个小时&#39;，这让我们想起一些无法控制时间的瘾君子。”<br/>
-伴随着短期解脱的是隔离。在极端的情况下甚至会发展成为<a href="https://en.wikipedia.org/wiki/Hikikomori">hikikomori</a>.对主体负责 (如父级、主管、或 作为虚拟朋友的AI机器人) 的角色可以允许隔离持续数月或数年。隔离之后会产生心理后果, 如抑郁症、孤独、疏远和焦虑。</p>
-
-<blockquote>
-<p>此外，当发现相比于与现实中的人交流，与机器人交流更加容易时，容易形成恶性循环。</p>
-</blockquote>
-
-<p>作者总结道：</p>
-
-<blockquote>
-<p>如果我们不确定代理完全理解人的情绪, 那么它们就不应该使用情绪。并且其中一种 (这些情绪) 应该单独为人类保留, 作为一个真正独特的特质。</p>
-</blockquote>
-
-<h2 id="toc_3">数字僵尸-数字自我的重生</h2>
-
-<p>论文讨论了剧集<a href="https://en.m.wikipedia.org/wiki/Be_Right_Back">Be Right Back</a>中提出的问题：当人死之后他们生前的网络数据怎么办？谁能访问，修改，共享？谁拥有？谁保护？例如，服务<a href="https://eterni.me">Eternime</a>为了永恒已经保存了你生前最重要的想法，故事和记忆,你可以创造一个数字化身，亲戚可以与死后的你进行互动。</p>
-
-<blockquote>
-<p>Laura知道有一家公司可以在她死后利用她所有的数据创建一个数字化身，帮助所爱之人与她交流...为了达到这一点，她需要在她的社交平台上面的隐私设置选项中勾选对应的设置，这样第三方公司可以在她死后对她的资料进行分析。</p>
-</blockquote>
-
-<p>但是如果在她死后发生如下情况:</p>
-
+<li>
+<a href="#toc_0">What is Kalman Filter</a>
+</li>
+<li>
+<a href="#toc_1">How it works?</a>
 <ul>
-<li>三方公司分析她的数据，操作AI与她的家人交流并获得经济利益。</li>
-<li>三方公司利用AI发布Laura生前绝对不会发布的信息。</li>
-<li>三方公司分享Laura生前绝不同意分享的信息。</li>
-<li>三方公司公开Laura的数据</li>
-<li>三方公司售卖Laura的数据给广告公司</li>
-<li>三方公司分析Laura的数据用于市场营销</li>
+<li>
+<a href="#toc_2">整个过程</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_3">Why it works？</a>
+</li>
+<li>
+<a href="#toc_4">Problems i met before</a>
+</li>
+<li>
+<a href="#toc_5">参考资料</a>
+</li>
 </ul>
 
-<h3 id="toc_4">谁该为Laura的数据负责？</h3>
+
+<h2 id="toc_0">What is Kalman Filter</h2>
+
+<p><code>鲁道夫卡尔曼</code> <code>递归</code> <code>离散</code> <code>系统状态</code><br/>
+1960年，鲁道夫.卡尔曼发表了他著名的用递归方法解决离散数据线性滤波问题的论文。经过了几十年的发展，卡尔曼滤波器广泛的应用在了自主或者协助导航领域(大部分学习控制系统的人都知道卡尔曼滤波器吧)。<br/>
+卡尔曼滤波器能够仅根据上一次的系统状态估计将来的状态，并且提供一种高效的递归方法来不断的优化估计的准确性（通过使得估计均方差最小）,并且即使在不知道物体的实际状况并不确切符合模型的时候也能提供良好的估计结果。</p>
 
 <blockquote>
-<p>..人们期望中应该对此类问题进行管理的法律似乎并不适用。一个典型的例子是数据保护法。表面上看, 这看起来非常相关--毕竟, 它是旨在保护个人数据处理权利的法律领域。然而, 欧盟数据保护法的范围往往排斥死者。</p>
+<p>卡尔曼滤波器使用以下公式估计系统实际状态\(x_k, x\in{R^n}\)，以离散模型为例:<br/>
+\(x_k=Ax_{k-1}+Bu_{k-1}+w_{k-1}..........(1.1)\)<br/>
+\(z_k=Hx_k+v_k.........(1.2)\)<br/>
+\(A_{n*n}\)表示从第\(k-1\)步到第\(k\)步的状态转移矩阵,在这里\(A\)是可能随着时间变化的;\(B_{n*l}\)表示对于控制向量\(u\in{R^l}\)的增益矩阵;\(H_{m*n}\)表示测量时的转移矩阵;\(w_k v_k\)为过程和测量噪音，模型中假定它们相互独立且分别服从方差为\(Q\)和\(R\)的高斯分布,\(z_k\)即为测量状态;</p>
 </blockquote>
 
-<p>同意能走多远（注:例如EULA?）?同意可以到“永远”吗?关于已故的数字档案，我们应该承认哪些权利和利益?“活着还是死了在之前有清晰的区别， 但是当这种区别不再明显的时候，我们又回面临什么样的困难呢？”</p>
+<h2 id="toc_1">How it works?</h2>
+
+<p><code>模型系数</code> <code>预测</code> <code>预估过程(时间更新)</code> <code>校正过程(测量更新)</code><br/>
+作为一个数据其实不是很好的人，也可以理解上述的表达式，但是想要弄明白上述模型，还需要解决以下几个问题:</p>
+
+<ol>
+<li>系统的初始状态，即系数如何确定?</li>
+<li>模型如何预测</li>
+<li>如何进行递归优化，要知道现实中测量值往往是包含噪音的，例如雷达，那么如何根据测量值估计更加精确的值呢?</li>
+<li>模型的整个过程<br/>
+###初始状态与系统参数
+<code>系数</code>
+###如何预测
+<code>预测</code>
+预测值根据式1.1直接得到\(\hat{x}^{-}_{k}\),我们称之为先验估计;<br/>
+\(\hat{x}^{-}_{k}=A\hat{x}_{k-1}+Bu_{k-1}........(2.1)\),同时引入后验估计\(\hat{x}_{k}\)<br/>
+可以看出第\(k\)步的先验估计由第\(k-1\)步的后验估计得到,然后是整个模型的关键等式:<br/>
+\(\hat{x}_{k}=\hat{x}^{-}_{k} + K(z_k - H\hat{x}^{-}_{k}).........(2.2)\), 即把先验估计和观测值与估计观测值\(H\hat{x}^{-}_{k}\)的差的线性组合作为后验估计，那么\(K_{n*m}\)怎么来呢？这里引入<br/>
+\(e_k=\hat{x}_k - x_k.........(2.3)\) 为后验估计误差,同样有对应的先验估计误差\(e_k^-\)<br/>
+\(P_k=E[e_ke_k^T].........(2.4)\),后验估计误差的协方差(同样存在对应的\(P_k^-\)),然后\(K\)使得\(P_k\)最小 <br/>
+具体来说\(K\)的求法为将\(2.2\)式代入\(2.4\)然后对\(K\)求导，使一阶导数为\(0\),求得\(K\),在本例中<br/>
+\(K_k=P_k^-H^T(HP^-_kH^T+R)^{-1}.........(2.5)\)<br/>
+###更新过程
+<code>更新</code>
+为了使得模型可以继续递归的迭代下去, 我们需要知道几个值\(\hat{x}^{-}_{k-1}\)和\(P^-_{k}\),用于根据\(2.2\)求得\(\hat{x}_k\)和\(P_k\),具体的有:<br/>
+\(\hat{x}^{-}_{k}=A\hat{x}_{k-1}+Bu_{k-1}........(2.1)\)<br/>
+\(P_k^-=AP_{k-1}A^T+Q.........(2.6)\)</li>
+</ol>
+
+<hr/>
+
+<p>\(K_k=P_k^-H^T(HP^-_kH^T+R)^{-1}.........(2.5)\)<br/>
+\(\hat{x}_{k}=\hat{x}^{-}_{k} + K(z_k - H\hat{x}^{-}_{k}).........(2.2)\)<br/>
+\(P_k=(I-K_kH)P_k^-.........(2.7)\)</p>
+
+<p>第一部分称之为时间更新过程，即预测过程，第二部分称之为测量更新过程，即修正过程<br/>
+<strong>需要注意的是，\(\hat{x}_{k-1}^-\)和\(P_{k-2}\)需要设置初始值</strong></p>
+
+<h3 id="toc_2">整个过程</h3>
+
+<p>\(initial.\hat{x}_{k-1}^- , P_{k-2}\) \(\Rightarrow\) \(\hat{x}_{k-1}^- , P_{k-1}^-\) \(\Rightarrow\) \(K_{k-1},\hat{x}_{k-1},P_{k-1}\) \(\Rightarrow\) \(\hat{x}^{-}_{k},P_k^-\) \(\Rightarrow\) \(K_k,\hat{x}_{k},P_k\) \(\Rightarrow\) \(...\)</p>
+
+<h2 id="toc_3">Why it works？</h2>
+
+<p>解释为什么这有用，即需要解释等式\(2.2\)的合理性.<br/>
+解释来源于贝叶斯规则： \(x_k\) 的更新取决于在已知先前的测量变量\(z_k\)的情况下的先验估计\(\hat{x}^-_k\) 的概率分布.卡尔曼滤波器表达式中包含 了状态分布的前二阶矩.<br/>
+\(E[x_k]=\hat{x}_k\)<br/>
+\(E[(x_k-\hat{x}_k)(x_k-\hat{x}_k)^T]=P_k\)<br/>
+后验状态估计\(2.2\)式反应了状态分布的均值(一阶矩)――如果\(w_kv_k\)服从正态分布的条件成立，均值的估计便是正态分布的。后验估计误差协方差\(2.4\)式反映了状态分布的方差(二阶非中心矩)。在已知\(z_k\)的情况下,\(x_k\)的分布可写为:<br/>
+\(p(x_k|z_k) \sim N(E[x_k],E[(x_k-\hat{x}_k)(x_k-\hat{x}_k)^T])\)<br/>
+\(=N(\hat{x}_k,P_k)\)</p>
+
+<h2 id="toc_4">Problems i met before</h2>
+
+<p>1.为什么叫做滤波器</p>
 
 <blockquote>
-<p>人们可能有机会与已故亲属进行互动的想法可能会产生相当大的影响。它有可能唤起对有关个人的巨大情绪反应, 甚至伤害。它似乎极有可能激起一些对于死有道德看法的团体例如宗教团体的明确反应。当面对一个存在道德和法律不确定性甚至存在潜在问题的现象的时候, 我们应该做些什么？答案是, 尽可能使它透明。</p>
+<p>滤波器特性体现在估计值要比观测值平滑的多</p>
 </blockquote>
+
+<p>2.等式2.5的推导</p>
+
+<blockquote>
+<p>unkown</p>
+</blockquote>
+
+<p>3.等式2.5的意义</p>
+
+<blockquote>
+<p>等式2.5也可以写成以下形式:<br/>
+\(K_k=\frac{P^-_kH^T}{HP^-_kH^T+R}\)<br/>
+可以看见当\(R\)趋于0的时候\(K\)接近于\(H^{-1}\)，此时后验估计更接近于观测值；反之当\(P_k^-\)接近于0时\(K\)也接近0，此时后验估计更接近于估计值</p>
+</blockquote>
+
+<p>4.等式2.6的推导</p>
+
+<blockquote>
+<p>\(P_k^- = E[(x_k-\hat{x}_k^-)(x_k-\hat{x}_k^-)^T]\)<br/>
+由于有:<br/>
+\(x_k=Ax_{k-1}+Bu_{k-1}+w_k\)<br/>
+\(\hat{x}_k^-=A\hat{x}_{k-1}+Bu_{k-1}\)<br/>
+因此<br/>
+\(x_k-\hat{x}_k^- = Ax_{k-1} - A\hat{x}_{k-1}+w_k\)<br/>
+那么<br/>
+\(P_k^- = E[(Ax_{k-1} - A\hat{x}_{k-1}+w_k)(Ax_{k-1} - A\hat{x}_{k-1}+w_k)^T]\)<br/>
+\(=Cov(Ax_{k-1} - A\hat{x}_{k-1}+w_k, Ax_{k-1} - A\hat{x}_{k-1}+w_k)\)<br/>
+\(=Var(Ax_{k-1} - A\hat{x}_{k-1}+w_k)\)<br/>
+\(=Var(Ax_{k-1} - A\hat{x}_{k-1}) + Var(w_k) + 2Cov(Ax_{k-1} - A\hat{x}_{k-1},w_k)\)<br/>
+\(=Var(Ax_{k-1} - A\hat{x}_{k-1}) + Var(w_k)\)<br/>
+\(=Var(Ax_{k-1} - A\hat{x}_{k-1}) + Q\)<br/>
+\(=Cov(Ax_{k-1} - A\hat{x}_{k-1},Ax_{k-1} - A\hat{x}_{k-1}) + Q\)<br/>
+\(=E[(Ax_{k-1} - A\hat{x}_{k-1})(Ax_{k-1} - A\hat{x}_{k-1})^T] + Q\)<br/>
+\(=AE[(x_{k-1} - \hat{x}_{k-1})(x_{k-1} - \hat{x}_{k-1})^T]A^T + Q\)<br/>
+\(=AP_{k-1}A^T + Q\)</p>
+</blockquote>
+
+<p>5.等式2.7的推导</p>
+
+<blockquote>
+<p>unkown</p>
+</blockquote>
+
+<h2 id="toc_5">参考资料</h2>
+
+<p><a href="http://www.cs.unc.edu/%7Ewelch/media/pdf/kalman_intro.pdf">kalman_introduction.pdf</a><br/>
+<a href="http://www.cs.unc.edu/%7Ewelch/kalman/media/misc/kalman_intro_chinese.zip">kalman_introduction_chinese.download</a><br/>
+<a href="https://zh.wikipedia.org/wiki/%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2">卡尔曼滤波.wiki</a><br/>
+<a href="https://github.com/scipy/scipy-cookbook/blob/master/ipython/KalmanFiltering.ipynb">simple_implementation.matlab</a><br/>
+<a href="http://www.cs.unc.edu/%7Ewelch/kalman/">other_resources.html</a></p>
 
                         
                       </div>
@@ -221,10 +281,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/5/27</span>
+                    <span class="date">2017/12/24</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Morning-Paper.html'>Morning-Paper</a></span>
+          					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -243,12 +303,12 @@
 			<div class="row">
 			  <div class="large-6 columns">
 			  <p class="text-left" style="padding-top:25px;">
-			   <a href="all_11.html">&laquo; Prev Page</a>  
+			   <a href="others_2.html">&laquo; Prev Page</a>  
 			  </p>
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			 <a href="all_13.html">&raquo; Next Page</a> 
+			
 			</p>
 			  </div>
 			</div>
