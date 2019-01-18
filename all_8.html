@@ -118,103 +118,63 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="MP-recoding-black-mirror-part2.html">
+                <a class="clearlink" href="MP-recoding-black-mirror-part5.html">
                 
-                  <h1>(译文)Re-coding Black Mirror -- part 2</h1>
+                  <h1>(译文)Re-coding Black Mirror -- part 5</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><mark>原文地址：<a href="https://blog.acolyer.org/2018/05/15/re-coding-black-mirror-part-ii/">https://blog.acolyer.org/2018/05/15/re-coding-black-mirror-part-ii/</a></mark><br/>
-今天我们看来自<a href="https://kmitd.github.io/recoding-black-mirror/">re-coding Black Mirror workshop</a>另外几篇文章。</p>
+                        	<p><mark>原文地址：<a href="http://blog.acolyer.org/2018/05/18/re-coding-black-mirror-part-v">http://blog.acolyer.org/2018/05/18/re-coding-black-mirror-part-v</a></mark><br/>
+这是讨论Re-coding Black Mirror的论文的最后一部分，探讨了未来的技术场景及其对社会和伦理的影响，今天要阅读的两篇论文如下：</p>
 
 <ul>
-<li>情感计算的缺陷(<a href="https://dl.acm.org/citation.cfm?id=3191611">Pitfalls of affective computing, Cooney et al.</a>)</li>
-<li>黑镜中用户数据分析的简易性和伦理学(<a href="https://dl.acm.org/citation.cfm?id=3191614">Ease and ethics of user profiling in Black Mirror, Pandit &amp; Lewis</a>)</li>
+<li>组建基于信任的去中心化的对等社交网络<a href="https://dl.acm.org/citation.cfm?id=3191608">Towards trust-based decentralized ad-hoc social networks Koidl</a></li>
+<li>MMM:我能挖掘你的想法吗？<a href="https://dl.acm.org/citation.cfm?id=3191613">MMM: May I mine your mind? Sempreboni and Viganò</a><br/>
+(如果你没有ACM数字图书馆访问权限，上述的论文也可以从<a href="">Morning Paper</a>网站或者<a href="https://www2018.thewebconf.org/proceedings/">www 2018议程</a>获取)<br/>
+## 组建基于信任的去中心化的对等社交网络<br/>
+Koidl认为，社交媒体上的“信任危机”会在<a href="https://www.guokr.com/article/440260/">过滤泡沫</a>、假新闻和<a href="https://zh.wikipedia.org/wiki/%E8%BF%B4%E8%81%B2%E5%AE%A4%E6%95%88%E6%87%89">回音室现象</a>中表现出来。 </li>
+<li>过滤气泡是基于内容的内容过滤的结果。基本原则是显示与用户先前参与的内容相关的用户内容。其结果是内容流缺乏主题和观点的多样性。</li>
+<li>回音室效应是基于朋友和同龄人兴趣的内容推荐的结果。这导致内容提要强烈偏向于分组意见(例如，分组思考)。<br/>
+对于大多数社交媒体平台的商业模式来说，我认为意识到内容的客观质量是无关紧要的，这一点很有帮助。高质量的内容只有在吸引和保留用户时才有用。平台并不是在卖内容，而是在卖你的注意力。这种业务的价值与它能控制的注意力分钟数有关。通过将人们分组，你可以通过向广告商出售他们最想吸引的人的注意力来进一步增加这些关注时间的价值。因此基本上:(a)一种方式让你花尽可能多的时间在这个平台上,因此所有的系统调优都是为了增加参与度并且增加回头率(b)了解尽可能多的关于你的信息,这样你的注意力可以更有效的打包出售(c)拍卖或以其他方式向有意的人推销你的注意力.<br/>
+考虑到这台经济机器强大的激励机制，我们如何才能相信展示在我们面前的东西?<br/>
+&gt; 用户完全不知道是什么行为或参与导致了内容被显示在他们的内容流中。这种信任的移交是社交媒体应用的关键元素。</li>
 </ul>
 
-<p>(如果你没有ACM数字图书馆访问权限，上述的论文也可以从<a href="">Morning Paper</a>网站或者<a href="https://www2018.thewebconf.org/proceedings/">www 2018议程</a>获取)</p>
-
-<h2 id="toc_0">情感计算的缺陷</h2>
-
-<p>通过可穿戴设备或者遥感设备采集面部表情，手势，声音， 目前的技术是可以识别出用户的情绪的。</p>
+<p>Koidl给出了HELIOS的例子，它旨在通过创建基于近距离的、对等的、以信任为基础的社交网络，将控制权和责任转移给个人用户。当用户在时间和空间中移动时，HELIOS不断地动态地学习人群和设备的网络组。这是一个把用户放在中心的分散的点对点模型。</p>
 
 <blockquote>
-<p>在当前的论文中，我们设想了这样一种未来:这种技术具有很高的准确性，并且广泛分布，因此人们的情绪通常可以被其他人看到。</p>
+<p>建立起来的网络类型类似于<a href="https://greatpowerlaw.wordpress.com/2013/01/05/ego-network/">Ego Network</a>的概念，其中个人是社交网络的中心。这一概念符合这样一种理解，即每个人都自然地在其直接邻近范围内创建社交网络。</p>
 </blockquote>
 
-<p>显然，这会泄露人们并不想泄露的信息。由于面部微表情以及肢体语言非常难以隐藏，因此很容易就会泄露。如果人们认为没有必要说话或移动来传达情感, 它也会削弱社交技能。&quot;善意的谎言&quot; 可能变得不可能, 这可能会消除一个人的同情心。它还可能造成物理上的伤害:</p>
+<p><img src="media/15282114166764/koidl-fig-2.jpeg" alt="koidl-fig-2"/></p>
+
+<p>近距离的设计是为了模拟我们在现实世界中的互动，基于对周围物体和人的评估。邻近源进入上下文(本地网络)检测。&quot;只有通过自动创建和自动配置网络，才有可能大规模采用和使用。&quot;上下文是隐式的，是基于用户在该上下文中的行为而获得的。重复的交互作用加强了链接，如果不使用，它们会衰减，最终节点会被移除。</p>
+
+<p><img src="media/15282114166764/koidl-fig-1.jpeg" alt="koidl-fig-1"/></p>
 
 <blockquote>
-<p>通过消极或积极情绪快速检测威胁和机会的能力可能会增加战斗和暴力的发生率，例如，一个人可能会因为看到他们的伴侣和潜在的对手对彼此产生强烈的正面情绪而感到威胁，这可能会导致愤怒和暴力。</p>
+<p>信任图的使用确保了每个社交网络遵循“基于信任”的原则。主要的方法是通过计算社交网络中每个新元素的信任值来建立。</p>
 </blockquote>
 
-<p>误读情绪，或过度简化情绪(例如将事情归结为一种情绪，而不是复杂的现实中的多种情绪的混合体)，也会导致误解。</p>
+<p>举个例子，一辆用了很多次的车，是一辆我们可以给予更高程度信任的车。</p>
+
+<h2 id="toc_0">MMM:我能挖掘你的想法吗？</h2>
+
+<p>这是研讨会的最后一篇论文，也是对未来情景的最极端的设想。这个想法的种子来自于cryptojacking(劫持别人的电脑进行挖矿)的兴起，在这个过程中，当用户访问他们的网站时，网站会使用嵌入的JavaScript来挖掘加密货币。加密可以秘密进行，但是您也可以想象这样的场景:明确的贡献自己的计算资源用于挖掘从而获得奖励.</p>
 
 <blockquote>
-<p>..如果一个人对他人情绪的推断不同于他的想象，那么就会产生不和谐和不信任感。最后，一个系统可能被黑客攻击，使一个人感受到一种不同的情绪，这可能使政客、律师或罪犯受益。</p>
+<p>一些关于脑-机交互的研究已经发表，一些初创公司正在开发接口，将人类的大脑直接连接到计算机……我们的大脑将被连接起来。我们的大脑将源源不断的接收数据并处理它。这就意味着我们的大脑将会有一个直接通向互联网的通道，所以为什么不想象这种连接是双向的呢?</p>
 </blockquote>
 
-<p>当然如果有了可以读取他人情绪的计算机或者机器人，那么就可以更加容易的说服他人，从而可能获取商业上的利益。试想如果有一个针对特定人群例如老年人的骗局，通过检查老人们的情绪就可以知道他们是否上钩了（相信编造的谎言）。<br/>
-作者提出了一个指导原则，即“一个人的情绪只应在他们的同意下，对值得信任的人进行可视化。”但要防范那些默默观察你的系统是很困难的。一个患有抑郁症的人不应该被迫向完全陌生的人暴露他们的情况，员工也不应该害怕因为一些情绪上的失误被监控而失去工作。</p>
+<p>现在考虑一下来自虚构公司MiningMind的以下广告:<br/>
+<img src="media/15282114166764/mmm-ad.jpeg" alt="mmm-ad"/></p>
 
 <blockquote>
-<p>...在类似于<a href="GDPR-1">GDPR</a>这样的规定之下,一个人的情绪状态可以被视为个人信息，所以应该受到保护。我们相信在考虑了可能出现的问题以及如何避免之后，情绪可视化会对人类有正面的影响。</p>
+<p>这一阴谋的前提是，不久我们可能就有了一种技术，可以将奖励系统与使用人类大脑来挖掘密码的加密引擎合并在一起……或者进行其他一些挖掘活动。我们大脑的一部分将被用于密码计算，剩下的部分为了我们大脑的正常活动将不会被使用。</p>
 </blockquote>
 
-<h2 id="toc_1">黑镜中用户数据分析的简易性和伦理学</h2>
-
-<p>这篇论文是基于“<a href="https://en.m.wikipedia.org/wiki/Nosedive">Nosedive</a>”这一集，并分析了用户被广泛建立画像并深入到日常生活中的场景。(想想中国的社会信用体系吧!)考虑一个虚拟的组织F-social为其用户提供服务(免费或付费)，并设法在此过程中积累大量个人信息。</p>
-
-<blockquote>
-<p>一家餐厅将顾客的面部照片发送给F-social，以得到他们拥有的购买力的衡量标准，以及他们挥霍的可能性。他们可以通过一种看似无伤大雅的通知来做这件事，他们会说，“进入你同意被识别的前提。”</p>
-</blockquote>
-
-<p>F-social通过在其用户数据库中寻找匹配的面部轮廓来识别个体。如果个人不使用F-social，他们的朋友的标签照片可能仍然可以识别。如果真的没有信息，F-social就会返回“不匹配”的结果，餐馆会认为是模棱两可和可疑的。<br/>
-在下一步，F-social为餐馆计算出得分，显示顾客可能的消费能力，以及他们今天挥霍的潜力。它可能通过查看过去的购买记录或者关联的财务数据来计算出这个结果。然后，F-social在资料中寻找潜在的特殊的指标-生日、周年纪念、促销等...最后，F-social考虑客户距离工资月还有多远。顾客在餐馆中收到的服务可能会因为后台的计算收到很大的影响...(注：例如滴滴价格歧视，推荐等)&quot;This second-hand effect of limiting access or discriminating based on some metric results in a pressure to conform to accepted behaviours.&quot;</p>
-
-<blockquote>
-<p>目前的规范应该考虑一项技术在大规模使用之后的影响，但是大多情况下只能在感受到风险的时候才会提出反对意见...技术人员缺乏讨论背后的核心问题是没有将道德伦理集成到工作中的好办法。</p>
-</blockquote>
-
-<p>为了帮助解决这个问题，作者给我们提供了&quot;道德模式图&quot;，基于流行的“<a href="https://en.m.wikipedia.org/wiki/Business_Model_Canvas">商业模式图</a>”<br/>
-<img src="media/15275264621520/imgb.jpg" alt="imgb"/><br/>
-画布有九个主题块，通常分为四个阶段.</p>
-
-<ul>
-<li><strong>利益相关者的识别</strong>。块1和块2根据所考虑的技术确定个人和团体涉众。</li>
-<li><strong>识别潜在的伦理影响</strong>。下一步是填写第3、4、5和6块，并确定潜在的道德影响(见图表中的问题)。</li>
-<li><strong>考虑对非利益相关者的道德影响</strong>(关于失败和使用资源的影响的第7和第8块)。</li>
-<li><strong>制定执行计划</strong>(第9块)</li>
-</ul>
-
-<blockquote>
-<p>伦理画布可以<a href="https://ethicscanvas.org">打印或用作web应用程序</a>，可以在没有帐户的情况下使用，也可以下载。某些特性，例如协作编辑、注释、标记和持久性，可以通过帐户获得。该应用程序的源代码是在线托管的，并且可以在CC-by-SA 3.0许可下使用。</p>
-</blockquote>
-
-<p>让我们来看看这模型如何帮助我们分析假设的f -社交餐厅场景。</p>
-
-<h3 id="toc_2">利益相关者</h3>
-
-<p>个人利益相关者包括F-social的任何用户，以及在F-social中被标记为F-social的任何非用户，以及该餐厅的顾客。看看F-social在幕后使用的数据集(比如信用公司的数据)，我们还可以包括那些在这些数据集中作为涉众出现的用户。<br/>
-受影响的群体可以由任何不愿意被跟踪的人组成，比如寻找安全地点的记者，或者是在权力位置上的人，他们的行踪信息可能构成安全风险。任何可能在无意中被定性为劣势的少数群体也面临着风险。</p>
-
-<h3 id="toc_3">对利益相关者的影响</h3>
-
-<p>用户可能会发现发布能提高他们的评级的正面的东西会获得更多奖励。“如果有金钱或者其他的利益的话他们也更有可能提供信息，从而使服务根据评分来分析用户。“此外，如果评分考虑用户的社交圈子，那么用户更有可能希望他们的社交圈由那些对他们的评价有积极影响的人组成。最终，评级较高的人可能会看不起那些评级较低的人(就像我们在“Nosedive”一集里看到的那样)。</p>
-
-<blockquote>
-<p>例如，那些只会自动迎合高评分的人会被认为“排外”，而那些容易接受低评级的人可能被认为不是“上等人”。在一定程度上，这一现象在今天的货币消费能力上是可以观察到的。</p>
-</blockquote>
-
-<h3 id="toc_4">对非利益相关者的影响</h3>
-
-<p>F-social数据可能被操纵，被攻击或者禁用。用户将被拒绝服务。服务可能会被某些客户用来以达到不可告人的目的。政府或者国家层面的实体可能会要求获取相关的数据。</p>
-
-<h3 id="toc_5">缓和措施？</h3>
-
-<p>假设F-social所提供的服务是合法的且可以接受的,因此在不被关闭在此基础上,作者建议添加更多的透明度:用来计算评分的算法公开评估(如果这是一个神经网络?)提供一定程度的真实性和监督使用的数据,并帮助防止虚假信息服务传播。在这一节中，作者似乎偏离了(我对)box 9的意图(我的解释)，即它应该被F-social组织本身用来考虑自己所提供的服务，并不断的回顾。而不是关注于那些F-social可能会让用户做的不喜欢的事情。<br/>
-关于画布如果想了解更多<a href="https://ethicscanvas.org/">https://ethicscanvas.org/</a></p>
+<p>暂且不谈千千万万的实现和可行性问题，如果这是可能的，你认为社会中有哪个脆弱的群体会受到这个提议的诱惑呢?</p>
 
                         
                       </div>
@@ -223,7 +183,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/5/29</span>
+                    <span class="date">2018/6/5</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Morning-Paper.html'>Morning-Paper</a></span>
@@ -324,7 +284,25 @@
 	      
 		      
 			      <li class="post">
-			        <a href="search-engine-eos.html">MWEB网站--如何在搜索引擎上提交</a>
+			        <a href="190118-production-crash.html">记一次java版本问题的排查过程</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="190113-production-crash.html">记一次xxl-job问题的排查过程</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="190110-production-crash.html">记一次线上数据库问题的排查过程</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="search-engine-eos.html">MWEB网站--自定义</a>
 			      </li>
 		     
 		  
@@ -335,22 +313,10 @@
 		     
 		  
 		      
-			      <li class="post">
-			        <a href="Exit_Plan_S.html">Exit Plan</a>
-			      </li>
-		     
 		  
 		      
-			      <li class="post">
-			        <a href="181012-production-crash.html">记一次线上应用宕机问题排查</a>
-			      </li>
-		     
 		  
 		      
-			      <li class="post">
-			        <a href="etl-problem.html">ETL增量清洗</a>
-			      </li>
-		     
 		  
 		      
 		  
