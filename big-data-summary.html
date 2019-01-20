@@ -7,7 +7,7 @@
     <meta name="baidu-site-verification" content="AlBwWkWk9y" />
     <title>
     
-  记一次线上应用宕机问题排查 - cstfb
+  大数据知识体系梳理 - cstfb
   
   </title>
   
@@ -118,14 +118,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>记一次线上应用宕机问题排查</h1>
+          <h1>大数据知识体系梳理</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2018/10/11</span>
+          <span class="date">2019/1/19</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
+              <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html'>数据仓库</a></span>
            
          
           <span class="comments">
@@ -138,31 +138,8 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <h1 id="toc_0">问题过程</h1>
-
-<pre><code class="language-text">1.2018-10-11 9:28分 用户反馈报表系统宕机
-2.登陆报表系统返回504
-3.紧急重启报表系统，可以正常访问
-</code></pre>
-
-<h1 id="toc_1">问题排查</h1>
-
-<pre><code class="language-text">1.查看错误日志发现 8:41分左右多个请求同时下载大量数据,大量占用内存以及CPU，导致full gc无法回收内存(gc overhead limit exceeded)然后宕机;
-2.主要有两个地方消耗资源： 一个是查询数据，大量数据驻留在内存中； 另一个是制作excel；
-</code></pre>
-
-<h1 id="toc_2">解决方案</h1>
-
-<pre><code class="language-text">1.对请求做限制，只允许下载一部分数据，例如一次下载一个月的数据
-2.对请求限流，短时间大量请求直接返回错误
-3.数据缓存，采用缓存文件或者数据的方式
-4.异步下载技术, 后台开启任务队列制作excel，然后推送到网盘或者其他存储，然后共享给用户
-</code></pre>
-
-<h1 id="toc_3">其他感想</h1>
-
-<pre><code class="language-text">做大数据应该解决的问题还有很多没有解决，其实本次下载的数据量并不是特别大的那种,体现出我们并没有服务好用户，系统优化，技术升级的路还很长.
-</code></pre>
+      <p>2019年，花一年的时间去慢慢的写一下体系中的一些东西，同时进行系统的学习；<br/>
+<img src="media/15479046524543/BI%E4%BD%93%E7%B3%BB%E6%A2%B3%E7%90%86.png" alt="BI体系梳理"/></p>
 
 
     
@@ -173,16 +150,13 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="Exit_Plan_S.html" 
-          title="Previous Post: Exit Plan">&laquo; Exit Plan</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="etl-problem.html" 
-          title="Next Post: ETL增量清洗">ETL增量清洗 &raquo;</a>
+          <a  href="190118-production-crash.html" 
+          title="Next Post: 记一次java版本问题的排查过程">记一次java版本问题的排查过程 &raquo;</a>
       
       </p>
         </div>
