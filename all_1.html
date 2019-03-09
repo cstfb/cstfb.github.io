@@ -118,36 +118,15 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="190118-production-crash.html">
+                <a class="clearlink" href="big-data-summary.html">
                 
-                  <h1>记一次java版本问题的排查过程</h1>
+                  <h1>大数据知识体系梳理</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">问题描述</h2>
-
-<p>我们会提供一些jar包出去给业务同学，然后发现报错:<br/>
-<code>com.**.**, unsupported major.minor version 52.0</code><br/>
-52表示的是java8<br/>
-这明显是我们提供的jar包的版本太高了，好吧，还好我们的客户端刚切换java8没多久，没有用到java8的特性，所以改一下目标版本到1.7重新打一个吧，打完之后发现还是不行，这就尴尬了</p>
-
-<h2 id="toc_1">排查&amp;解决</h2>
-
-<p>查来查去很蛋疼，尽管降低了版本，业务方还是报一样的问题，然后业务方如果升级到java8的话是OK的， 说明还是我们提供的包有问题；<br/>
-既然还是报这个问题的话，只能到环境里面看一下服务器里面的代码的版本了，跑到对应的资源目录下面查看原始代码:</p>
-
-<ol>
-<li><code>jav -xvf **.jar</code> 解压缩</li>
-<li>找到对应的类， <code>javap -verbose ***.class</code>, 反编译看一下代码的版本，发现<code>major:52</code><br/>
-这就奇怪了，我明明改了版本了再打包的:
-<img src="media/15478289621564/15478295213415.jpg" alt="" style="width:399px;"/>
-在本地进行模拟，先打成1.8的包，然后再打1.7的包，发现1.7出来的包，竟然还是52的：
-<img src="media/15478289621564/15478297070941.jpg" alt="" style="width:788px;"/>
-难道是缓存? 先进行<code>mvn clean</code>之后再打包，发现正常了<br/>
-:(<br/>
-使用idea的菜单进行的操作，以后还是命令行吧..</li>
-</ol>
+                        	<p>2019年，花一年的时间去慢慢的写一下体系中的一些东西，同时进行系统的学习；<br/>
+<img src="media/15479046524543/BI%E4%BD%93%E7%B3%BB%E6%A2%B3%E7%90%86.png" alt="BI体系梳理"/></p>
 
                         
                       </div>
@@ -159,7 +138,7 @@
                     <span class="date">2019/1/19</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html'>数据仓库</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -257,6 +236,12 @@
 	      
 		      
 			      <li class="post">
+			        <a href="recommend-system-alg.html">![推荐系统算法](media/15521354602578/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E7%AE%97%E6%B3%95.jpeg)</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="big-data-summary.html">大数据知识体系梳理</a>
 			      </li>
 		     
@@ -276,12 +261,6 @@
 		      
 			      <li class="post">
 			        <a href="190110-production-crash.html">记一次线上数据库问题的排查过程</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="search-engine-eos.html">MWEB网站--自定义</a>
 			      </li>
 		     
 		  
