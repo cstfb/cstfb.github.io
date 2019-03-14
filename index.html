@@ -173,9 +173,9 @@
 <script src="asset/js/d3.layout.cloud.js"></script>
 <script type="text/javascript">
     var fill = d3.scale.category20();
-    var words = [{"text":"This", "url":"http://google.com/"},
-                 {"text":"is", "url":"http://bing.com/"},
-                 {"text":"some", "url":"http://somewhere.com/"},
+    var words = [{"text":"卡尔曼滤波", "url":"kalman-filter"},
+                 {"text":"tips", "url":"tips"},
+                 {"text":"20181012线上宕机", "url":"181012-production-crash"},
                  {"text":"random", "url":"http://random.org/"},
                  {"text":"text", "url":"http://text.com/"}]
     var width = 800;
@@ -214,7 +214,7 @@
           })
           .text(function(d) { return d.text; })
           .on("click", function (d, i){
-              window.open(d.url, "_blank");
+              window.location.href = d.url;
           });
     }
 </script>
