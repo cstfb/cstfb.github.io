@@ -118,85 +118,53 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="mweb-beautiful.html">
+                <a class="clearlink" href="190110-production-crash.html">
                 
-                  <h1>MWEB网站--自定义</h1>
+                  <h1>记一次线上数据库问题的排查过程</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">搜索引擎提交</h2>
+                        	<h2 id="toc_0">问题描述</h2>
 
-<p>改模版的header的meta元数据</p>
+<p>在使用activiti做工作流的过程中，偶尔出现有长时间运行的任务出现数据库异常，主要片段如下：<br/>
+<img src="media/15478265383881/15478268239152.jpg" alt="" style="width:1166px;"/><br/>
+<img src="media/15478265383881/15478268356391.jpg" alt="" style="width:674px;"/><br/>
+<img src="media/15478265383881/15478268443485.jpg" alt="" style="width:1144px;"/><br/>
+<img src="media/15478265383881/15478268573604.jpg" alt="" style="width:581px;"/></p>
 
-<h2 id="toc_1">自定义css</h2>
+<ul>
+<li>Could not retrieve transation read-only status server</li>
+<li>The last packet successfully received from the server was 4,555,119 milliseconds ago.</li>
+<li>Caused by: java.net.SocketException: Connection reset</li>
+</ul>
 
-<p>改样式模版的css的文件<br/>
-例如阴影文字:</p>
+<h2 id="toc_1">排查&amp;解决</h2>
 
-<pre><code class="language-text">.markdown-body p {
-  letter-spacing: 0.01rem;
-  margin: 0px 0px 20px;
-  line-height: 2em;
-  text-shadow: 0 0 1px rgba(0,0,0,0.22);
-}
-</code></pre>
+<p>跟踪到数据库驱动里面查看发现这段代码：<br/>
+<img src="media/15478265383881/15478270089767.jpg" alt="" style="width:818px;"/><br/>
+大意是通过语句<code>select @@session.tx_read_only</code>来探测连接是否只读，然后发生了异常，异常的原因是距离上一个包接收的时间太长了，连接被重置了；<br/>
+到这里的话基本上可以确定是服务器将长时间未使用的连接给回收掉了，服务器经过多长时间回收是由配置项<code>wait_timeout</code>来设置的， 可以通过<code>show global variables like &#39;wait_timeout&#39;</code>来查看，单位是s；然后我们服务器配置的时间是3600s, 一个小时，所以有两个办法去解决问题:</p>
 
-<h2 id="toc_2">添加dc word cloud</h2>
+<ul>
+<li>每隔一段时间去访问一次数据库，主动保持连接是活的</li>
+<li>延长<code>wait_timeout</code></li>
+</ul>
 
-<p>在首页添加对应的js代码<br/>
-其中<code>d3.select()</code> 需要自定义一个元素, 用作单词云的容易</p>
+<p>最终是通过延长<code>wait_timeout</code>来解决的，但是不是调整服务器的全局配置，而是在连接参数里面设置session的<code>wait_timeout</code>参数，例如<code>jdbc:mysql://localhost:3306/db?sessionVariables=wait_timeout=10800</code></p>
 
-<pre><code class="language-text">&lt;script src=&quot;//d3js.org/d3.v3.min.js&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;asset/js/d3.layout.cloud.js&quot;&gt;&lt;/script&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-    var fill = d3.scale.category20();
-    var words = [{&quot;text&quot;:&quot;This&quot;, &quot;url&quot;:&quot;http://google.com/&quot;},
-                 {&quot;text&quot;:&quot;is&quot;, &quot;url&quot;:&quot;http://bing.com/&quot;},
-                 {&quot;text&quot;:&quot;some&quot;, &quot;url&quot;:&quot;http://somewhere.com/&quot;},
-                 {&quot;text&quot;:&quot;random&quot;, &quot;url&quot;:&quot;http://random.org/&quot;},
-                 {&quot;text&quot;:&quot;text&quot;, &quot;url&quot;:&quot;http://text.com/&quot;}]
-    var width = 800;
-    var height = 300;
-    for (var i = 0; i &lt; words.length; i++) {
-        words[i].size = 10 + Math.random() * 90;
-    }
-    
-    d3.layout.cloud()
-      .size([width, height])
-      .words(words)
-      .padding(5)
-      .rotate(function() { return ~~ (Math.random() * 2) * 90; })
-      .font(&quot;Impact&quot;)
-      .fontSize(function(d) { return d.size;})
-      .on(&quot;end&quot;, draw)
-      .start();
-    
-    function draw(words) {
-        d3.select(&quot;#wcloud&quot;)
-          .append(&quot;svg&quot;)
-          .attr(&quot;width&quot;, width)
-          .attr(&quot;height&quot;, height)
-          .append(&quot;g&quot;)
-          .attr(&quot;transform&quot;, &quot;translate(&quot;+ width/2 +&quot;,&quot;+ height/2 +&quot;)&quot;)
-          .selectAll(&quot;text&quot;)
-          .data(words)
-          .enter()
-          .append(&quot;text&quot;)
-          .style(&quot;font-size&quot;, function(d) { return d.size + &quot;px&quot;; })
-          .style(&quot;font-family&quot;, &quot;Impact&quot;)
-          .style(&quot;fill&quot;, function(d, i) { return fill(i); })
-          .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
-          .attr(&quot;transform&quot;, function(d) {
-              return &quot;translate(&quot; + [d.x, d.y] + &quot;)rotate(&quot; + d.rotate + &quot;)&quot;; 
-          })
-          .text(function(d) { return d.text; })
-          .on(&quot;click&quot;, function (d, i){
-                window.location.href = d.url;
-          });
-    }
-&lt;/script&gt;
-</code></pre>
+<h2 id="toc_2">插曲</h2>
+
+<p>一开始我想通过第一种方法解决， 我觉得驱动参数是可以有对应的配置的(结果证明是没有的)， 让我产生误解的参数有几个(dbcp连接池):</p>
+
+<ul>
+<li>testWhileIdle [true/false]：对空闲连接进行测试，如果失败，直接从线程池中移除</li>
+<li>validationQuery：进行以上测试的sql语句</li>
+<li>timeBetweenEvictionRunsMillis：每隔多久运行一次清理线程</li>
+<li>minEvictableIdleTimeMillis：发现空闲线程后最小多长时间回收</li>
+</ul>
+
+<p>以上参数都是针对连接池中未分配的连接而定的， 对于已分配的连接是无效的，我纯粹是被它们的名称给欺骗了:((</p>
 
                         
                       </div>
@@ -205,7 +173,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/29</span>
+                    <span class="date">2019/1/18</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
@@ -306,6 +274,12 @@
 	      
 		      
 			      <li class="post">
+			        <a href="zwift-promo-codes.html">Zwift促销代码</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="isolation-problem.html">数据库事务隔离级别引发的血案</a>
 			      </li>
 		     
@@ -325,12 +299,6 @@
 		      
 			      <li class="post">
 			        <a href="big-data-summary.html">大数据知识体系梳理</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="190118-production-crash.html">记一次java版本问题的排查过程</a>
 			      </li>
 		     
 		  
