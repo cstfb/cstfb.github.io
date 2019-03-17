@@ -118,63 +118,42 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="MP-recoding-black-mirror-part5.html">
+                <a class="clearlink" href="etl-problem.html">
                 
-                  <h1>(译文)Re-coding Black Mirror -- part 5</h1>
+                  <h1>ETL增量清洗</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><mark>原文地址：<a href="http://blog.acolyer.org/2018/05/18/re-coding-black-mirror-part-v">http://blog.acolyer.org/2018/05/18/re-coding-black-mirror-part-v</a></mark><br/>
-这是讨论Re-coding Black Mirror的论文的最后一部分，探讨了未来的技术场景及其对社会和伦理的影响，今天要阅读的两篇论文如下：</p>
+                        	<p>ETL中常常面临增量清洗的问题， 因为每次都全量清洗数据往往是不必要且浪费资源浪费时间的。<br/>
+增量清洗往往需要依赖于某个字段用于标识数据是否为增量数据(更新或者插入), 例如时间modified_time, 如果modified_time大于上次清洗的时间，那么说明数据经过了更新或者是新数据； 又例如id，这种用的比较少，id只能标识数据是新增的，但一般情况下， 使用id获取数据(从数据库)会有更好的性能.<br/>
+这篇文章讨论了使用modified_time作为增量标识字段的情况下如何获取增量数据.<br/>
+以上情况皆为离线计算的情况。</p>
 
-<ul>
-<li>组建基于信任的去中心化的对等社交网络<a href="https://dl.acm.org/citation.cfm?id=3191608">Towards trust-based decentralized ad-hoc social networks Koidl</a></li>
-<li>MMM:我能挖掘你的想法吗？<a href="https://dl.acm.org/citation.cfm?id=3191613">MMM: May I mine your mind? Sempreboni and Viganò</a><br/>
-(如果你没有ACM数字图书馆访问权限，上述的论文也可以从<a href="">Morning Paper</a>网站或者<a href="https://www2018.thewebconf.org/proceedings/">www 2018议程</a>获取)<br/>
-## 组建基于信任的去中心化的对等社交网络<br/>
-Koidl认为，社交媒体上的“信任危机”会在<a href="https://www.guokr.com/article/440260/">过滤泡沫</a>、假新闻和<a href="https://zh.wikipedia.org/wiki/%E8%BF%B4%E8%81%B2%E5%AE%A4%E6%95%88%E6%87%89">回音室现象</a>中表现出来。 </li>
-<li>过滤气泡是基于内容的内容过滤的结果。基本原则是显示与用户先前参与的内容相关的用户内容。其结果是内容流缺乏主题和观点的多样性。</li>
-<li>回音室效应是基于朋友和同龄人兴趣的内容推荐的结果。这导致内容提要强烈偏向于分组意见(例如，分组思考)。<br/>
-对于大多数社交媒体平台的商业模式来说，我认为意识到内容的客观质量是无关紧要的，这一点很有帮助。高质量的内容只有在吸引和保留用户时才有用。平台并不是在卖内容，而是在卖你的注意力。这种业务的价值与它能控制的注意力分钟数有关。通过将人们分组，你可以通过向广告商出售他们最想吸引的人的注意力来进一步增加这些关注时间的价值。因此基本上:(a)一种方式让你花尽可能多的时间在这个平台上,因此所有的系统调优都是为了增加参与度并且增加回头率(b)了解尽可能多的关于你的信息,这样你的注意力可以更有效的打包出售(c)拍卖或以其他方式向有意的人推销你的注意力.<br/>
-考虑到这台经济机器强大的激励机制，我们如何才能相信展示在我们面前的东西?<br/>
-&gt; 用户完全不知道是什么行为或参与导致了内容被显示在他们的内容流中。这种信任的移交是社交媒体应用的关键元素。</li>
-</ul>
+<h2 id="toc_0">情况一 : 从业务表清洗数据</h2>
 
-<p>Koidl给出了HELIOS的例子，它旨在通过创建基于近距离的、对等的、以信任为基础的社交网络，将控制权和责任转移给个人用户。当用户在时间和空间中移动时，HELIOS不断地动态地学习人群和设备的网络组。这是一个把用户放在中心的分散的点对点模型。</p>
+<p><img src="media/15317073017554/15321608030918.jpg" alt=""/><br/>
+业务表可能是准实时更新(例如mysql从库)或者定时更新的，<br/>
+1.在业务表准实时更新的情况下， 情况是这样的<br/>
+<img src="media/15317073017554/15321629185260.jpg" alt=""/><br/>
+max(modified_time)指中间表的最大更新时间；<br/>
+因为中间表在更新的时候业务表也会更新， 所以会出现max(modified_time)之前的一部分数据没有处理到， 因此在下一次增量的时候，需要在max(modified_time)的基础之上， 减去一段时间t,t &gt;= 任务运行的时间, 这样的话基本上可以保证能够捕获到所有的增量了。<br/>
+实时更新也可能会有一些异常情况，例如同步延迟很高，又或者两个主库从库的时间不一致，这样还会出现一些时间差，这种情况下加大t是一种缓解问题的办法.<br/>
+如果每次都是全量的清洗， 那么没有这个问题.</p>
 
-<blockquote>
-<p>建立起来的网络类型类似于<a href="https://greatpowerlaw.wordpress.com/2013/01/05/ego-network/">Ego Network</a>的概念，其中个人是社交网络的中心。这一概念符合这样一种理解，即每个人都自然地在其直接邻近范围内创建社交网络。</p>
-</blockquote>
+<h2 id="toc_1">情况二: 从中间表清洗</h2>
 
-<p><img src="media/15282114166764/koidl-fig-2.jpeg" alt="koidl-fig-2"/></p>
+<p>这种情况发生在数据仓库存在分层的情况下， 上层的中间表依赖于下层的中间表,示意图如下：<br/>
+<img src="media/15317073017554/15321634115394.jpg" alt=""/><br/>
+由于可能存在多个任务都依赖于中间表1 ， 所以的话 表1到表2并不总是顺序的， 示意图如下：<br/>
+<img src="media/15317073017554/15321643662345.jpg" alt=""/><br/>
+其实仔细观察之后可以发现，这个模型和从实时业务表中清洗的模型差别不大，只不过是中间表1的更新时间拉长了， 这种情况下如何获取中间表1的增量呢?<br/>
+稳妥一点的办法是和上面的一样， 减去一段时间，但是究竟这个时间段取多大呢？ <br/>
+保险的话取t1 + t2, 一般的话 t2应该就可以了， 为什么取t1 + t2呢？ 理论上来说 t2 之前的更新上一次已经处理了， 但是这不一定，取决于表1的处理逻辑。所以的话要看具体情况.</p>
 
-<p>近距离的设计是为了模拟我们在现实世界中的互动，基于对周围物体和人的评估。邻近源进入上下文(本地网络)检测。&quot;只有通过自动创建和自动配置网络，才有可能大规模采用和使用。&quot;上下文是隐式的，是基于用户在该上下文中的行为而获得的。重复的交互作用加强了链接，如果不使用，它们会衰减，最终节点会被移除。</p>
+<h1 id="toc_2">总结</h1>
 
-<p><img src="media/15282114166764/koidl-fig-1.jpeg" alt="koidl-fig-1"/></p>
-
-<blockquote>
-<p>信任图的使用确保了每个社交网络遵循“基于信任”的原则。主要的方法是通过计算社交网络中每个新元素的信任值来建立。</p>
-</blockquote>
-
-<p>举个例子，一辆用了很多次的车，是一辆我们可以给予更高程度信任的车。</p>
-
-<h2 id="toc_0">MMM:我能挖掘你的想法吗？</h2>
-
-<p>这是研讨会的最后一篇论文，也是对未来情景的最极端的设想。这个想法的种子来自于cryptojacking(劫持别人的电脑进行挖矿)的兴起，在这个过程中，当用户访问他们的网站时，网站会使用嵌入的JavaScript来挖掘加密货币。加密可以秘密进行，但是您也可以想象这样的场景:明确的贡献自己的计算资源用于挖掘从而获得奖励.</p>
-
-<blockquote>
-<p>一些关于脑-机交互的研究已经发表，一些初创公司正在开发接口，将人类的大脑直接连接到计算机……我们的大脑将被连接起来。我们的大脑将源源不断的接收数据并处理它。这就意味着我们的大脑将会有一个直接通向互联网的通道，所以为什么不想象这种连接是双向的呢?</p>
-</blockquote>
-
-<p>现在考虑一下来自虚构公司MiningMind的以下广告:<br/>
-<img src="media/15282114166764/mmm-ad.jpeg" alt="mmm-ad"/></p>
-
-<blockquote>
-<p>这一阴谋的前提是，不久我们可能就有了一种技术，可以将奖励系统与使用人类大脑来挖掘密码的加密引擎合并在一起……或者进行其他一些挖掘活动。我们大脑的一部分将被用于密码计算，剩下的部分为了我们大脑的正常活动将不会被使用。</p>
-</blockquote>
-
-<p>暂且不谈千千万万的实现和可行性问题，如果这是可能的，你认为社会中有哪个脆弱的群体会受到这个提议的诱惑呢?</p>
+<p>虽然是做数据仓库这一块， 平时总结的还是有点少了</p>
 
                         
                       </div>
@@ -183,10 +162,10 @@ Koidl认为，社交媒体上的“信任危机”会在<a href="https://www.guo
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/6/5</span>
+                    <span class="date">2018/7/16</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Morning-Paper.html'>Morning-Paper</a></span>
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html'>数据仓库</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -284,6 +263,12 @@ Koidl认为，社交媒体上的“信任危机”会在<a href="https://www.guo
 	      
 		      
 			      <li class="post">
+			        <a href="190213-production-crash.html">记一次线上疑似内存泄漏问题</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="recommend-system-alg.html">推荐系统算法</a>
 			      </li>
 		     
@@ -303,12 +288,6 @@ Koidl认为，社交媒体上的“信任危机”会在<a href="https://www.guo
 		      
 			      <li class="post">
 			        <a href="190113-production-crash.html">记一次xxl-job问题的排查过程</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="190110-production-crash.html">记一次线上数据库问题的排查过程</a>
 			      </li>
 		     
 		  
