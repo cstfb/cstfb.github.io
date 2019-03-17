@@ -118,39 +118,14 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="181012-production-crash.html">
+                <a class="clearlink" href="Exit_Plan_S.html">
                 
-                  <h1>记一次线上应用宕机问题排查</h1>
+                  <h1>Exit Plan</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h1 id="toc_0">问题过程</h1>
-
-<pre><code class="language-text">1.2018-10-11 9:28分 用户反馈报表系统宕机
-2.登陆报表系统返回504
-3.紧急重启报表系统，可以正常访问
-</code></pre>
-
-<h1 id="toc_1">问题排查</h1>
-
-<pre><code class="language-text">1.查看错误日志发现 8:41分左右多个请求同时下载大量数据,大量占用内存以及CPU，导致full gc无法回收内存(gc overhead limit exceeded)然后宕机;
-2.主要有两个地方消耗资源： 一个是查询数据，大量数据驻留在内存中； 另一个是制作excel；
-</code></pre>
-
-<h1 id="toc_2">解决方案</h1>
-
-<pre><code class="language-text">1.对请求做限制，只允许下载一部分数据，例如一次下载一个月的数据
-2.对请求限流，短时间大量请求直接返回错误
-3.数据缓存，采用缓存文件或者数据的方式
-4.异步下载技术, 后台开启任务队列制作excel，然后推送到网盘或者其他存储，然后共享给用户
-</code></pre>
-
-<h1 id="toc_3">其他感想</h1>
-
-<pre><code class="language-text">做大数据应该解决的问题还有很多没有解决，其实本次下载的数据量并不是特别大的那种,体现出我们并没有服务好用户，系统优化，技术升级的路还很长.
-</code></pre>
-
+                        	
                         
                       </div>
                   </div>
@@ -158,10 +133,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/10/11</span>
+                    <span class="date">2018/10/21</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
+          					    <span class="posted-in"><a href='Exit%20Music.html'>Exit Music</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -259,6 +234,12 @@
 	      
 		      
 			      <li class="post">
+			        <a href="isolation-problem.html">数据库事务隔离级别引发的血案</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="190213-production-crash.html">记一次线上疑似内存泄漏问题</a>
 			      </li>
 		     
@@ -278,12 +259,6 @@
 		      
 			      <li class="post">
 			        <a href="190118-production-crash.html">记一次java版本问题的排查过程</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="190113-production-crash.html">记一次xxl-job问题的排查过程</a>
 			      </li>
 		     
 		  
