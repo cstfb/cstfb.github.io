@@ -96,6 +96,8 @@
             <li><a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html">数据仓库</a></li>
         
             <li><a href="Exit%20Music.html">Exit Music</a></li>
+        
+            <li><a href="Project.html">Project</a></li>
          
 
       </ul>
@@ -118,85 +120,20 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="mweb-beautiful.html">
+                <a class="clearlink" href="190113-production-crash.html">
                 
-                  <h1>MWEB网站--自定义</h1>
+                  <h1>记一次xxl-job问题的排查过程</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">搜索引擎提交</h2>
-
-<p>改模版的header的meta元数据</p>
-
-<h2 id="toc_1">自定义css</h2>
-
-<p>改样式模版的css的文件<br/>
-例如阴影文字:</p>
-
-<pre><code class="language-text">.markdown-body p {
-  letter-spacing: 0.01rem;
-  margin: 0px 0px 20px;
-  line-height: 2em;
-  text-shadow: 0 0 1px rgba(0,0,0,0.22);
-}
-</code></pre>
-
-<h2 id="toc_2">添加dc word cloud</h2>
-
-<p>在首页添加对应的js代码<br/>
-其中<code>d3.select()</code> 需要自定义一个元素, 用作单词云的容易</p>
-
-<pre><code class="language-text">&lt;script src=&quot;//d3js.org/d3.v3.min.js&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;asset/js/d3.layout.cloud.js&quot;&gt;&lt;/script&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-    var fill = d3.scale.category20();
-    var words = [{&quot;text&quot;:&quot;This&quot;, &quot;url&quot;:&quot;http://google.com/&quot;},
-                 {&quot;text&quot;:&quot;is&quot;, &quot;url&quot;:&quot;http://bing.com/&quot;},
-                 {&quot;text&quot;:&quot;some&quot;, &quot;url&quot;:&quot;http://somewhere.com/&quot;},
-                 {&quot;text&quot;:&quot;random&quot;, &quot;url&quot;:&quot;http://random.org/&quot;},
-                 {&quot;text&quot;:&quot;text&quot;, &quot;url&quot;:&quot;http://text.com/&quot;}]
-    var width = 800;
-    var height = 300;
-    for (var i = 0; i &lt; words.length; i++) {
-        words[i].size = 10 + Math.random() * 90;
-    }
-    
-    d3.layout.cloud()
-      .size([width, height])
-      .words(words)
-      .padding(5)
-      .rotate(function() { return ~~ (Math.random() * 2) * 90; })
-      .font(&quot;Impact&quot;)
-      .fontSize(function(d) { return d.size;})
-      .on(&quot;end&quot;, draw)
-      .start();
-    
-    function draw(words) {
-        d3.select(&quot;#wcloud&quot;)
-          .append(&quot;svg&quot;)
-          .attr(&quot;width&quot;, width)
-          .attr(&quot;height&quot;, height)
-          .append(&quot;g&quot;)
-          .attr(&quot;transform&quot;, &quot;translate(&quot;+ width/2 +&quot;,&quot;+ height/2 +&quot;)&quot;)
-          .selectAll(&quot;text&quot;)
-          .data(words)
-          .enter()
-          .append(&quot;text&quot;)
-          .style(&quot;font-size&quot;, function(d) { return d.size + &quot;px&quot;; })
-          .style(&quot;font-family&quot;, &quot;Impact&quot;)
-          .style(&quot;fill&quot;, function(d, i) { return fill(i); })
-          .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
-          .attr(&quot;transform&quot;, function(d) {
-              return &quot;translate(&quot; + [d.x, d.y] + &quot;)rotate(&quot; + d.rotate + &quot;)&quot;; 
-          })
-          .text(function(d) { return d.text; })
-          .on(&quot;click&quot;, function (d, i){
-                window.location.href = d.url;
-          });
-    }
-&lt;/script&gt;
-</code></pre>
+                        	<p>xxl-job是一个开源的分布式任务调度中心，基于quartz的集群模式而设计;<br/>
+前几天发现任务调度失效，具体就体现在特定的时间点不进行调度，通过查看日志发现异常：<br/>
+<code>This scheduler instance instance_name is still active but was recovered by another instance in the cluster.  This may cause inconsistent behavior.</code><br/>
+可以看出的是由于某种原因调度器被恢复掉了，而且是被集群里面的另外一台机器，但是我们环境就一台机器，然后在数据库中发现了另外一台机器，由于是开发环境，所以是允许连接的，那么为什么会被恢复掉了，继续看代码，发现这样一段:<br/>
+<img src="media/15478279775439/15478287783259.jpg" alt="" style="width:621px;"/><br/>
+<img src="media/15478279775439/15478288261038.jpg" alt="" style="width:501px;"/><br/>
+大致是检测其他节点的上一次检测时间是否超过阈值(默认为两台机器的时间是一致的)，如果是那么认为是不可用的节点， 所以时间差的问题就清楚了是因为开发同学本地和服务器时间的时间差引起的，最后关掉开发同学机器的实例 或者 同步两台机器的时间解决这个问题.</p>
 
                         
                       </div>
@@ -205,7 +142,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/29</span>
+                    <span class="date">2019/1/19</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
@@ -290,6 +227,8 @@
             <a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html"><strong>数据仓库</strong></a>
         
             <a href="Exit%20Music.html"><strong>Exit Music</strong></a>
+        
+            <a href="Project.html"><strong>Project</strong></a>
          
         </p>
 
@@ -306,6 +245,18 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15528377013480.html">JtableSaw-Pandas</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15528376927084.html">Canal-Rabbit</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="zwift-promo-codes.html">Zwift促销代码</a>
 			      </li>
 		     
@@ -319,18 +270,6 @@
 		      
 			      <li class="post">
 			        <a href="190213-production-crash.html">记一次线上疑似内存泄漏问题</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="recommend-system-alg.html">推荐系统算法</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="big-data-summary.html">大数据知识体系梳理</a>
 			      </li>
 		     
 		  

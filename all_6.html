@@ -96,6 +96,8 @@
             <li><a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html">数据仓库</a></li>
         
             <li><a href="Exit%20Music.html">Exit Music</a></li>
+        
+            <li><a href="Project.html">Project</a></li>
          
 
       </ul>
@@ -118,20 +120,15 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="190113-production-crash.html">
+                <a class="clearlink" href="big-data-summary.html">
                 
-                  <h1>记一次xxl-job问题的排查过程</h1>
+                  <h1>大数据知识体系梳理</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>xxl-job是一个开源的分布式任务调度中心，基于quartz的集群模式而设计;<br/>
-前几天发现任务调度失效，具体就体现在特定的时间点不进行调度，通过查看日志发现异常：<br/>
-<code>This scheduler instance instance_name is still active but was recovered by another instance in the cluster.  This may cause inconsistent behavior.</code><br/>
-可以看出的是由于某种原因调度器被恢复掉了，而且是被集群里面的另外一台机器，但是我们环境就一台机器，然后在数据库中发现了另外一台机器，由于是开发环境，所以是允许连接的，那么为什么会被恢复掉了，继续看代码，发现这样一段:<br/>
-<img src="media/15478279775439/15478287783259.jpg" alt="" style="width:621px;"/><br/>
-<img src="media/15478279775439/15478288261038.jpg" alt="" style="width:501px;"/><br/>
-大致是检测其他节点的上一次检测时间是否超过阈值(默认为两台机器的时间是一致的)，如果是那么认为是不可用的节点， 所以时间差的问题就清楚了是因为开发同学本地和服务器时间的时间差引起的，最后关掉开发同学机器的实例 或者 同步两台机器的时间解决这个问题.</p>
+                        	<p>2019年，花一年的时间去慢慢的写一下体系中的一些东西，同时进行系统的学习；<br/>
+<img src="media/15479046524543/BI%E4%BD%93%E7%B3%BB%E6%A2%B3%E7%90%86.png" alt="BI体系梳理"/></p>
 
                         
                       </div>
@@ -143,7 +140,7 @@
                     <span class="date">2019/1/19</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html'>数据仓库</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -225,6 +222,8 @@
             <a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html"><strong>数据仓库</strong></a>
         
             <a href="Exit%20Music.html"><strong>Exit Music</strong></a>
+        
+            <a href="Project.html"><strong>Project</strong></a>
          
         </p>
 
@@ -241,6 +240,18 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15528377013480.html">JtableSaw-Pandas</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15528376927084.html">Canal-Rabbit</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="zwift-promo-codes.html">Zwift促销代码</a>
 			      </li>
 		     
@@ -254,18 +265,6 @@
 		      
 			      <li class="post">
 			        <a href="190213-production-crash.html">记一次线上疑似内存泄漏问题</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="recommend-system-alg.html">推荐系统算法</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="big-data-summary.html">大数据知识体系梳理</a>
 			      </li>
 		     
 		  

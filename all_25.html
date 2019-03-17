@@ -7,7 +7,7 @@
     <meta name="baidu-site-verification" content="AlBwWkWk9y" />
     <title>
     
-  Morning-Paper - cstfb
+  cstfb
   
   </title>
   
@@ -120,73 +120,141 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="MP-recoding-black-mirror-part4.html">
+                <a class="clearlink" href="anna.html">
                 
-                  <h1>(译文)Re-coding Black Mirror -- part 4</h1>
+                  <h1>号称秒杀redis/cassandra的KV存储系统Anna</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><mark>原文地址：<a href="http://blog.acolyer.org/2018/05/17/re-coding-black-mirror-part-iv">http://blog.acolyer.org/2018/05/17/re-coding-black-mirror-part-iv</a></mark><br/>
-这是一览来自Re-coding Black Mirror的论文的第四部分，探讨了未来的技术场景及其对社会和伦理的影响，今天要阅读的两篇论文如下：</p>
+                        	<p>最近一段时间连续看到了两篇介绍这个存储系统的文章，所以产生了兴趣； 这个系统是由一个伯克利大名鼎鼎的一个实验室RISE开发的；<br/>
+之前记得也看过一个团队实现了一个超高性能的KV存储，好像是利用到了硬件；<br/>
+哎 ； 感觉英文阅读真的有点障碍了 ， 需要好好练习一下了， 否则是个大问题;</p>
 
 <ul>
-<li>这是错误信息的年代吗？结合社交机器人和假新闻来蒙骗大众(<a href="https://dl.acm.org/citation.cfm?id=3191610">Is this the era of misinformation yet? Combining social bots and fake news to deceive the masses Wang et al.</a>)</li>
-<li>Gnirut:在一个AI统治的世界里出生的人类的问题(<a href="https://dl.acm.org/citation.cfm?id=3191612">Gnirut: the trouble with being born human in an autonomous world Viganò and Sempreboni</a>)<br/>
-(如果你没有ACM数字图书馆访问权限，上述的论文也可以从<a href="">Morning Paper</a>网站或者<a href="https://www2018.thewebconf.org/proceedings/">www 2018议程</a>获取)<br/>
-## 这是错误信息的年代吗？<br/>
-&gt; 2016年，全世界都目击了美国总统大选期间社交媒体上的机器人散播假新闻事件...研究人员在最终投票前四周收集了Twitter数据，以估计这一现象的严重程度。结果显示有15%的账号为机器人账号，并且制造了19%的推特...当假新闻如此常见以至于事实无法到达普通人的时候会发生什么事情呢？</li>
+<li>
+<a href="#toc_0">我目前的了解</a>
+<ul>
+<li>
+<a href="#toc_1">理论基础</a>
+</li>
+<li>
+<a href="#toc_2">设计目标</a>
+</li>
+<li>
+<a href="#toc_3">架构</a>
+</li>
+<li>
+<a href="#toc_4">性能</a>
+</li>
+<li>
+<a href="#toc_5">伸缩可扩展性</a>
+</li>
+<li>
+<a href="#toc_6">缓存一致性</a>
+</li>
+<li>
+<a href="#toc_7">作者回复</a>
+<ul>
+<li>
+<a href="#toc_8">Anna vs. Redis</a>
+</li>
+<li>
+<a href="#toc_9">开源地址</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_10">前景</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_11">相关文章</a>
+</li>
 </ul>
 
-<p>假新闻和恶作剧由来已久，但社交媒体的本质却火上浇油。任何用户都可以在基本不经过第三方过滤或事实检查的情况下来创建和转发内容;许多成年人通过社交媒体获取新闻;研究表明，那些接触假新闻的人倾向于相信其真实性。<br/>
-我们制造令人信服的假新闻的技术发展越来越快，特别是在社交媒体帖子的关注范围内。文字内容可以由人类,或自然语言生成（在小短文社交媒体上工作尤其出色），不仅能够使用表情，还可以根据个体的风格生成对应的内容，就像之前在<code>Be Right Back</code>中看到的那样。<br/>
-我们可以使用从零开始的语音生成来模仿给定的人的声音，也可以使用语音转换来改变源说话人的声音。在语音转换中，演员的声音被转换成像给定目标的声音。<br/>
-我们可以生成看上去<a href="https://blog.acolyer.org/2018/05/10/progressive-growing-of-gans-for-improved-quality-stability-and-variation/">很真实的图片甚至是一个完全不存在的人</a>。我们甚至可以伪造视频，例如<a href="http://grail.cs.washington.edu/projects/AudioToObama/siggraph17_obama.pdf">利用素材中唇同步</a>来实现我们想说的任何东西；<a href="https://youtu.be/ohmajJTcpNk">将演员的面部表情实时的转换视频中的面部上面</a>；甚至利用深度学习把视频中将面部替换掉(<a href="https://hackernoon.com/exploring-deepfakes-20c9947c22d9">这里有一篇关于这项技术的好文章</a>).<br/>
-所以我们可以制作内容。信息扩散分析告诉我们如何让它传播。信息扩散通常遵循以下步骤:</p>
+
+<h1 id="toc_0">我目前的了解</h1>
+
+<p>文章给这个系统的标签是<code>crazy fast</code>,<code>super-scalable</code> ,<code>flexibly consistent</code>厉害程度可见一斑</p>
+
+<h2 id="toc_1">理论基础</h2>
+
+<p><a href="http://db.cs.berkeley.edu/papers/sigrec10-declimperative.pdf">CALM 基础理论</a>: 没研究过，说的是无需协调的分布式系统<br/>
+<a href="http://bloom-lang.net/">编程语言 Bloom</a>:new language?为什么要用新语言?<br/>
+<a href="https://arxiv.org/pdf/1309.3324.pdf">跨平台程序分析框架 Blazes</a>:不知为何物<br/>
+<a href="http://www.vldb.org/pvldb/vol8/p185-bailis.pdf">事务协议 HATs</a></p>
+
+<h2 id="toc_2">设计目标</h2>
+
+<blockquote>
+<p>The high-level goal for Anna was to provide excellent performance on a single multi-core machine, while also being able to scale up elastically to geo-distributed cloud deployment. The system should support a range of consistency semantics to match application needs. From this, four design requirements emerged:<br/>
+1.The key space needs to be partitioned, not just across nodes when distributed, but also across cores within a node.<br/>
+2.To scale workloads (especially those with highly skewed distributions, aka. ‘hot keys’) the system should use multi-master replication to concurrently serve puts and gets against a single key from multiple threads.<br/>
+3.For maximum hardware utilisation and performance, the system should have wait-free execution such that a thread is never blocked on other threads. This rules out locking, consensus protocols, and even ‘lock-free’ retries.<br/>
+4.To support a wide-range of application semantics without compromising the other goals, the system should have a unified implementation for a wide range of coordination-free consistency models.</p>
+</blockquote>
+
+<p>翻译过来就是说:<br/>
+为了实现多核单机高性能的同时也满足可以基于云的地理可扩展性这个要求，系统必须支持一系列的一致性语义，基于这几点设计目标，有以下四点需要满足：</p>
 
 <ol>
-<li>当一个节点分享这个信息之后整个网络暴露于外部信息并被感染</li>
-<li>这种外部感染引起内部暴露</li>
-<li>内部暴露导致节点传递信息从而内部感染</li>
-<li>在最初的感染爆发后，外部和内部接触继续助长传染<br/>
-(简单来说就是某人发了一个推特，然后其他人看到并转发...:))<br/>
-最终，我们可以想象将这些功能结合在一个智能的社交机器人中，给定一些目标然后用来制造和传播内容(一些强化学习可能也会在这里派上用场，使用reach作为奖励功能的关键部分)。首先，机器人选择或创建一个外部信息，然后通过传递它来创建内部暴露的初始爆发。
-<img src="media/15280441233010/era-of-misinformation-fig-1.jpeg" alt="era-of-misinformation-fig-1"/>
-在第三步中，机器人的目标是让尽可能多的人接收到消息。<br/>
-&gt; 例如，社交机器人可以实现意见挖掘和情绪分析技术，以定位那些观点与散布的欺骗信息一致的用户。</li>
+<li>键需要分区，不仅仅是在物理节点的级别，更要在节点的每个核上分区(加强扩展性的大杀器)</li>
+<li>为了平衡负载（例如某些热键）系统需要支持多主复制来支持多个线程的读和写(记:感觉这个特性很牛逼，听上去和复制差不多，但是要满足一致性的要求的同时还要保证高性能就很难了)</li>
+<li>为了最大化的利用硬件的性能，系统应不被阻塞； 这排除了例如锁，一致性协议和&#39;无锁&#39;重试的方案(记：这个也牛逼)</li>
+<li>为了在不向其他设计目标妥协的情况下支持宽泛的语义(例如一致性)；系统需要实现一个全局的无需协调的一致性模型（无需协调的这个厉害了）</li>
 </ol>
 
-<p>人工检查永远达不到机器人产生消息的速度，因此我们需要自动化的工具来检测，<a href="http://ranger.uta.edu/%7Ecli/pubs/2017/claimbuster-kdd17-hassan.pdf">ClaimBuster</a>是这方面的一个例子。</p>
+<p>redis是单线程的，因为在单线程的情况下没有上下文切换的开销，可以最大化利用单线程的威力；Anna在支持分区的同时在每个核上都运行一个处理器；一致性语义；</p>
 
-<h2 id="toc_0">Gnirut:在一个AI统治的世界里出生的人类的问题</h2>
+<h2 id="toc_3">架构</h2>
 
-<p>一个小男孩长大后想要开飞机，然后父母不得不给他泼冷水 -- 现在只有AI才能开飞机了 -- 人类太容易犯错误了。<br/>
-很多安全相关的一些工作已经交给机器人处理了，通常再给每个机器人配置几个操作员(例如5:1的操作员-机器人的比例).例如在军事行动中，自动运输，水下作业，远程手术等等。我们正在迈向一个人可以操纵一堆机器人的世界。</p>
+<p><img src="https://adriancolyer.files.wordpress.com/2018/03/anna-fig-1.jpeg?w=480&amp;zoom=2" alt="厉害"/></p>
 
-<blockquote>
-<p>当然不止这些，人们正在寻找不使用人力而将原来的人工车间替换成的井然有序的机器人的全自动化系统，就像汽车流水线，甚至Amazon的仓库一样...</p>
-</blockquote>
+<h2 id="toc_4">性能</h2>
 
-<p>由于许多任务不一定需要AI参与，我们也可以更一般地讨论人工智能的比例。如果我们更进一步，开始考虑由一个或多个人工智能监控的人类呢?我们可以通过观察儿童与Alexa(AI)的互动来了解这一点。Rachel Botsman观察到她三岁的女儿与Alexa的长时间互动:</p>
+<p><img src="https://adriancolyer.files.wordpress.com/2018/03/anna-fig-8.jpeg?w=520&amp;zoom=2" alt=""/><br/>
+从图 (a) 可以看出，在高并发情况下，Redis 集群的整体吞吐量几乎保持不变，而 Anna 可以在副本之间分散热键。Anna 的吞吐量随着复制系数的增加而增长，直到达到平缓。如果热键完全被复制，吞吐量还会随着线程的增加继续增长。从图 (b) 可以看出，在低并发情况下，Anna 和 Redis 集群都获得了不错的并行能力，它们的吞吐量都随着线程数的增加而增长。</p>
 
-<blockquote>
-<p>&quot;我有些担心，看着女儿将决定权高兴的交了出去，&#39;Alexa，我今天应该做什么&#39;, 没过多久，她就信任了AI的重大选择,第三天，Grace用唱歌的声音问道,&#39;Alexa,我今天应该穿什么?粉红色还是闪亮的裙子?&#39;&quot;</p>
-</blockquote>
-
-<p>为什么是多个AI为一个人类服务？而不是一个AI管理多个人类呢？ </p>
+<h2 id="toc_5">伸缩可扩展性</h2>
 
 <blockquote>
-<p>这正在慢慢发生，一开始的区别太小以至于没有人注意到，或者我们没有真正意识到，长时间的微小的变化已经引起了巨大的改变。</p>
+<p>Anna gets its performance and its scalability from its fully coordination-free implementation of simple actors with private state, which only communicate† via background gossip. Essentially it&#39;s a distributed system deployed across cores as well as nodes. Coordination-freeness keeps every actor in its swimlane doing useful work: in high contention workloads we see 90% of Anna&#39;s cycles going toward serving requests. For the same workloads, systems like Masstree and Intel TBB get well below 10% of their cycles serving requests—that&#39;s because they spend over 90% of their waiting on coordination. However, even for low-contention workloads those systems suffer from processor cache misses due to shared memory.</p>
 </blockquote>
 
-<p>例如，“在一项值得称赞的保护人类安全的努力中，我们可能很快就会通过立法，规定某些工作只能由智能机器来完成。”这将延伸到人性和主观性可能会减缓反应时间或对最终结果产生负面影响的场景。(举个小例子，当一辆汽车检测到迎面而来的碰撞时，可以考虑自动制动系统)。<br/>
-一种分析欧洲人权法院判决的智能算法发现，模式使它能够以79%的准确率预测案件的结果。这样的算法可以用来帮助人类决策者。</p>
+<p>Anna 的性能和伸缩性主要归功于它的完全无协调机制，节点工作进程有 90% 的工作负载是在处理请求，而其他大部分系统（如 Masstree 和英特尔的 TBB）只有不到 10% 的时间在处理请求，它们其余的 90% 时间花在了等待协调上。不仅如此，其他系统因为使用了共享内存，还会出现处理器缓存击穿问题。</p>
+
+<h2 id="toc_6">缓存一致性</h2>
 
 <blockquote>
-<p>当然不止这些， 为什么不把真正的立法权交给智能机器呢?毕竟，智能机器有能力做出更好、更一致的决定。“他们”可能会通过立法，将人类无法接触到的职业列表扩展到包括司机、飞行员、医生、外科医生、会计师、律师、法官、立法者、士兵……等所有职业.</p>
+<p>The key to achieving coordination-free progress is the use of lattice-based composition (strictly, bounded join semi-lattices). Such lattices operate over some domain S (the set of possible states), with a binary ‘least upper bound’ operator, \(\sqcup\), and a bottom value \(\perp\). The least upper bound operator must be associative, commutative, and idempotent (\(\perp(a,a) = a,\ \forall a \in S\)). Collectively these are known as the ACI properties. Such lattices are also the foundation of CRDTs.</p>
 </blockquote>
 
-<p>回到我们的孩子，她想成为一名飞行员，为了被允许训练和飞行，她会把自己伪装成一个人工智能吗?也许她将不得不通过Gnirut测试(想想!),其中包含了一个AI裁判和一个试图将自己伪装成人工智能的人…可悲的是,我发现相比于一个人类通过Gnirut测试，一个机器人通过图灵测试会更加简单。</p>
+<p>文章里面描述了实现几类一致性模型的大概思想； 但是我纠结的一个问题是：如果采用异步广播的方式同步数据，那么怎么保证其他的actor上的请求得到的一定是最新的数据呢？ <br/>
+作者回复：单纯的asynchronous gossip不能保证对每一个actor的读都能读到最新的数据， 如果想要这个保证的话需要外加<a href="https://zh.wikipedia.org/wiki/Quorum_(%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F)">quorum</a> </p>
+
+<h2 id="toc_7">作者回复</h2>
+
+<h3 id="toc_8">Anna vs. Redis</h3>
+
+<p>Anna可以理解为&quot;redis + multi-master-replication + lattice-based conflict resolution&quot;</p>
+
+<h3 id="toc_9">开源地址</h3>
+
+<p><a href="https://github.com/cw75/anna">Anna</a></p>
+
+<h2 id="toc_10">前景</h2>
+
+<p>只能说厉害厉害~</p>
+
+<h1 id="toc_11">相关文章</h1>
+
+<p><a href="http://mp.weixin.qq.com/s/3WmGpZkEuSz-ox_2CPCsqg">伯克利推出世界最快的KVS数据库Anna：秒杀Redis和Cassandra</a><br/>
+<a href="https://blog.acolyer.org/2018/03/27/anna-a-kvs-for-any-scale/">Anna: A KVS for any scale</a><br/>
+<a href="https://blog.acolyer.org/2017/11/23/kv-direct-high-performance-in-memory-key-value-store-with-programmable-nic/">KV-Direct: High-performance in-memory key-value store with programmable NIC</a><br/>
+<a href="https://rise.cs.berkeley.edu/blog/anna-kvs/?twitter=@bigdata">Anna: A Crazy Fast, Super-Scalable, Flexibly Consistent KVS</a><br/>
+<a href="http://db.cs.berkeley.edu/jmh/papers/anna_ieee18.pdf">原论文(Anna: A KVS For Any Scale)</a></p>
 
                         
                       </div>
@@ -195,10 +263,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/6/4</span>
+                    <span class="date">2018/4/1</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Morning-Paper.html'>Morning-Paper</a></span>
+          					    <span class="posted-in"><a href='fresh.html'>新鲜事物</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -217,12 +285,12 @@
 			<div class="row">
 			  <div class="large-6 columns">
 			  <p class="text-left" style="padding-top:25px;">
-			   <a href="Morning-Paper.html">&laquo; Prev Page</a>  
+			   <a href="all_24.html">&laquo; Prev Page</a>  
 			  </p>
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			 <a href="Morning-Paper_2.html">&raquo; Next Page</a> 
+			 <a href="all_26.html">&raquo; Next Page</a> 
 			</p>
 			  </div>
 			</div>

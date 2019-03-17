@@ -96,6 +96,8 @@
             <li><a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html">数据仓库</a></li>
         
             <li><a href="Exit%20Music.html">Exit Music</a></li>
+        
+            <li><a href="Project.html">Project</a></li>
          
 
       </ul>
@@ -118,14 +120,94 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="Exit_Plan_S.html">
+                <a class="clearlink" href="mweb-beautiful.html">
                 
-                  <h1>Exit Plan</h1>
+                  <h1>MWEB网站--自定义</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	
+                        	<h2 id="toc_0">搜索引擎提交</h2>
+
+<p>改模版的header的meta元数据</p>
+
+<h2 id="toc_1">自定义css</h2>
+
+<p>改样式模版的css的文件<br/>
+例如阴影文字:</p>
+
+<pre><code class="language-text">.markdown-body p {
+  letter-spacing: 0.01rem;
+  margin: 0px 0px 20px;
+  line-height: 2em;
+  text-shadow: 0 0 1px rgba(0,0,0,0.22);
+}
+</code></pre>
+
+<h2 id="toc_2">添加dc word cloud</h2>
+
+<p>在首页添加对应的js代码<br/>
+其中<code>d3.select()</code> 需要自定义一个元素, 用作单词云的容易</p>
+
+<pre><code class="language-text">&lt;script src=&quot;//d3js.org/d3.v3.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;asset/js/d3.layout.cloud.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    var fill = d3.scale.category20();
+    var words = [{&quot;text&quot;:&quot;This&quot;, &quot;url&quot;:&quot;http://google.com/&quot;},
+                 {&quot;text&quot;:&quot;is&quot;, &quot;url&quot;:&quot;http://bing.com/&quot;},
+                 {&quot;text&quot;:&quot;some&quot;, &quot;url&quot;:&quot;http://somewhere.com/&quot;},
+                 {&quot;text&quot;:&quot;random&quot;, &quot;url&quot;:&quot;http://random.org/&quot;},
+                 {&quot;text&quot;:&quot;text&quot;, &quot;url&quot;:&quot;http://text.com/&quot;}]
+    var width = 800;
+    var height = 300;
+    for (var i = 0; i &lt; words.length; i++) {
+        words[i].size = 10 + Math.random() * 90;
+    }
+    
+    d3.layout.cloud()
+      .size([width, height])
+      .words(words)
+      .padding(5)
+      .rotate(function() { return ~~ (Math.random() * 2) * 90; })
+      .font(&quot;Impact&quot;)
+      .fontSize(function(d) { return d.size;})
+      .on(&quot;end&quot;, draw)
+      .start();
+    
+    function draw(words) {
+        d3.select(&quot;#wcloud&quot;)
+          .append(&quot;svg&quot;)
+          .attr(&quot;width&quot;, width)
+          .attr(&quot;height&quot;, height)
+          .append(&quot;g&quot;)
+          .attr(&quot;transform&quot;, &quot;translate(&quot;+ width/2 +&quot;,&quot;+ height/2 +&quot;)&quot;)
+          .selectAll(&quot;text&quot;)
+          .data(words)
+          .enter()
+          .append(&quot;text&quot;)
+          .style(&quot;font-size&quot;, function(d) { return d.size + &quot;px&quot;; })
+          .style(&quot;font-family&quot;, &quot;Impact&quot;)
+          .style(&quot;fill&quot;, function(d, i) { return fill(i); })
+          .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+          .attr(&quot;transform&quot;, function(d) {
+              return &quot;translate(&quot; + [d.x, d.y] + &quot;)rotate(&quot; + d.rotate + &quot;)&quot;; 
+          })
+          .text(function(d) { return d.text; })
+          .on(&quot;click&quot;, function (d, i){
+                window.location.href = d.url;
+          });
+    }
+&lt;/script&gt;
+</code></pre>
+
+<h2 id="toc_3">配色表</h2>
+
+<p><a href="https://flatuicolors.com/">flatUi配色表</a><br/>
+<img src="media/15460796439586/15528379979534.jpg" alt="" style="width:1237px;"/></p>
+
+<p><a href="http://metrocolor.live/index.html">香港地铁配色表</a><br/>
+<img src="media/15460796439586/15528380200720.jpg" alt="" style="width:1200px;"/></p>
+
                         
                       </div>
                   </div>
@@ -133,10 +215,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/10/21</span>
+                    <span class="date">2018/12/29</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Exit%20Music.html'>Exit Music</a></span>
+          					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -218,6 +300,8 @@
             <a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html"><strong>数据仓库</strong></a>
         
             <a href="Exit%20Music.html"><strong>Exit Music</strong></a>
+        
+            <a href="Project.html"><strong>Project</strong></a>
          
         </p>
 
@@ -234,6 +318,18 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15528377013480.html">JtableSaw-Pandas</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15528376927084.html">Canal-Rabbit</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="zwift-promo-codes.html">Zwift促销代码</a>
 			      </li>
 		     
@@ -247,18 +343,6 @@
 		      
 			      <li class="post">
 			        <a href="190213-production-crash.html">记一次线上疑似内存泄漏问题</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="recommend-system-alg.html">推荐系统算法</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="big-data-summary.html">大数据知识体系梳理</a>
 			      </li>
 		     
 		  

@@ -7,7 +7,7 @@
     <meta name="baidu-site-verification" content="AlBwWkWk9y" />
     <title>
     
-  Morning-Paper - cstfb
+  cstfb
   
   </title>
   
@@ -120,73 +120,162 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="MP-recoding-black-mirror-part4.html">
+                <a class="clearlink" href="kalman-filter.html">
                 
-                  <h1>(译文)Re-coding Black Mirror -- part 4</h1>
+                  <h1>卡尔曼滤波笔记</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><mark>原文地址：<a href="http://blog.acolyer.org/2018/05/17/re-coding-black-mirror-part-iv">http://blog.acolyer.org/2018/05/17/re-coding-black-mirror-part-iv</a></mark><br/>
-这是一览来自Re-coding Black Mirror的论文的第四部分，探讨了未来的技术场景及其对社会和伦理的影响，今天要阅读的两篇论文如下：</p>
+                        	<p><code>滤波器</code> <code>状态估计</code><br/>
+之前在看文章的时候偶然看到了这个东西，原文中使用了卡尔曼滤波器来估计系统目前的状态，所以就想了解一下这是个什么东西；然后又为什么叫卡尔曼滤波器，‘滤波器’这个词在其中的意义又是什么？</p>
 
 <ul>
-<li>这是错误信息的年代吗？结合社交机器人和假新闻来蒙骗大众(<a href="https://dl.acm.org/citation.cfm?id=3191610">Is this the era of misinformation yet? Combining social bots and fake news to deceive the masses Wang et al.</a>)</li>
-<li>Gnirut:在一个AI统治的世界里出生的人类的问题(<a href="https://dl.acm.org/citation.cfm?id=3191612">Gnirut: the trouble with being born human in an autonomous world Viganò and Sempreboni</a>)<br/>
-(如果你没有ACM数字图书馆访问权限，上述的论文也可以从<a href="">Morning Paper</a>网站或者<a href="https://www2018.thewebconf.org/proceedings/">www 2018议程</a>获取)<br/>
-## 这是错误信息的年代吗？<br/>
-&gt; 2016年，全世界都目击了美国总统大选期间社交媒体上的机器人散播假新闻事件...研究人员在最终投票前四周收集了Twitter数据，以估计这一现象的严重程度。结果显示有15%的账号为机器人账号，并且制造了19%的推特...当假新闻如此常见以至于事实无法到达普通人的时候会发生什么事情呢？</li>
+<li>
+<a href="#toc_0">What is Kalman Filter</a>
+</li>
+<li>
+<a href="#toc_1">How it works?</a>
+<ul>
+<li>
+<a href="#toc_2">整个过程</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_3">Why it works？</a>
+</li>
+<li>
+<a href="#toc_4">Problems i met before</a>
+</li>
+<li>
+<a href="#toc_5">参考资料</a>
+</li>
 </ul>
 
-<p>假新闻和恶作剧由来已久，但社交媒体的本质却火上浇油。任何用户都可以在基本不经过第三方过滤或事实检查的情况下来创建和转发内容;许多成年人通过社交媒体获取新闻;研究表明，那些接触假新闻的人倾向于相信其真实性。<br/>
-我们制造令人信服的假新闻的技术发展越来越快，特别是在社交媒体帖子的关注范围内。文字内容可以由人类,或自然语言生成（在小短文社交媒体上工作尤其出色），不仅能够使用表情，还可以根据个体的风格生成对应的内容，就像之前在<code>Be Right Back</code>中看到的那样。<br/>
-我们可以使用从零开始的语音生成来模仿给定的人的声音，也可以使用语音转换来改变源说话人的声音。在语音转换中，演员的声音被转换成像给定目标的声音。<br/>
-我们可以生成看上去<a href="https://blog.acolyer.org/2018/05/10/progressive-growing-of-gans-for-improved-quality-stability-and-variation/">很真实的图片甚至是一个完全不存在的人</a>。我们甚至可以伪造视频，例如<a href="http://grail.cs.washington.edu/projects/AudioToObama/siggraph17_obama.pdf">利用素材中唇同步</a>来实现我们想说的任何东西；<a href="https://youtu.be/ohmajJTcpNk">将演员的面部表情实时的转换视频中的面部上面</a>；甚至利用深度学习把视频中将面部替换掉(<a href="https://hackernoon.com/exploring-deepfakes-20c9947c22d9">这里有一篇关于这项技术的好文章</a>).<br/>
-所以我们可以制作内容。信息扩散分析告诉我们如何让它传播。信息扩散通常遵循以下步骤:</p>
+
+<h2 id="toc_0">What is Kalman Filter</h2>
+
+<p><code>鲁道夫卡尔曼</code> <code>递归</code> <code>离散</code> <code>系统状态</code><br/>
+1960年，鲁道夫.卡尔曼发表了他著名的用递归方法解决离散数据线性滤波问题的论文。经过了几十年的发展，卡尔曼滤波器广泛的应用在了自主或者协助导航领域(大部分学习控制系统的人都知道卡尔曼滤波器吧)。<br/>
+卡尔曼滤波器能够仅根据上一次的系统状态估计将来的状态，并且提供一种高效的递归方法来不断的优化估计的准确性（通过使得估计均方差最小）,并且即使在不知道物体的实际状况并不确切符合模型的时候也能提供良好的估计结果。</p>
+
+<blockquote>
+<p>卡尔曼滤波器使用以下公式估计系统实际状态\(x_k, x\in{R^n}\)，以离散模型为例:<br/>
+\(x_k=Ax_{k-1}+Bu_{k-1}+w_{k-1}..........(1.1)\)<br/>
+\(z_k=Hx_k+v_k.........(1.2)\)<br/>
+\(A_{n*n}\)表示从第\(k-1\)步到第\(k\)步的状态转移矩阵,在这里\(A\)是可能随着时间变化的;\(B_{n*l}\)表示对于控制向量\(u\in{R^l}\)的增益矩阵;\(H_{m*n}\)表示测量时的转移矩阵;\(w_k v_k\)为过程和测量噪音，模型中假定它们相互独立且分别服从方差为\(Q\)和\(R\)的高斯分布,\(z_k\)即为测量状态;</p>
+</blockquote>
+
+<h2 id="toc_1">How it works?</h2>
+
+<p><code>模型系数</code> <code>预测</code> <code>预估过程(时间更新)</code> <code>校正过程(测量更新)</code><br/>
+作为一个数据其实不是很好的人，也可以理解上述的表达式，但是想要弄明白上述模型，还需要解决以下几个问题:</p>
 
 <ol>
-<li>当一个节点分享这个信息之后整个网络暴露于外部信息并被感染</li>
-<li>这种外部感染引起内部暴露</li>
-<li>内部暴露导致节点传递信息从而内部感染</li>
-<li>在最初的感染爆发后，外部和内部接触继续助长传染<br/>
-(简单来说就是某人发了一个推特，然后其他人看到并转发...:))<br/>
-最终，我们可以想象将这些功能结合在一个智能的社交机器人中，给定一些目标然后用来制造和传播内容(一些强化学习可能也会在这里派上用场，使用reach作为奖励功能的关键部分)。首先，机器人选择或创建一个外部信息，然后通过传递它来创建内部暴露的初始爆发。
-<img src="media/15280441233010/era-of-misinformation-fig-1.jpeg" alt="era-of-misinformation-fig-1"/>
-在第三步中，机器人的目标是让尽可能多的人接收到消息。<br/>
-&gt; 例如，社交机器人可以实现意见挖掘和情绪分析技术，以定位那些观点与散布的欺骗信息一致的用户。</li>
+<li>系统的初始状态，即系数如何确定?</li>
+<li>模型如何预测</li>
+<li>如何进行递归优化，要知道现实中测量值往往是包含噪音的，例如雷达，那么如何根据测量值估计更加精确的值呢?</li>
+<li>模型的整个过程<br/>
+###初始状态与系统参数
+<code>系数</code>
+###如何预测
+<code>预测</code>
+预测值根据式1.1直接得到\(\hat{x}^{-}_{k}\),我们称之为先验估计;<br/>
+\(\hat{x}^{-}_{k}=A\hat{x}_{k-1}+Bu_{k-1}........(2.1)\),同时引入后验估计\(\hat{x}_{k}\)<br/>
+可以看出第\(k\)步的先验估计由第\(k-1\)步的后验估计得到,然后是整个模型的关键等式:<br/>
+\(\hat{x}_{k}=\hat{x}^{-}_{k} + K(z_k - H\hat{x}^{-}_{k}).........(2.2)\), 即把先验估计和观测值与估计观测值\(H\hat{x}^{-}_{k}\)的差的线性组合作为后验估计，那么\(K_{n*m}\)怎么来呢？这里引入<br/>
+\(e_k=\hat{x}_k - x_k.........(2.3)\) 为后验估计误差,同样有对应的先验估计误差\(e_k^-\)<br/>
+\(P_k=E[e_ke_k^T].........(2.4)\),后验估计误差的协方差(同样存在对应的\(P_k^-\)),然后\(K\)使得\(P_k\)最小 <br/>
+具体来说\(K\)的求法为将\(2.2\)式代入\(2.4\)然后对\(K\)求导，使一阶导数为\(0\),求得\(K\),在本例中<br/>
+\(K_k=P_k^-H^T(HP^-_kH^T+R)^{-1}.........(2.5)\)<br/>
+###更新过程
+<code>更新</code>
+为了使得模型可以继续递归的迭代下去, 我们需要知道几个值\(\hat{x}^{-}_{k-1}\)和\(P^-_{k}\),用于根据\(2.2\)求得\(\hat{x}_k\)和\(P_k\),具体的有:<br/>
+\(\hat{x}^{-}_{k}=A\hat{x}_{k-1}+Bu_{k-1}........(2.1)\)<br/>
+\(P_k^-=AP_{k-1}A^T+Q.........(2.6)\)</li>
 </ol>
 
-<p>人工检查永远达不到机器人产生消息的速度，因此我们需要自动化的工具来检测，<a href="http://ranger.uta.edu/%7Ecli/pubs/2017/claimbuster-kdd17-hassan.pdf">ClaimBuster</a>是这方面的一个例子。</p>
+<hr/>
 
-<h2 id="toc_0">Gnirut:在一个AI统治的世界里出生的人类的问题</h2>
+<p>\(K_k=P_k^-H^T(HP^-_kH^T+R)^{-1}.........(2.5)\)<br/>
+\(\hat{x}_{k}=\hat{x}^{-}_{k} + K(z_k - H\hat{x}^{-}_{k}).........(2.2)\)<br/>
+\(P_k=(I-K_kH)P_k^-.........(2.7)\)</p>
 
-<p>一个小男孩长大后想要开飞机，然后父母不得不给他泼冷水 -- 现在只有AI才能开飞机了 -- 人类太容易犯错误了。<br/>
-很多安全相关的一些工作已经交给机器人处理了，通常再给每个机器人配置几个操作员(例如5:1的操作员-机器人的比例).例如在军事行动中，自动运输，水下作业，远程手术等等。我们正在迈向一个人可以操纵一堆机器人的世界。</p>
+<p>第一部分称之为时间更新过程，即预测过程，第二部分称之为测量更新过程，即修正过程<br/>
+<strong>需要注意的是，\(\hat{x}_{k-1}^-\)和\(P_{k-2}\)需要设置初始值</strong></p>
+
+<h3 id="toc_2">整个过程</h3>
+
+<p>\(initial.\hat{x}_{k-1}^- , P_{k-2}\) \(\Rightarrow\) \(\hat{x}_{k-1}^- , P_{k-1}^-\) \(\Rightarrow\) \(K_{k-1},\hat{x}_{k-1},P_{k-1}\) \(\Rightarrow\) \(\hat{x}^{-}_{k},P_k^-\) \(\Rightarrow\) \(K_k,\hat{x}_{k},P_k\) \(\Rightarrow\) \(...\)</p>
+
+<h2 id="toc_3">Why it works？</h2>
+
+<p>解释为什么这有用，即需要解释等式\(2.2\)的合理性.<br/>
+解释来源于贝叶斯规则： \(x_k\) 的更新取决于在已知先前的测量变量\(z_k\)的情况下的先验估计\(\hat{x}^-_k\) 的概率分布.卡尔曼滤波器表达式中包含 了状态分布的前二阶矩.<br/>
+\(E[x_k]=\hat{x}_k\)<br/>
+\(E[(x_k-\hat{x}_k)(x_k-\hat{x}_k)^T]=P_k\)<br/>
+后验状态估计\(2.2\)式反应了状态分布的均值(一阶矩)――如果\(w_kv_k\)服从正态分布的条件成立，均值的估计便是正态分布的。后验估计误差协方差\(2.4\)式反映了状态分布的方差(二阶非中心矩)。在已知\(z_k\)的情况下,\(x_k\)的分布可写为:<br/>
+\(p(x_k|z_k) \sim N(E[x_k],E[(x_k-\hat{x}_k)(x_k-\hat{x}_k)^T])\)<br/>
+\(=N(\hat{x}_k,P_k)\)</p>
+
+<h2 id="toc_4">Problems i met before</h2>
+
+<p>1.为什么叫做滤波器</p>
 
 <blockquote>
-<p>当然不止这些，人们正在寻找不使用人力而将原来的人工车间替换成的井然有序的机器人的全自动化系统，就像汽车流水线，甚至Amazon的仓库一样...</p>
+<p>滤波器特性体现在估计值要比观测值平滑的多</p>
 </blockquote>
 
-<p>由于许多任务不一定需要AI参与，我们也可以更一般地讨论人工智能的比例。如果我们更进一步，开始考虑由一个或多个人工智能监控的人类呢?我们可以通过观察儿童与Alexa(AI)的互动来了解这一点。Rachel Botsman观察到她三岁的女儿与Alexa的长时间互动:</p>
+<p>2.等式2.5的推导</p>
 
 <blockquote>
-<p>&quot;我有些担心，看着女儿将决定权高兴的交了出去，&#39;Alexa，我今天应该做什么&#39;, 没过多久，她就信任了AI的重大选择,第三天，Grace用唱歌的声音问道,&#39;Alexa,我今天应该穿什么?粉红色还是闪亮的裙子?&#39;&quot;</p>
+<p>unkown</p>
 </blockquote>
 
-<p>为什么是多个AI为一个人类服务？而不是一个AI管理多个人类呢？ </p>
+<p>3.等式2.5的意义</p>
 
 <blockquote>
-<p>这正在慢慢发生，一开始的区别太小以至于没有人注意到，或者我们没有真正意识到，长时间的微小的变化已经引起了巨大的改变。</p>
+<p>等式2.5也可以写成以下形式:<br/>
+\(K_k=\frac{P^-_kH^T}{HP^-_kH^T+R}\)<br/>
+可以看见当\(R\)趋于0的时候\(K\)接近于\(H^{-1}\)，此时后验估计更接近于观测值；反之当\(P_k^-\)接近于0时\(K\)也接近0，此时后验估计更接近于估计值</p>
 </blockquote>
 
-<p>例如，“在一项值得称赞的保护人类安全的努力中，我们可能很快就会通过立法，规定某些工作只能由智能机器来完成。”这将延伸到人性和主观性可能会减缓反应时间或对最终结果产生负面影响的场景。(举个小例子，当一辆汽车检测到迎面而来的碰撞时，可以考虑自动制动系统)。<br/>
-一种分析欧洲人权法院判决的智能算法发现，模式使它能够以79%的准确率预测案件的结果。这样的算法可以用来帮助人类决策者。</p>
+<p>4.等式2.6的推导</p>
 
 <blockquote>
-<p>当然不止这些， 为什么不把真正的立法权交给智能机器呢?毕竟，智能机器有能力做出更好、更一致的决定。“他们”可能会通过立法，将人类无法接触到的职业列表扩展到包括司机、飞行员、医生、外科医生、会计师、律师、法官、立法者、士兵……等所有职业.</p>
+<p>\(P_k^- = E[(x_k-\hat{x}_k^-)(x_k-\hat{x}_k^-)^T]\)<br/>
+由于有:<br/>
+\(x_k=Ax_{k-1}+Bu_{k-1}+w_k\)<br/>
+\(\hat{x}_k^-=A\hat{x}_{k-1}+Bu_{k-1}\)<br/>
+因此<br/>
+\(x_k-\hat{x}_k^- = Ax_{k-1} - A\hat{x}_{k-1}+w_k\)<br/>
+那么<br/>
+\(P_k^- = E[(Ax_{k-1} - A\hat{x}_{k-1}+w_k)(Ax_{k-1} - A\hat{x}_{k-1}+w_k)^T]\)<br/>
+\(=Cov(Ax_{k-1} - A\hat{x}_{k-1}+w_k, Ax_{k-1} - A\hat{x}_{k-1}+w_k)\)<br/>
+\(=Var(Ax_{k-1} - A\hat{x}_{k-1}+w_k)\)<br/>
+\(=Var(Ax_{k-1} - A\hat{x}_{k-1}) + Var(w_k) + 2Cov(Ax_{k-1} - A\hat{x}_{k-1},w_k)\)<br/>
+\(=Var(Ax_{k-1} - A\hat{x}_{k-1}) + Var(w_k)\)<br/>
+\(=Var(Ax_{k-1} - A\hat{x}_{k-1}) + Q\)<br/>
+\(=Cov(Ax_{k-1} - A\hat{x}_{k-1},Ax_{k-1} - A\hat{x}_{k-1}) + Q\)<br/>
+\(=E[(Ax_{k-1} - A\hat{x}_{k-1})(Ax_{k-1} - A\hat{x}_{k-1})^T] + Q\)<br/>
+\(=AE[(x_{k-1} - \hat{x}_{k-1})(x_{k-1} - \hat{x}_{k-1})^T]A^T + Q\)<br/>
+\(=AP_{k-1}A^T + Q\)</p>
 </blockquote>
 
-<p>回到我们的孩子，她想成为一名飞行员，为了被允许训练和飞行，她会把自己伪装成一个人工智能吗?也许她将不得不通过Gnirut测试(想想!),其中包含了一个AI裁判和一个试图将自己伪装成人工智能的人…可悲的是,我发现相比于一个人类通过Gnirut测试，一个机器人通过图灵测试会更加简单。</p>
+<p>5.等式2.7的推导</p>
+
+<blockquote>
+<p>unkown</p>
+</blockquote>
+
+<h2 id="toc_5">参考资料</h2>
+
+<p><a href="http://www.cs.unc.edu/%7Ewelch/media/pdf/kalman_intro.pdf">kalman_introduction.pdf</a><br/>
+<a href="http://www.cs.unc.edu/%7Ewelch/kalman/media/misc/kalman_intro_chinese.zip">kalman_introduction_chinese.download</a><br/>
+<a href="https://zh.wikipedia.org/wiki/%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2">卡尔曼滤波.wiki</a><br/>
+<a href="https://github.com/scipy/scipy-cookbook/blob/master/ipython/KalmanFiltering.ipynb">simple_implementation.matlab</a><br/>
+<a href="http://www.cs.unc.edu/%7Ewelch/kalman/">other_resources.html</a></p>
 
                         
                       </div>
@@ -195,10 +284,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/6/4</span>
+                    <span class="date">2017/12/24</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Morning-Paper.html'>Morning-Paper</a></span>
+          					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -217,12 +306,12 @@
 			<div class="row">
 			  <div class="large-6 columns">
 			  <p class="text-left" style="padding-top:25px;">
-			   <a href="Morning-Paper.html">&laquo; Prev Page</a>  
+			   <a href="all_25.html">&laquo; Prev Page</a>  
 			  </p>
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			 <a href="Morning-Paper_2.html">&raquo; Next Page</a> 
+			
 			</p>
 			  </div>
 			</div>
