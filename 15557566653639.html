@@ -7,7 +7,7 @@
     <meta name="baidu-site-verification" content="AlBwWkWk9y" />
     <title>
     
-  cstfb
+  集合竞价/连续竞价/实时股价 - cstfb
   
   </title>
   
@@ -115,88 +115,87 @@
        
 
  <script type="text/javascript">
-	$(function(){
-		$('#menu_item_index').addClass('is_active');
-	});
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
 </script>
 <div class="row">
-	<div class="large-8 medium-8 columns">
-		<div class="markdown-body home-categories">
-		
-			<div class="article">
-                <a class="clearlink" href="181012-production-crash.html">
-                
-                  <h1>记一次线上应用宕机问题排查</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h1 id="toc_0">问题过程</h1>
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>集合竞价/连续竞价/实时股价</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2019/4/20</span>
 
-<pre><code class="language-text">1.2018-10-11 9:28分 用户反馈报表系统宕机
-2.登陆报表系统返回504
-3.紧急重启报表系统，可以正常访问
-</code></pre>
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='%E6%93%8D%E7%9B%98%E6%89%8B.html'>操盘手</a></span>
+           
+         
+          <span class="comments">
+            
 
-<h1 id="toc_1">问题排查</h1>
+            
+          </span>
 
-<pre><code class="language-text">1.查看错误日志发现 8:41分左右多个请求同时下载大量数据,大量占用内存以及CPU，导致full gc无法回收内存(gc overhead limit exceeded)然后宕机;
-2.主要有两个地方消耗资源： 一个是查询数据，大量数据驻留在内存中； 另一个是制作excel；
-</code></pre>
+        </div>
+      </div><!-- article -->
 
-<h1 id="toc_2">解决方案</h1>
+      <div class="article-content">
+      
 
-<pre><code class="language-text">1.对请求做限制，只允许下载一部分数据，例如一次下载一个月的数据
-2.对请求限流，短时间大量请求直接返回错误
-3.数据缓存，采用缓存文件或者数据的方式
-4.异步下载技术, 后台开启任务队列制作excel，然后推送到网盘或者其他存储，然后共享给用户
-</code></pre>
+    
 
-<h1 id="toc_3">其他感想</h1>
+      </div>
 
-<pre><code class="language-text">做大数据应该解决的问题还有很多没有解决，其实本次下载的数据量并不是特别大的那种,体现出我们并没有服务好用户，系统优化，技术升级的路还很长.
-</code></pre>
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="java-nmt.html" 
+          title="Next Post: 一个JDK的Bug与NMT">一个JDK的Bug与NMT &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <!-- 来必力City版安装代码 -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC80MTg4NS8xODQzMQ==">
+	<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/10/11</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+       if (typeof LivereTower === 'function') { return; }
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-              
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+	</script>
+<noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+</div>
+<!-- City版安装代码已完成 -->
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
 
 
-			<div class="row">
-			  <div class="large-6 columns">
-			  <p class="text-left" style="padding-top:25px;">
-			   <a href="all_16.html">&laquo; Prev Page</a>  
-			  </p>
-			  </div>
-			  <div class="large-6 columns">
-			<p class="text-right" style="padding-top:25px;">
-			 <a href="all_18.html">&raquo; Next Page</a> 
-			</p>
-			  </div>
-			</div>
-		</div>
-	</div><!-- large 8 -->
+
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">

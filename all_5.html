@@ -98,6 +98,10 @@
             <li><a href="Exit%20Music.html">Exit Music</a></li>
         
             <li><a href="Project.html">Project</a></li>
+        
+            <li><a href="JDK.html">JDK</a></li>
+        
+            <li><a href="%E6%93%8D%E7%9B%98%E6%89%8B.html">操盘手</a></li>
          
 
       </ul>
@@ -120,50 +124,14 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="190213-production-crash.html">
+                <a class="clearlink" href="15528376927084.html">
                 
-                  <h1>记一次线上疑似内存泄漏问题</h1>
+                  <h1>Canal-Rabbit</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">现象</h2>
-
-<p>线上环境机器中有两个应用，最近发现机器的可用内存每天都在成阶梯式下降，因此怀疑是内存泄漏导致的问题</p>
-
-<ul>
-<li>现象1 ： linux系统日志
-<img src="media/15525795356441/15528318231565.jpg" alt=""/></li>
-<li>现象2 ： 机器状况
-<img src="media/15525795356441/15528318499218.jpg" alt=""/>
-23点系统宕机
-<img src="media/15525795356441/15528319024343.jpg" alt=""/>
-cpu压力正常
-<img src="media/15525795356441/15528319063789.jpg" alt=""/>
-io正常</li>
-<li>现象3 : OOM日志<br/>
-没有OOM日志, tomcat配置正常</li>
-<li>现象4 : 应用负载<br/>
-查看日志发现负载不高， 但是23点的时候执行了一个python脚本， 内存占用&gt;100M</li>
-</ul>
-
-<h2 id="toc_1">原因推测</h2>
-
-<p>因为没有系统当时的内存快照和OOM日志;因此无法准确判断宕机原因.<br/>
-推测是早上应用中触发了某个操作，导致内存泄漏，10:20分左右内存降到了最低点, 最后晚上23:00的脚本由于申请了大量内存，导致了系统内存不足而被kill掉。<br/>
-两个系统均有可能发生内存泄漏</p>
-
-<h2 id="toc_2">问题跟踪&amp;解决</h2>
-
-<p>临时增加了机器内存。<br/>
-另外定时打印应用的内存快照，观察是否存在内存泄漏.</p>
-
-<pre><code class="language-text">jmap -histo:live $java_pid | head -100 &gt;&gt; ~/jmap.log
-jstack -lF $java_pid&gt;&gt; ~/jstack.log
-</code></pre>
-
-<p>长期来看，一是不能因为系统宕机而长时间使系统处于无妨访问的状态，可以使用运维工具监控并且自动重启，自己脚本实现也可以。 二是需要规范大家的编码习惯， 减少低级失误。</p>
-
+                        	
                         
                       </div>
                   </div>
@@ -171,10 +139,10 @@ jstack -lF $java_pid&gt;&gt; ~/jstack.log
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/3/15</span>
+                    <span class="date">2019/3/17</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
+          					    <span class="posted-in"><a href='Project.html'>Project</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -258,6 +226,10 @@ jstack -lF $java_pid&gt;&gt; ~/jstack.log
             <a href="Exit%20Music.html"><strong>Exit Music</strong></a>
         
             <a href="Project.html"><strong>Project</strong></a>
+        
+            <a href="JDK.html"><strong>JDK</strong></a>
+        
+            <a href="%E6%93%8D%E7%9B%98%E6%89%8B.html"><strong>操盘手</strong></a>
          
         </p>
 
@@ -274,6 +246,24 @@ jstack -lF $java_pid&gt;&gt; ~/jstack.log
 	      
 		      
 			      <li class="post">
+			        <a href="15557566653639.html">集合竞价/连续竞价/实时股价</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="java-nmt.html">一个JDK的Bug与NMT</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="rabbitVsKafka.html">RabbitMQ 与 Kafka</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="20190328-mvn-messed.html">一次maven缓存引发的血案</a>
 			      </li>
 		     
@@ -281,24 +271,6 @@ jstack -lF $java_pid&gt;&gt; ~/jstack.log
 		      
 			      <li class="post">
 			        <a href="15528377013480.html">JtableSaw-Pandas</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15528376927084.html">Canal-Rabbit</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="zwift-promo-codes.html">Zwift促销代码</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="isolation-problem.html">数据库事务隔离级别引发的血案</a>
 			      </li>
 		     
 		  
