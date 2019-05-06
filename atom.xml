@@ -4,7 +4,7 @@
   <title><![CDATA[cstfb]]></title>
   <link href="https://cstfb.github.io/atom.xml" rel="self"/>
   <link href="https://cstfb.github.io/"/>
-  <updated>2019-04-21T03:28:01+08:00</updated>
+  <updated>2019-05-06T23:24:59+08:00</updated>
   <id>https://cstfb.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -472,9 +472,9 @@ NMT是Java HotSpot VM提供的跟踪内部内存使用的工具，结合jcmd命�
   
   <entry>
     <title type="html"><![CDATA[RabbitMQ vs Kafka]]></title>
-    <link href="https://cstfb.github.io/rabbit-vs-Kafka.html"/>
+    <link href="https://cstfb.github.io/RabbitMq-vs-Kafka.html"/>
     <updated>2019-04-12T20:59:04+08:00</updated>
-    <id>https://cstfb.github.io/rabbit-vs-Kafka.html</id>
+    <id>https://cstfb.github.io/RabbitMq-vs-Kafka.html</id>
     <content type="html"><![CDATA[
 <p>RabbitMQ和Kafka是两种很经典的分布式消息中间件，这篇文章试着从设计理念，基础特性，适用场景几个方面来描述这两种中间件。</p>
 
