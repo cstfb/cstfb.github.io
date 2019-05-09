@@ -124,64 +124,53 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="zwift-network-error.html">
+                <a class="clearlink" href="190110-production-crash.html">
                 
-                  <h1>如何解决MAC打开Zwift时的"Update server connection error - Error ZLM01"问题</h1>
+                  <h1>记一次线上数据库问题的排查过程</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>前几天安装了zwift的APP， 然后打开的时候遇到了&quot;zwift can&#39;t connect to the update server...Error ZLM01&quot;这样的问题， 因此记录一下解决的过程， 过程参考了<a href="https://zhuanlan.zhihu.com/p/31958059">Zwift 联网问题解决方案 ZLM01——大x小视频1</a>这片文章， 解决过程也大多相似。然后以下是问题描述以及解决步骤:</p>
+                        	<h2 id="toc_0">问题描述</h2>
 
-<h2 id="toc_0">问题原因</h2>
+<p>在使用activiti做工作流的过程中，偶尔出现有长时间运行的任务出现数据库异常，主要片段如下：<br/>
+<img src="media/15478265383881/15478268239152.jpg" alt="" style="width:1166px;"/><br/>
+<img src="media/15478265383881/15478268356391.jpg" alt="" style="width:674px;"/><br/>
+<img src="media/15478265383881/15478268443485.jpg" alt="" style="width:1144px;"/><br/>
+<img src="media/15478265383881/15478268573604.jpg" alt="" style="width:581px;"/></p>
 
-<p>我下载的zwift版本是1.0，由于zwift启动的时候由于某种原因需要访问google等墙外网站，但是由于GFW的存在， 访问不同应用则会提示上面的错误；那么通过连接例如shadowsocks这样的vpn能不能解决问题呢？ 不能，因为shadowsocks仅能将HTTP协议的请求转发到shadowsocks代理端口，zwift使用的不是http协议，因此仅仅通过shadowsocks无法解决这个问题， 解决这个问题的办法也很简单，就是借助另外一种工具将zwift的请求转发到shadowsocks代理端口, 即 proxifier + shadowsocks的解决方案;</p>
+<ul>
+<li>Could not retrieve transation read-only status server</li>
+<li>The last packet successfully received from the server was 4,555,119 milliseconds ago.</li>
+<li>Caused by: java.net.SocketException: Connection reset</li>
+</ul>
 
-<h2 id="toc_1">步骤</h2>
+<h2 id="toc_1">排查&amp;解决</h2>
 
-<h3 id="toc_2">准备具有socket代理功能的VPN</h3>
+<p>跟踪到数据库驱动里面查看发现这段代码：<br/>
+<img src="media/15478265383881/15478270089767.jpg" alt="" style="width:818px;"/><br/>
+大意是通过语句<code>select @@session.tx_read_only</code>来探测连接是否只读，然后发生了异常，异常的原因是距离上一个包接收的时间太长了，连接被重置了；<br/>
+到这里的话基本上可以确定是服务器将长时间未使用的连接给回收掉了，服务器经过多长时间回收是由配置项<code>wait_timeout</code>来设置的， 可以通过<code>show global variables like &#39;wait_timeout&#39;</code>来查看，单位是s；然后我们服务器配置的时间是3600s, 一个小时，所以有两个办法去解决问题:</p>
 
-<p>常见的工具有例如Shadowsocks,OpenVpn等，网上教程有许多，可以选择自己搭建，也可以购买现成的服务；<br/>
-目标: 能够翻墙访问google, 然后需要了解vpn的sockV5的监听端口以及ip(shadowsocks默认是<code>127.0.0.1:1086</code>, 也可以在shadowsocks的偏好设置中查看)<br/>
-<img src="media/15442868225544/15442881552211.jpg" alt="" style="width:242px;"/><br/>
-<img src="media/15442868225544/15442881820659.jpg" alt="" style="width:470px;"/><br/>
-VPN安装完成之后，设置成自动代理模式即可</p>
+<ul>
+<li>每隔一段时间去访问一次数据库，主动保持连接是活的</li>
+<li>延长<code>wait_timeout</code></li>
+</ul>
 
-<h3 id="toc_3">准备proxifier</h3>
+<p>最终是通过延长<code>wait_timeout</code>来解决的，但是不是调整服务器的全局配置，而是在连接参数里面设置session的<code>wait_timeout</code>参数，例如<code>jdbc:mysql://localhost:3306/db?sessionVariables=wait_timeout=10800</code></p>
 
-<p>proxifier可以自行去<a href="https://www.proxifier.com/">官网</a>下载， 软件收费，自己找破解码破解；<br/>
-完了之后按照VPN的代理配置添加一个代理:<br/>
-<img src="media/15442868225544/15442883833656.jpg" alt="" style="width:469px;"/><br/>
-然后就是设置一个规则:<br/>
-<img src="media/15442868225544/15442884203782.jpg" alt="" style="width:833px;"/><br/>
-<img src="media/15442868225544/15442884481244.jpg" alt="" style="width:526px;"/></p>
+<h2 id="toc_2">插曲</h2>
 
-<h3 id="toc_4">最后</h3>
+<p>一开始我想通过第一种方法解决， 我觉得驱动参数是可以有对应的配置的(结果证明是没有的)， 让我产生误解的参数有几个(dbcp连接池):</p>
 
-<p>打开app，在proxifier应该会出现一些应用与外部通信的日志，例如：<br/>
-<img src="media/15442868225544/15442885848326.jpg" alt="" style="width:978px;"/><br/>
-如果sent/received正常的话代表连接成功，直观一点就是zwift应用正常了:<br/>
-<img src="media/15442868225544/15442886504433.jpg" alt="" style="width:796px;"/></p>
+<ul>
+<li>testWhileIdle [true/false]：对空闲连接进行测试，如果失败，直接从线程池中移除</li>
+<li>validationQuery：进行以上测试的sql语句</li>
+<li>timeBetweenEvictionRunsMillis：每隔多久运行一次清理线程</li>
+<li>minEvictableIdleTimeMillis：发现空闲线程后最小多长时间回收</li>
+</ul>
 
-<h3 id="toc_5">我遇到的问题?</h3>
-
-<h4 id="toc_6">shadowsocks的代理地址和端口号找不到</h4>
-
-<p><img src="media/15442868225544/15442886915954.jpg" alt="" style="width:215px;"/><br/>
-我一开始用的shadowsocks的客户端找不到对应的配置,推荐使用开发者重新开发的一个客户端，那个里面有: <a href="https://github.com/shadowsocks/ShadowsocksX-NG/releases/">ShadowsocksX-NG</a></p>
-
-<h4 id="toc_7">能访问google了，proxiefier也按照教程设置了，但还是打不开app</h4>
-
-<p>检查一下shadowsocks的模式是否是自动模式<br/>
-检查一下zwift的请求是否正确代理到了响应的ip+端口，如果没有，那么需要检查规则或者代理的配置</p>
-
-<h4 id="toc_8">关于自建shadowsocks</h4>
-
-<p>推荐使用搬瓦工这个提供商，用了很久了， 比较好用，游戏没有测试过，正常科学上网还是比较靠谱的， 并且自己搭建的话也比较稳定，很多付费的用了一段时间就被查了。<br/>
-<a href="https://bwh8.net/aff.php?aff=45197">国内地址1</a><br/>
-<a href="https://bwh88.net/aff.php?aff=45197">国内地址2</a><br/>
-<a href="https://bandwagonhost.com/aff.php?aff=45197">国外地址</a><br/>
-关于自建的时候线路的选择也有一些道道，自己晚上搜索接口， 尽量选择直连大陆的那一条。</p>
+<p>以上参数都是针对连接池中未分配的连接而定的， 对于已分配的连接是无效的，我纯粹是被它们的名称给欺骗了:((</p>
 
                         
                       </div>
@@ -190,7 +179,7 @@ VPN安装完成之后，设置成自动代理模式即可</p>
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/9</span>
+                    <span class="date">2019/1/18</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
@@ -297,6 +286,18 @@ VPN安装完成之后，设置成自动代理模式即可</p>
 	      
 		      
 			      <li class="post">
+			        <a href="kafka-in-bigdata.html">Kafka In BigData</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="RabbitMq-delay-queue.html">RabbitMq Delay Queue</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="stock-starter.html">集合竞价/连续竞价/实时股价</a>
 			      </li>
 		     
@@ -310,18 +311,6 @@ VPN安装完成之后，设置成自动代理模式即可</p>
 		      
 			      <li class="post">
 			        <a href="RabbitMq-vs-Kafka.html">RabbitMQ vs Kafka</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="20190328-mvn-messed.html">一次maven缓存引发的血案</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15528377013480.html">JtableSaw-Pandas</a>
 			      </li>
 		     
 		  

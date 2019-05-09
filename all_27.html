@@ -124,40 +124,24 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="tips.html">
+                <a class="clearlink" href="15274384175679.html">
                 
-                  <h1>小知识点</h1>
+                  <h1>2018第101届环意大利</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">JAVA</h2>
+                        	<p><img src="media/15268344574926/IMG_0931.jpg" alt="IMG_0931"/><br/>
+2018.05.19, 第十四高山赛段，弗鲁姆宗克兰山拉爆对手，拿到冠军</p>
 
-<h3 id="toc_1">volatile 的两个特性:可见行保证和禁止指令重排序；</h3>
+<hr/>
 
-<pre><code class="language-text">public class Singleton {
+<p><img src="media/15274384175679/froomy.jpg" alt="froomy"/><br/>
+<img src="media/15274384175679/doumlan.jpg" alt="doumlan"/><br/>
+<img src="media/15274384175679/yates.jpg" alt="yates"/><br/>
+2018.05.25,第19皇后赛段，弗鲁姆发动81公里超远程史诗级进攻(4个小时的350w恒定功率!!)，一举夺得冠军，并穿上粉衫，反超领先第二名迪穆兰40多秒！西蒙耶茨被拉爆掉队，总成绩从第一名掉出十名开外。</p>
 
-    private static Singleton instance = null;
-
-    private int v;
-    private Singleton() {
-        this.v = 3;
-    }
-
-    public static Singleton getInstance() {
-        if (instance == null) { // 1. 第一次检查
-            synchronized (Singleton.class) { // 2
-                if (instance == null) { // 3. 第二次检查
-                    instance = new Singleton(); // 4
-                }
-            }
-        }
-        return instance;
-    }
-}
-</code></pre>
-
-<p>大家都知道上面的代码存在代码重排序的问题，解决方案就是对<code>instance</code>变量加上volatile关键字，这样JVM会禁止在<code>instance</code>完成初始化之前进行引用赋值，这样解决了重排序的问题;(另外<code>final</code>关键字也能达到类似的效果)</p>
+<hr/>
 
                         
                       </div>
@@ -166,10 +150,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/5/21</span>
+                    <span class="date">2018/5/28</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html'>小知识点</a></span>
+          					    <span class="posted-in"><a href='%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html'>大事件记录</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -273,6 +257,18 @@
 	      
 		      
 			      <li class="post">
+			        <a href="kafka-in-bigdata.html">Kafka In BigData</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="RabbitMq-delay-queue.html">RabbitMq Delay Queue</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="stock-starter.html">集合竞价/连续竞价/实时股价</a>
 			      </li>
 		     
@@ -286,18 +282,6 @@
 		      
 			      <li class="post">
 			        <a href="RabbitMq-vs-Kafka.html">RabbitMQ vs Kafka</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="20190328-mvn-messed.html">一次maven缓存引发的血案</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15528377013480.html">JtableSaw-Pandas</a>
 			      </li>
 		     
 		  
