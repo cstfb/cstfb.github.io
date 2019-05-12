@@ -4,13 +4,118 @@
   <title><![CDATA[cstfb]]></title>
   <link href="https://cstfb.github.io/atom.xml" rel="self"/>
   <link href="https://cstfb.github.io/"/>
-  <updated>2019-05-09T22:23:22+08:00</updated>
+  <updated>2019-05-12T14:50:49+08:00</updated>
   <id>https://cstfb.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[LVS & HAPROXY & NGINX]]></title>
+    <link href="https://cstfb.github.io/LVS-HAPROXY-NGINX.html"/>
+    <updated>2019-05-12T15:03:04+08:00</updated>
+    <id>https://cstfb.github.io/LVS-HAPROXY-NGINX.html</id>
+    <content type="html"><![CDATA[
+<table>
+<thead>
+<tr>
+<th style="text-align: center"></th>
+<th style="text-align: center">LVS</th>
+<th style="text-align: center">HAPROXY</th>
+<th style="text-align: center">NGINX</th>
+<th style="text-align: center">F5</th>
+<th style="text-align: center">ARRAY</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td style="text-align: center">出品方</td>
+<td style="text-align: center">Linux</td>
+<td style="text-align: center">Willy Tarreau</td>
+<td style="text-align: center">Igor Sysoev</td>
+<td style="text-align: center">F5 Networks</td>
+<td style="text-align: center">Array Networks</td>
+</tr>
+<tr>
+<td style="text-align: center">负载原理</td>
+<td style="text-align: center">软件L4</td>
+<td style="text-align: center">软件L7</td>
+<td style="text-align: center">软件L7</td>
+<td style="text-align: center">硬件L4~L7</td>
+<td style="text-align: center">硬件L4~L7</td>
+</tr>
+<tr>
+<td style="text-align: center">稳定性</td>
+<td style="text-align: center">集成到Linux内核，自带keepalived双机热备</td>
+<td style="text-align: center">可做keepalived双机热备</td>
+<td style="text-align: center">C10K级别，可做keepalived双机热备</td>
+<td style="text-align: center"></td>
+<td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">性能</td>
+<td style="text-align: center">比硬件低，在软负载中数一数二</td>
+<td style="text-align: center">低于LVS，高于Nginx</td>
+<td style="text-align: center">高</td>
+<td style="text-align: center">很高</td>
+<td style="text-align: center">很高</td>
+</tr>
+<tr>
+<td style="text-align: center">功能性</td>
+<td style="text-align: center">支持大部分协议，所以支持基本上所有应用，例如WEB/数据库/中间件等</td>
+<td style="text-align: center">TCP/HTTP/HTTPS/EMAIL</td>
+<td style="text-align: center">HTTP/HTTPS/EMAIL</td>
+<td style="text-align: center"></td>
+<td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">配置</td>
+<td style="text-align: center">配置复杂，对网络要求较高</td>
+<td style="text-align: center"></td>
+<td style="text-align: center">简单</td>
+<td style="text-align: center"></td>
+<td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">算法支持</td>
+<td style="text-align: center">Round-robin(轮询)，Weight-round-robin(带权轮询)、Least-Connection(最小连接)、Weighte-Least-Connection(带权最小连接)</td>
+<td style="text-align: center">Round-robin（轮循）、Weight-round-robin（带权轮循）、source（原地址保持）、RI（请求URL）、rdp-cookie（根据cookie）</td>
+<td style="text-align: center">Round-robin（轮循）、Weight-round-robin（带权轮循）、Ip-hash（Ip哈希）</td>
+<td style="text-align: center"></td>
+<td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">缺点</td>
+<td style="text-align: center">不支持正则处理，不能做动静分离， 大规模网站实施起来很复杂</td>
+<td style="text-align: center">不能做Web服务器即Cache</td>
+<td style="text-align: center">支持协议较少</td>
+<td style="text-align: center">贵</td>
+<td style="text-align: center">贵</td>
+</tr>
+<tr>
+<td style="text-align: center">其他优点</td>
+<td style="text-align: center">配置性低(优点稳定)</td>
+<td style="text-align: center">支持虚拟主机，session保持，cookie引导，支持TCP负载均衡</td>
+<td style="text-align: center">可做反向代理服务器，正则规则灵活，服务器状态检测，缓存，静态网页/图片服务器，功能丰富</td>
+<td style="text-align: center">应用交付/支持完善</td>
+<td style="text-align: center">应用交付/支持完善</td>
+</tr>
+<tr>
+<td style="text-align: center">适用场景</td>
+<td style="text-align: center">大规模应用</td>
+<td style="text-align: center">性能稍强于Nginx，适用于小规模应用</td>
+<td style="text-align: center">小规模应用，日PV小于1000w</td>
+<td style="text-align: center">大规模应用</td>
+<td style="text-align: center">大规模应用</td>
+</tr>
+</tbody>
+</table>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[关于学习]]></title>
@@ -1225,16 +1330,6 @@ VPN安装完成之后，设置成自动代理模式即可</p>
 <a href="https://bwh88.net/aff.php?aff=45197">国内地址2</a><br/>
 <a href="https://bandwagonhost.com/aff.php?aff=45197">国外地址</a><br/>
 关于自建的时候线路的选择也有一些道道，自己晚上搜索接口， 尽量选择直连大陆的那一条。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Exit Plan]]></title>
-    <link href="https://cstfb.github.io/Exit_Plan_S.html"/>
-    <updated>2018-10-21T01:31:43+08:00</updated>
-    <id>https://cstfb.github.io/Exit_Plan_S.html</id>
-    <content type="html"><![CDATA[
 
 ]]></content>
   </entry>

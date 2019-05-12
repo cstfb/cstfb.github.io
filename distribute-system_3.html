@@ -126,120 +126,147 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="paxos.html">
+                <a class="clearlink" href="RabbitMq-vs-Kafka.html">
                 
-                  <h1>我对Paxos的一些理解</h1>
+                  <h1>RabbitMQ vs Kafka</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<blockquote>
-<p>看到了一些描述paxos协议的文章，但是始终都似懂非懂的样子，感觉是自己没有get到点, 可能大多数文章描述的都是理论上的一些过程，没有清楚的描述来龙去脉吧；另外号称是最难懂的一致性算法，可能也让我产生了理解障碍；；；在这篇博客中，我尝试着去梳理一下吧，能弄懂一点是一点;; 可能带着问题去理解会是一个比较好的方式吧</p>
-</blockquote>
+                        	<p>RabbitMQ和Kafka是两种很经典的分布式消息中间件，这篇文章试着从设计理念，基础特性，适用场景几个方面来描述这两种中间件。</p>
+
+<h2 id="toc_0">关于RabbitMq</h2>
 
 <ul>
-<li>
-<a href="#toc_0">我的误解</a>
+<li>Consumer</li>
+<li>Publisher</li>
+<li>Exchange: 消息交换</li>
+<li>Route: 消息路由</li>
+</ul>
+
+<h2 id="toc_1">关于Kafka</h2>
+
 <ul>
-<li>
-<a href="#toc_1">分布式系统中的一致性问题</a>
-</li>
-<li>
-<a href="#toc_2">一致性问题与分布式事务</a>
-</li>
-<li>
-<a href="#toc_3">Paxos不是完美的</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_4">Paxos要解决的问题</a>
-</li>
-<li>
-<a href="#toc_5">Paxos在工程中的应用</a>
-</li>
-<li>
-<a href="#toc_6">业界实现</a>
-</li>
-<li>
-<a href="#toc_7">关于Paxos坊间的一些说法</a>
-</li>
-<li>
-<a href="#toc_8">参考资料</a>
-</li>
+<li>Consumer,ConsumerGroup</li>
+<li>Producer</li>
+<li>Kafka source connect</li>
+<li>Kafka sink connect</li>
+<li>Topic and topic partition</li>
+<li>Kafka stream</li>
+<li>Broker</li>
+<li>Zookeeper</li>
 </ul>
 
+<h2 id="toc_2">设计理念</h2>
 
-<h2 id="toc_0">我的误解</h2>
+<h2 id="toc_3">可扩展，分布式，可靠性是两个系统的共同特点。</h2>
 
-<h3 id="toc_1">分布式系统中的一致性问题</h3>
+<p>RabbitMq是经典的面向消息队列而设计的，它实现了AMQP协议。RabbitMq强大的地方在于它实现了高度灵活的消息路由功能，非常便于使用和拓展。<br/>
+<img src="media/15550739440669/15558383060583.jpg" alt=""/></p>
+
+<hr/>
+
+<p>Kafka是一个分布式的提交日志，这个提交日志<code>(commit-log)</code>的概念上来说和数据库的没有区别：都能够记录数据的变化并且可以重放。但是和数据库不同的是数据库的日志用来做恢复用而在Kafka中日志是一等公民。Kafka中没有队列的概念，一开始可能会让人感觉到奇怪。但这也是它的优势所在。<br/>
+<img src="media/15550739440669/15558631089848.jpg" alt=""/></p>
+
+<hr/>
+
+<p>从设计上来说，两者比较明显的一个区别是rabbitmq的中的消息是不进行持久化的，Kafka则相反(有淘汰策略)。因此Kafka支持多个消费者同时消费一个topic而互不影响，RabbitMq则不能做到多个消费者消费同一个队列而画像不受到影响(消费后即删除)。但RabbitMq的灵活的消息路由机制可以达到相同的目的。<br/>
+另外RabbitMq是以队列(queue)为单位的。而Kafka是以分区(partition)为单位的。</p>
+
+<h2 id="toc_4">PUB and SUB</h2>
+
+<h2 id="toc_5">RabbitMq和Kafka都支持并发的消息生产和消费，但是两者各自的特性不同。</h2>
+
+<p>RabbitMq和Kafka都支持基础的消息的发布功能，RabbitMq为了支持丰富的路由策略，因此生产者不是直接将消息发送到队列而是发送到Exchange中<code>Channel.basicPublish(String exchange, String routingKey, boolean mandatory, boolean immediate, BasicProperties props, byte[] body)</code>,然后根据exchange type和routingKey还有其他属性决定将消息发送到什么队列:</p>
+
+<ul>
+<li>exchange type = fanout, 广播模式，exchange会将消息广播到所有绑定到这个exchange的其他exchange和queue</li>
+<li>exchange type = direct, 精确匹配, 根据消息的routingKey精确发送到和Exchange绑定的Queue(Queue申明绑定时同时指定routingkey)</li>
+<li>exchange type = Topic , 模糊匹配，Queue绑定时可以指定正则，*代表任意字符, #代表任意数字</li>
+<li>exchange type = Header, 消息头匹配，这种方式忽略routingKey，而是根据发送消息时指定的消息头匹配，同样队列绑定时也要指定消息头匹配规则</li>
+<li>exchange type = Consistent Hashing, 一致性哈希，exchange根据routingKey, header, message properties 的哈希值将消息分布到不同的队列中去，这个特性提供了类似于Kafka中分区的功能</li>
+<li>死信队列，队列可以配置条件(size,ttl等)将消息驱逐到指定的exchange中</li>
+<li>其他例如临时类型(Ephemeral Exchanges)和优先类型(Priority Exchanges)</li>
+</ul>
+
+<p>从性能上来说，fanout的性能时最高的，不用做任何判断，direct性能差一点，需要精确匹配，Header最强大也性能也最差。<br/>
+RabbitMq中一个队列可以有多个消费者，但一条消息只允许一个消费者消费，消费完之后会从队列中消除，提高吞吐量的方法是使用Push API;</p>
+
+<hr/>
+
+<p>Kafka的消息是持久化的，RabbitMq中的消息是会消亡的。因此类似于RabbitMq中的重新入队或者延迟对Kakfa来说没有意义，重新入队会造成消息顺序混乱和重复，Kafka也没有内置的延迟策略。<br/>
+Kafka通过类似于<code>KafkaProducer.send(new ProducerRecord(topic, key, data))</code>的API将消息发送到指定主题和分区，如果采用默认的分区器，那么Kafka会对key进行散列，同一个key被发送到同一个分区，如果没有指定key，那么分区器将随机分配到某一个分区，另外也可以指定自定义的分区器，这取决于你想要怎么样的分区策略。<br/>
+Kafka要对消息做持久化，那么是不是意味着Kafka消息生产的性能很低？并不是，Kafka使用操作系统缓冲区缓存消息，相当于每次都是操作内存，因此效率是非常高，另一方面Kafka在硬盘中的存储方式是顺序存储的，对于硬盘来说，数据寻址是性能消耗的主要原因之一，由于是顺序存储，Kafka在写入的时候顺序写入硬盘的效率比一般的写入效率高出很多。顺序存储的另一个好处是读取的效率很高，另外Kafka使用了零复制技术，意味着原本从文件系统-&gt;内核空间-&gt;用户空间-&gt;网卡通道要经过两次内存缓存区复制变成了直接从文件系统发送到网络通道，而不需要经过任何内存缓存区，避免了字节复制，从而提高了性能。<br/>
+Kafka中的消息持久化使得各个消费者可以同时消费而互不影响，Kafka中的消费群组保证了同一条消息只被其中一个消费者消费（再均衡的情况下可能发生重复消费）。</p>
+
+<h2 id="toc_6">PULL or PUSH</h2>
+
+<h2 id="toc_7">RabbitMq使用推模型，而Kafka使用拉模型。</h2>
+
+<p>RabbitMq使用的是推送模型（push)，同时通过设置<code>prefetch limit</code>预取值来防止生产速度大于消费速度，这样做的好处是消息延迟低并且也很适合基于队列的消息架构。<br/>
+但其实RabbitMq也支持拉API, 从Spring-AMQP的实现来讲，Push API使用Listner Container并且注册回调函数， 然后Pull API使用的是Channel.basicGet。</p>
+
+<hr/>
+
+<p>Kafka使用的拉模型（pull），消费者从给定的偏移量开始批量请求消息。为了防止无意义的请求轮询，Kakfa允许长轮询（long-polling）。<br/>
+由于分区的设计，Kafka使用拉模型是比较合理的，使用推模型的话就不灵活了。由于Kafka消息的消费没有竞争，所以通过批量获取消息可以达到很高的吞吐量。对于RabbitMq来说这么做没有太大的意义因为希望尽快的分配一个消息并且完成处理。</p>
+
+<h2 id="toc_8">消息投递保证</h2>
+
+<ul>
+<li><code>最多一次</code> :意味着消息不会重复投递但是可能丢失(RabbitMq &amp; Kafka)</li>
+<li><code>最少一次</code> :意味着消息不会丢失但可能重复投递，意味着消息可能被成功处理两次(RabbitMq &amp; Kafka)</li>
+<li><code>精确一次</code> :消息系统的皇冠，准确投递一次(Kafka在很有限的情况下满足)</li>
+</ul>
+
+<hr/>
+
+<p>消息系统可以简单的抽象化为两个组件:生产者和消费者, 不管是消息的生产还是消费都离不开这两种角色:<br/>
+<img src="media/15550739440669/15570192785099.jpg" alt="" style="width:362px;"/></p>
+
+<p>正常情况下，为了保证消息成功消费，生产者和消费者会进行两次通信：发送消息和确认消费，那么其中有四个地方可能会发生中断或者失败(网络原因/bug/故障等等)。<br/>
+在看相关的资料之前，我很疑惑这种投递保证要保证的究竟是什么？指的是消息发送还是处理成功的次数？如果四个步骤中发生了问题应该如何处理？ 在send和process阶段如果出错，那么重发消息是正确的， 如果是response和ack阶段出错那就不应该再重发，kafka保证的exactly once究竟是怎么做到的呢？看了资料之后才有了大概的理解。<br/>
+首先，消息投递的保证从结果来看比较好理解一点，最多一次(at-most-once), 最少一次(at-least-once)都不能保证除了问题之后消息处理的结果不会发生变化，精确一次(exactly-once)就可以做到正常情况下和出了问题的情况下消息的处理结果还是一样的，例如消息计数。</p>
 
 <blockquote>
-<p>谈起分布式系统，基本上都会说起分布式事务的问题，分布式事务是在多台机器上实现一个原子操作，相比单个数据库事务，分布式事务要考虑更多的问题例如网络环境,目前听的比较多的分布式事务协议就是2PC了，这是一类一致性问题(这是强一致性的情况， 由于CAP定理的限制，要实现强一致性那么就要牺牲掉高可用，这对分布式系统是致命的，所以目前追求的比较多的是最终一致性的解决方案例如异步消息--这应该不再属于事务的范畴了),这是针对分布式事务而言的.<br/>
-    另一类一致性，我是这么理解的，在分布式系统中，为了解决单点故障，数据必须做冗余，比较典型的例如数据库复制，log复制，姑且称之为副本一致性，副本间的数据一致性也可以分为强一致性和最终一致性；当然除了强一致性和最终一致性中间还有其他级别的一致性，我没有详细的了解； <br/>
-    以上说了分布式系统中常见的两类关于一致性的实际问题;除了一致性问题，分布式系统中还存在例如选主问题，分布式锁等共识问题；<br/>
-    在英语中，consistency(transaction) 与 consensus(paxos) 都有一致性的意思，两者的区别可以理解为consensus主要在达成共识上，然后consistency可以理解为执行上；</p>
+<p>the result of computaion -- including all state changes -- is the same if the error occurs during processing or not.</p>
 </blockquote>
 
-<h3 id="toc_2">一致性问题与分布式事务</h3>
+<p>那么其实不难看出，无论生产者和消费者的组件如何设计，一般情况下都存在某个阶段需要用户代码参与，此时exactly-once的保证是极难达成的，因为用户代码的幂等性无法保证，所以从结果来看，完成精确一次的保证是需要生产者和消费者之间步伐完全统一的，那么kafka是如何做到这一点的呢？其实kafka所说的exactly-once保证也只在它的stream api和producer中有，再producer中，kafka为每个消息附加一个唯一的id，这样保证消息不会被重复处理。stream api的场景是几个topic的结果处理后输出到另一个topic，在可以掌控输入和输出端的情况下做到了exactly-once的保证(<a href="https://www.youtube.com/watch?v=JPcT1GGzszA">Exactly-Once Semantics in Apache Kafka</a>)</p>
 
-<blockquote>
-<p>上一个问题已经说到，分布式事务可以理解为一类一致性问题，但是这个和paxos其实是两回事，我的理解是paxos要解决的是比分布式事务更一般的问题;在分布式系统中,为了应对可能出错的场景例如进程崩溃或者网络延迟等，从而使系统更加的可靠，需要进程间对某个值达成一致(我们称之为共识问题),例如&#39;多节点事务提交&#39;,&#39;选主问题&#39;,&#39;<a href="https://en.wikipedia.org/wiki/State_machine_replication">状态机复制</a>&#39;,<a href="https://en.wikipedia.org/wiki/Atomic_broadcast">原子广播</a>;<br/>
-    上面说到paxos要解决比分布式事务更一般的问题，那么分布式事务中是否有paxos的用武之地呢？ 答案是肯定的，上面说到目前的分布式事务的主流解决方案有2pc和3pc，2pc会有单点故障的问题，并且会造成数据的不一致(当commit消息发送一半失败),3pc解决了2pc的一部分问题，但还是会有不一致的情况;关于paxos与事务的讨论参见Gray和Lamport大神合著的&#39;Consensus on Transaction Commit&#39;一文;</p>
-</blockquote>
+<h2 id="toc_9">消息排序</h2>
 
-<h3 id="toc_3">Paxos不是完美的</h3>
+<h2 id="toc_10">Kafka和RabbitMq都能保证消息的顺序</h2>
 
-<blockquote>
-<pre><code class="language-text">Paxos并不是一个完美的解决一致性问题的协议；FLP结果已经指出了这一点;
-</code></pre>
-</blockquote>
+<p>具体情况是两者在单线程情况下都能保证在队列和分区中的消息的顺序是和发送顺序一样的。这很好理解，因为在多线程的情况下的顺序是很难定义的，而kafka中还有分区的概念。</p>
 
-<h2 id="toc_4">Paxos要解决的问题</h2>
+<h2 id="toc_11">高可用&amp;容错</h2>
 
-<blockquote>
-<p>简单说来，Paxos的目的是让整个集群的结点对某个值的变更达成一致。Paxos算法基本上来说是个民主选举的算法——大多数的决定会成个整个集群的统一决定。任何一个点都可以提出要修改某个数据的提案，是否通过这个提案取决于这个集群中是否有超过半数的结点同意（所以Paxos算法需要集群中的结点是单数）</p>
-</blockquote>
+<h2 id="toc_12">Kafka和RabbitMq都有良好的高可用机制。例如分区副本，镜像队列，消息和元数据持久化等等。</h2>
 
-<h2 id="toc_5">Paxos在工程中的应用</h2>
+<p>分布式系统总是离不开可用性和一致性的问题，CAP理论是其中的一个代表, <a href="https://www.infoq.cn/article/cap-twelve-years-later-how-the-rules-have-changed">CAP理论十二年回顾：&quot;规则&quot;变了</a><br/>
+正如前文提到的， Kafka是一个分布式的提交日志，所以是对消息做了持久化，另外Kafka会对Topic以及Partition做多副本。另外Kafka使用ZK保存集群的元数据信息和消费者的信息。<br/>
+RabbitMq中存在镜像队列的概念，即存在一主多从的队列，所有操作会在镜像队列中重放，保证队列的高可用，另外元数据信息使用的是内置的<a href="https://zh.wikipedia.org/wiki/Mnesia">Mnesia</a>数据库.</p>
 
-<blockquote>
-<p>其实看到paxos的第一眼，我就在想这玩意儿到底能干嘛,能够用来解决哪一类问题？工程中如何使用?它能做分布式的事务吗？如果是保证多个集群中的节点一致的话又有什么用呢？ 它能被用于工程上的那些领域呢？它与现在的例如mysql主从同步又有什么关系呢？ 设计小于当前最大的proposal不被接受是为什么呢?问题太多，感觉自己还是太笨了...<br/><br/>
-    其实在弄清楚一些基本的概念性的东西之后，对paxos就会有基本的认识，例如paxos要解决的基本问题，结合分布式系统的中的一些问题以及目前的解决方案，对paxos就会有一个大致的轮廓；<br/>
-    具体来说Paxos在工程中的应用主要有:多节点复制（状态及复制问题,也是paxos最大的用途）-- 可以保证各个节点看到的消息顺序相同； 选主操作； naming service; config service;</p>
-</blockquote>
+<h2 id="toc_13">使用场景</h2>
 
-<h2 id="toc_6">业界实现</h2>
+<h2 id="toc_14">RabbitMq适用于低延迟的业务处理系统，Kafka使用与高吞吐的流处理系统。</h2>
 
-<p><code>比特币</code> <code>chubby</code> <code>zookeeper</code> <code>腾讯phxpaxos</code> <code>阿里X-Paxos</code> <code>raft</code> <code>2pc</code> </p>
+<p>RabbitMq的Push API的延迟较低，但相对于Kafka对于吞吐的优化而言，RabbitMq的吞吐没有那么高，并且由于低延迟所以适合于业务相关的消息处理，例如交易支付等。Kafka由于其Pull API和高吞吐设计，比较适用于数据仓库类的流计算处理，但若业务系统对于持久化的需求很强烈，那么采用Kafka也是很好的选择。</p>
 
-<blockquote>
-<p>比特币的共识算法比较奇特，它使用一个叫做PoW(proof of Work,工作量证明)的东西来提高节点提出提议的门槛(计算hash，目前靠电力去算)，据说这样可以有效减少恶意的参与；另外还有PoS/PBFT等共识协议；<br/>
-chubby是google的一个分布式锁服务，由于需要解决单点的问题引入了multi-paxos的实现；对于chubby来说，对应的锁服务的实现才是其重点，不过底层的一致性保障协议也是非常重要的；<br/>
-zookeeper采用了一个在Paxos上改进的ZAB(zookeeper atomic broadcast)协议,ZAB协议设计了支持崩溃恢复;需要提出的是chubby和zk使用的协议都是没有经过理论证明的，但是在工程中已经证明了没有什么太大的问题了;<br/>
-2pc全称两阶段提交协议，对应的还有3阶段提交协议；是分布式事务业界的主流实现，优点是简单明了，分为precommit和commit两个阶段，并且需要一个事务协调器，precommit对各个节点发送命令锁定相应的资源，全部成功之后发送commit命令，缺点是存在单点故障，并且会产生不一致的情况；<br/>
-raft协议可以理解为paxos的简化版本，没有详细了解；<br/>
-腾讯和阿里的paxos实现不了解；腾讯的开源了， 阿里的没有开源</p>
-</blockquote>
+<h1 id="toc_15">总结</h1>
 
-<h2 id="toc_7">关于Paxos坊间的一些说法</h2>
+<p>水平有限, 仅限参考。</p>
 
-<ol>
-<li>要证明分布式容错算法的正确性通常比实现算法还困难</li>
-<li>paxos从理论到实际的巨大差距</li>
-<li>Google Chubby的作者Mike Burrows说过这个世界上只有一种一致性算法，那就是Paxos，其它的算法都是残次品。</li>
-</ol>
+<h1 id="toc_16">Refer</h1>
 
-<h2 id="toc_8">参考资料</h2>
-
-<p>[1]<a href="https://timyang.net/distributed/paxos-scenarios/">Paxos在大型系统中常见的应用场景</a><br/>
-[2]<a href="https://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2651001297&amp;idx=1&amp;sn=d4c3f1fc6264bc7f1857f6033eaf27f6&amp;chksm=bdbee9828ac960942247b4f8fe661f883a962187b4a2dce51c8394e8c962d0f3b3ac41d0a3c6&amp;scene=21#wechat_redirect">强烈推荐:分布式系统架构经典资料</a><br/>
-[3]<a href="https://en.wikipedia.org/wiki/Paxos_(computer_science)">wikipedia</a><br/>
-[4]<a href="https://zh.wikipedia.org/wiki/Paxos%E7%AE%97%E6%B3%95">中文维基</a><br/>
-[5]<a href="http://paxos.systems/index.html">paxos 英文解释</a><br/>
-[6]<a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/tr-2003-96.pdf">Consensus on Transaction Commit</a><br/>
-[7]<a href="https://groups.csail.mit.edu/tds/papers/Lynch/jacm85.pdf">FLP不可能结果</a><br/>
-[8]<a href="https://coolshell.cn/articles/10910.html">分布式系统的事务处理</a></p>
+<p><a href="https://jack-vanlightly.com/blog/2017/12/4/rabbitmq-vs-kafka-part-1-messaging-topologies">rabbitmq-vs-kafka-part-1-messaging-topologies</a><br/>
+<a href="https://jack-vanlightly.com/blog/2017/12/5/rabbitmq-vs-kafka-part-2-rabbitmq-messaging-patterns-and-topologies">rabbitmq-vs-kafka-part-2-rabbitmq-messaging-patterns-and-topologies</a><br/>
+<a href="https://jack-vanlightly.com/blog/2017/12/8/rabbitmq-vs-kafka-part-3-kafka-messaging-patterns">rabbitmq-vs-kafka-part-3-kafka-messaging-patterns</a><br/>
+<a href="https://jack-vanlightly.com/blog/2017/12/15/rabbitmq-vs-kafka-part-4-message-delivery-semantics-and-guarantees">rabbitmq-vs-kafka-part-4-message-delivery-semantics-and-guarantees</a><br/>
+<a href="https://jack-vanlightly.com/blog/2018/8/31/rabbitmq-vs-kafka-part-5-fault-tolerance-and-high-availability-with-rabbitmq">rabbitmq-vs-kafka-part-5-fault-tolerance-and-high-availability-with-rabbitmq</a><br/>
+<a href="https://jack-vanlightly.com/blog/2018/9/2/rabbitmq-vs-kafka-part-6-fault-tolerance-and-high-availability-with-kafka">rabbitmq-vs-kafka-part-6-fault-tolerance-and-high-availability-with-kafka</a></p>
 
                         
                       </div>
@@ -248,7 +275,7 @@ raft协议可以理解为paxos的简化版本，没有详细了解；<br/>
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/4/9</span>
+                    <span class="date">2019/4/12</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='distribute-system.html'>分布式</a></span>
@@ -275,7 +302,7 @@ raft协议可以理解为paxos的简化版本，没有详细了解；<br/>
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			
+			 <a href="distribute-system_4.html">&raquo; Next Page</a> 
 			</p>
 			  </div>
 			</div>
@@ -357,6 +384,12 @@ raft协议可以理解为paxos的简化版本，没有详细了解；<br/>
 	      
 		      
 			      <li class="post">
+			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="how-to-learn.html">关于学习</a>
 			      </li>
 		     
@@ -376,12 +409,6 @@ raft协议可以理解为paxos的简化版本，没有详细了解；<br/>
 		      
 			      <li class="post">
 			        <a href="stock-starter.html">集合竞价/连续竞价/实时股价</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="java-nmt.html">一个JDK的Bug与NMT</a>
 			      </li>
 		     
 		  

@@ -7,7 +7,7 @@
     <meta name="baidu-site-verification" content="AlBwWkWk9y" />
     <title>
     
-  杂七杂八 - cstfb
+  LVS & HAPROXY & NGINX - cstfb
   
   </title>
   
@@ -117,89 +117,182 @@
        
 
  <script type="text/javascript">
-	$(function(){
-		$('#menu_item_index').addClass('is_active');
-	});
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
 </script>
 <div class="row">
-	<div class="large-8 medium-8 columns">
-		<div class="markdown-body home-categories">
-		
-			<div class="article">
-                <a class="clearlink" href="isolation-problem.html">
-                
-                  <h1>数据库事务隔离级别引发的血案</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>生产环境中有一台实时监控数据库binlog日志的应用，用于数据的实时统计等。 <br/>
-由于用来读取数据的库和线上主库是主从关系，因此存在在一定的延迟。<br/>
-生产环境中，由于延迟的存在，有时候实时消息依赖的数据可能不会马上能够获取到。<br/>
-<img src="media/15528326468637/15528340979248.jpg" alt="" style="width:1183px;"/><br/>
-有时候延迟还是比较恐怖的.</p>
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>LVS & HAPROXY & NGINX</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2019/5/12</span>
 
-<h2 id="toc_0">一开始的解决方案</h2>
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='distribute-system.html'>分布式</a></span>
+           
+         
+          <span class="comments">
+            
 
-<p>由于延迟的时间不确定， 因此开发同学将这一块的逻辑进行了改进，那就是如果没有查到依赖的数据，那么线程进入睡眠，然后重试几次，如果仍然失败，那没办法， 记录错误日志，后面再手工进行处理。<br/>
-然而事实表明，修复之后情况并没有缓解，而且本地模拟问题的时候依然会出现数据取不到的情况</p>
+            
+          </span>
 
-<h2 id="toc_1">排查问题</h2>
+        </div>
+      </div><!-- article -->
 
-<p>这让人百思不得其解，我们只好认为是代码的问题，因为我们监控了mybatis的查询执行情况，并且禁用了缓存，发现即时的查询并没有返回结果，这就变得很诡异了，这是什么情况？<br/>
-也是出于偶然吧， 发现了方法上面的<code>@Transcational</code>注解，这个注解的默认事物隔离级别是<code>repeatable_read</code>，也就是<code>可重复读</code>, 简单说就是在同一个事物中，同一个查询不管在什么位置执行，得到的结果都是一样的， 不管其他会话有没有改变当前的数据。</p>
+      <div class="article-content">
+      <table>
+<thead>
+<tr>
+<th style="text-align: center"></th>
+<th style="text-align: center">LVS</th>
+<th style="text-align: center">HAPROXY</th>
+<th style="text-align: center">NGINX</th>
+<th style="text-align: center">F5</th>
+<th style="text-align: center">ARRAY</th>
+</tr>
+</thead>
 
-<h2 id="toc_2">解决问题</h2>
+<tbody>
+<tr>
+<td style="text-align: center">出品方</td>
+<td style="text-align: center">Linux</td>
+<td style="text-align: center">Willy Tarreau</td>
+<td style="text-align: center">Igor Sysoev</td>
+<td style="text-align: center">F5 Networks</td>
+<td style="text-align: center">Array Networks</td>
+</tr>
+<tr>
+<td style="text-align: center">负载原理</td>
+<td style="text-align: center">软件L4</td>
+<td style="text-align: center">软件L7</td>
+<td style="text-align: center">软件L7</td>
+<td style="text-align: center">硬件L4~L7</td>
+<td style="text-align: center">硬件L4~L7</td>
+</tr>
+<tr>
+<td style="text-align: center">稳定性</td>
+<td style="text-align: center">集成到Linux内核，自带keepalived双机热备</td>
+<td style="text-align: center">可做keepalived双机热备</td>
+<td style="text-align: center">C10K级别，可做keepalived双机热备</td>
+<td style="text-align: center"></td>
+<td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">性能</td>
+<td style="text-align: center">比硬件低，在软负载中数一数二</td>
+<td style="text-align: center">低于LVS，高于Nginx</td>
+<td style="text-align: center">高</td>
+<td style="text-align: center">很高</td>
+<td style="text-align: center">很高</td>
+</tr>
+<tr>
+<td style="text-align: center">功能性</td>
+<td style="text-align: center">支持大部分协议，所以支持基本上所有应用，例如WEB/数据库/中间件等</td>
+<td style="text-align: center">TCP/HTTP/HTTPS/EMAIL</td>
+<td style="text-align: center">HTTP/HTTPS/EMAIL</td>
+<td style="text-align: center"></td>
+<td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">配置</td>
+<td style="text-align: center">配置复杂，对网络要求较高</td>
+<td style="text-align: center"></td>
+<td style="text-align: center">简单</td>
+<td style="text-align: center"></td>
+<td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">算法支持</td>
+<td style="text-align: center">Round-robin(轮询)，Weight-round-robin(带权轮询)、Least-Connection(最小连接)、Weighte-Least-Connection(带权最小连接)</td>
+<td style="text-align: center">Round-robin（轮循）、Weight-round-robin（带权轮循）、source（原地址保持）、RI（请求URL）、rdp-cookie（根据cookie）</td>
+<td style="text-align: center">Round-robin（轮循）、Weight-round-robin（带权轮循）、Ip-hash（Ip哈希）</td>
+<td style="text-align: center"></td>
+<td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">缺点</td>
+<td style="text-align: center">不支持正则处理，不能做动静分离， 大规模网站实施起来很复杂</td>
+<td style="text-align: center">不能做Web服务器即Cache</td>
+<td style="text-align: center">支持协议较少</td>
+<td style="text-align: center">贵</td>
+<td style="text-align: center">贵</td>
+</tr>
+<tr>
+<td style="text-align: center">其他优点</td>
+<td style="text-align: center">配置性低(优点稳定)</td>
+<td style="text-align: center">支持虚拟主机，session保持，cookie引导，支持TCP负载均衡</td>
+<td style="text-align: center">可做反向代理服务器，正则规则灵活，服务器状态检测，缓存，静态网页/图片服务器，功能丰富</td>
+<td style="text-align: center">应用交付/支持完善</td>
+<td style="text-align: center">应用交付/支持完善</td>
+</tr>
+<tr>
+<td style="text-align: center">适用场景</td>
+<td style="text-align: center">大规模应用</td>
+<td style="text-align: center">性能稍强于Nginx，适用于小规模应用</td>
+<td style="text-align: center">小规模应用，日PV小于1000w</td>
+<td style="text-align: center">大规模应用</td>
+<td style="text-align: center">大规模应用</td>
+</tr>
+</tbody>
+</table>
 
-<p>尝试更改隔离级别，但似乎无效，可能spring或者驱动支持有限.<br/>
-后来暂时干掉了事务注解，解决了问题</p>
 
-<h2 id="toc_3">附</h2>
+    
 
-<p><img src="media/15528326468637/15528361407452.jpg" alt="" style="width:1050px;"/></p>
+      </div>
 
-<p><img src="media/15528326468637/%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%20-%20%E7%BB%B4%E5%9F%BA%E7%99%BE%E7%A7%91%EF%BC%8C%E8%87%AA%E7%94%B1%E7%9A%84%E7%99%BE%E7%A7%91%E5%85%A8%E4%B9%A6.png" alt="事务隔离 - 维基百科，自由的百科全书"/></p>
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="how-to-learn.html" 
+          title="Next Post: 关于学习">关于学习 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <!-- 来必力City版安装代码 -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC80MTg4NS8xODQzMQ==">
+	<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/3/17</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+       if (typeof LivereTower === 'function') { return; }
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-              
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+	</script>
+<noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+</div>
+<!-- City版安装代码已完成 -->
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
 
 
-			<div class="row">
-			  <div class="large-6 columns">
-			  <p class="text-left" style="padding-top:25px;">
-			   <a href="others_1.html">&laquo; Prev Page</a>  
-			  </p>
-			  </div>
-			  <div class="large-6 columns">
-			<p class="text-right" style="padding-top:25px;">
-			 <a href="others_3.html">&raquo; Next Page</a> 
-			</p>
-			  </div>
-			</div>
-		</div>
-	</div><!-- large 8 -->
+
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">
