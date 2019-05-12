@@ -4,13 +4,55 @@
   <title><![CDATA[cstfb]]></title>
   <link href="https://cstfb.github.io/atom.xml" rel="self"/>
   <link href="https://cstfb.github.io/"/>
-  <updated>2019-05-06T23:27:01+08:00</updated>
+  <updated>2019-05-09T22:23:22+08:00</updated>
   <id>https://cstfb.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[关于学习]]></title>
+    <link href="https://cstfb.github.io/how-to-learn.html"/>
+    <updated>2019-05-12T14:32:13+08:00</updated>
+    <id>https://cstfb.github.io/how-to-learn.html</id>
+    <content type="html"><![CDATA[
+<p>最近经常和同事朋友们说起学习的问题，作为一个成年人来说，不可否认现在知识爆炸的时代很多人都迷失在了各种信息和诱惑当中，小时候的好奇心或许丢了大半，对信息的敏感程度也下降了，前段时间看了谢霆锋在谷歌香港的演讲，当中也说到了这个问题：</p>
+
+<blockquote>
+<p>But unknowingly, unknowingly we are so almost too inspired to a point where we are losing ourselves, because we are taking in everybody else&#39;s ideas -- their thoughts, their voices. Therefore, if we are not creative enough, we tend to what we call -- we would ride on other people&#39;s ideas. let&#39;s twist, let&#39;s tweak ..., but when we get into a habit of that... start of out own ideas...</p>
+</blockquote>
+
+<p>要有自己的idea， 这是最重要的.</p>
+
+<h2 id="toc_0">成年人&amp;小朋友</h2>
+
+<p>成年人学习和小朋友学习是不一样的。<br/>
+小朋友刚出生不久，嗷嗷待哺，对万事万物都充满好奇，他们学习是兴趣，是好奇心，是真的汲取各种知识。成年人学习内在的驱动力不完全是好奇心，可能是事业，是成长的压力等，所以成年人学习更多的是一种刻意练习，并且在这个过程中掌握良好的学习方法。</p>
+
+<h2 id="toc_1">学习新东西</h2>
+
+<p>成年人学习新东西大概有三种目的：</p>
+
+<ul>
+<li>兴趣和爱好</li>
+<li>是否有实用价值，优先级如何</li>
+<li>培养阅读或者学习习惯</li>
+</ul>
+
+<h2 id="toc_2">如何学习？</h2>
+
+<p>技术上来说的话，大概也可以分为三点：</p>
+
+<ul>
+<li>学习用法/用途，了解要解决的问题是什么</li>
+<li>了解核心算法，核心思想</li>
+<li>如何实现以及周边设施等等 (可选)</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Kafka In BigData]]></title>
@@ -1193,41 +1235,6 @@ VPN安装完成之后，设置成自动代理模式即可</p>
     <updated>2018-10-21T01:31:43+08:00</updated>
     <id>https://cstfb.github.io/Exit_Plan_S.html</id>
     <content type="html"><![CDATA[
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[记一次线上应用宕机问题排查]]></title>
-    <link href="https://cstfb.github.io/181012-production-crash.html"/>
-    <updated>2018-10-11T11:35:06+08:00</updated>
-    <id>https://cstfb.github.io/181012-production-crash.html</id>
-    <content type="html"><![CDATA[
-<h1 id="toc_0">问题过程</h1>
-
-<pre><code class="language-text">1.2018-10-11 9:28分 用户反馈报表系统宕机
-2.登陆报表系统返回504
-3.紧急重启报表系统，可以正常访问
-</code></pre>
-
-<h1 id="toc_1">问题排查</h1>
-
-<pre><code class="language-text">1.查看错误日志发现 8:41分左右多个请求同时下载大量数据,大量占用内存以及CPU，导致full gc无法回收内存(gc overhead limit exceeded)然后宕机;
-2.主要有两个地方消耗资源： 一个是查询数据，大量数据驻留在内存中； 另一个是制作excel；
-</code></pre>
-
-<h1 id="toc_2">解决方案</h1>
-
-<pre><code class="language-text">1.对请求做限制，只允许下载一部分数据，例如一次下载一个月的数据
-2.对请求限流，短时间大量请求直接返回错误
-3.数据缓存，采用缓存文件或者数据的方式
-4.异步下载技术, 后台开启任务队列制作excel，然后推送到网盘或者其他存储，然后共享给用户
-</code></pre>
-
-<h1 id="toc_3">其他感想</h1>
-
-<pre><code class="language-text">做大数据应该解决的问题还有很多没有解决，其实本次下载的数据量并不是特别大的那种,体现出我们并没有服务好用户，系统优化，技术升级的路还很长.
-</code></pre>
 
 ]]></content>
   </entry>

@@ -7,7 +7,7 @@
     <meta name="baidu-site-verification" content="AlBwWkWk9y" />
     <title>
     
-  杂七杂八 - cstfb
+  内功心法 - cstfb
   
   </title>
   
@@ -126,93 +126,45 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="mweb-beautiful.html">
+                <a class="clearlink" href="how-to-learn.html">
                 
-                  <h1>MWEB网站--自定义</h1>
+                  <h1>关于学习</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">搜索引擎提交</h2>
+                        	<p>最近经常和同事朋友们说起学习的问题，作为一个成年人来说，不可否认现在知识爆炸的时代很多人都迷失在了各种信息和诱惑当中，小时候的好奇心或许丢了大半，对信息的敏感程度也下降了，前段时间看了谢霆锋在谷歌香港的演讲，当中也说到了这个问题：</p>
 
-<p>改模版的header的meta元数据</p>
+<blockquote>
+<p>But unknowingly, unknowingly we are so almost too inspired to a point where we are losing ourselves, because we are taking in everybody else&#39;s ideas -- their thoughts, their voices. Therefore, if we are not creative enough, we tend to what we call -- we would ride on other people&#39;s ideas. let&#39;s twist, let&#39;s tweak ..., but when we get into a habit of that... start of out own ideas...</p>
+</blockquote>
 
-<h2 id="toc_1">自定义css</h2>
+<p>要有自己的idea， 这是最重要的.</p>
 
-<p>改样式模版的css的文件<br/>
-例如阴影文字:</p>
+<h2 id="toc_0">成年人&amp;小朋友</h2>
 
-<pre><code class="language-text">.markdown-body p {
-  letter-spacing: 0.01rem;
-  margin: 0px 0px 20px;
-  line-height: 2em;
-  text-shadow: 0 0 1px rgba(0,0,0,0.22);
-}
-</code></pre>
+<p>成年人学习和小朋友学习是不一样的。<br/>
+小朋友刚出生不久，嗷嗷待哺，对万事万物都充满好奇，他们学习是兴趣，是好奇心，是真的汲取各种知识。成年人学习内在的驱动力不完全是好奇心，可能是事业，是成长的压力等，所以成年人学习更多的是一种刻意练习，并且在这个过程中掌握良好的学习方法。</p>
 
-<h2 id="toc_2">添加dc word cloud</h2>
+<h2 id="toc_1">学习新东西</h2>
 
-<p>在首页添加对应的js代码<br/>
-其中<code>d3.select()</code> 需要自定义一个元素, 用作单词云的容易</p>
+<p>成年人学习新东西大概有三种目的：</p>
 
-<pre><code class="language-text">&lt;script src=&quot;//d3js.org/d3.v3.min.js&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;asset/js/d3.layout.cloud.js&quot;&gt;&lt;/script&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-    var fill = d3.scale.category20();
-    var words = [{&quot;text&quot;:&quot;This&quot;, &quot;url&quot;:&quot;http://google.com/&quot;},
-                 {&quot;text&quot;:&quot;is&quot;, &quot;url&quot;:&quot;http://bing.com/&quot;},
-                 {&quot;text&quot;:&quot;some&quot;, &quot;url&quot;:&quot;http://somewhere.com/&quot;},
-                 {&quot;text&quot;:&quot;random&quot;, &quot;url&quot;:&quot;http://random.org/&quot;},
-                 {&quot;text&quot;:&quot;text&quot;, &quot;url&quot;:&quot;http://text.com/&quot;}]
-    var width = 800;
-    var height = 300;
-    for (var i = 0; i &lt; words.length; i++) {
-        words[i].size = 10 + Math.random() * 90;
-    }
-    
-    d3.layout.cloud()
-      .size([width, height])
-      .words(words)
-      .padding(5)
-      .rotate(function() { return ~~ (Math.random() * 2) * 90; })
-      .font(&quot;Impact&quot;)
-      .fontSize(function(d) { return d.size;})
-      .on(&quot;end&quot;, draw)
-      .start();
-    
-    function draw(words) {
-        d3.select(&quot;#wcloud&quot;)
-          .append(&quot;svg&quot;)
-          .attr(&quot;width&quot;, width)
-          .attr(&quot;height&quot;, height)
-          .append(&quot;g&quot;)
-          .attr(&quot;transform&quot;, &quot;translate(&quot;+ width/2 +&quot;,&quot;+ height/2 +&quot;)&quot;)
-          .selectAll(&quot;text&quot;)
-          .data(words)
-          .enter()
-          .append(&quot;text&quot;)
-          .style(&quot;font-size&quot;, function(d) { return d.size + &quot;px&quot;; })
-          .style(&quot;font-family&quot;, &quot;Impact&quot;)
-          .style(&quot;fill&quot;, function(d, i) { return fill(i); })
-          .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
-          .attr(&quot;transform&quot;, function(d) {
-              return &quot;translate(&quot; + [d.x, d.y] + &quot;)rotate(&quot; + d.rotate + &quot;)&quot;; 
-          })
-          .text(function(d) { return d.text; })
-          .on(&quot;click&quot;, function (d, i){
-                window.location.href = d.url;
-          });
-    }
-&lt;/script&gt;
-</code></pre>
+<ul>
+<li>兴趣和爱好</li>
+<li>是否有实用价值，优先级如何</li>
+<li>培养阅读或者学习习惯</li>
+</ul>
 
-<h2 id="toc_3">配色表</h2>
+<h2 id="toc_2">如何学习？</h2>
 
-<p><a href="https://flatuicolors.com/">flatUi配色表</a><br/>
-<img src="media/15460796439586/15528379979534.jpg" alt="" style="width:1237px;"/></p>
+<p>技术上来说的话，大概也可以分为三点：</p>
 
-<p><a href="http://metrocolor.live/index.html">香港地铁配色表</a><br/>
-<img src="media/15460796439586/15528380200720.jpg" alt="" style="width:1200px;"/></p>
+<ul>
+<li>学习用法/用途，了解要解决的问题是什么</li>
+<li>了解核心算法，核心思想</li>
+<li>如何实现以及周边设施等等 (可选)</li>
+</ul>
 
                         
                       </div>
@@ -221,10 +173,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/29</span>
+                    <span class="date">2019/5/12</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
+          					    <span class="posted-in"><a href='%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html'>内功心法</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -243,12 +195,12 @@
 			<div class="row">
 			  <div class="large-6 columns">
 			  <p class="text-left" style="padding-top:25px;">
-			   <a href="others_6.html">&laquo; Prev Page</a>  
+			   
 			  </p>
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			 <a href="others_8.html">&raquo; Next Page</a> 
+			
 			</p>
 			  </div>
 			</div>

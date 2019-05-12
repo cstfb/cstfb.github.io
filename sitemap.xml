@@ -2,7 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
   <loc>https://cstfb.github.io/</loc>
-  <lastmod>2019-05-09T22:23:20+08:00</lastmod>
+  <lastmod>2019-05-12T14:50:48+08:00</lastmod>
+</url>
+
+<url>
+  <loc>https://cstfb.github.io/how-to-learn.html</loc>
+  <lastmod>2019-05-12T14:32:13+08:00</lastmod>
 </url>
 
 <url>
@@ -176,6 +181,10 @@
   <lastmod>2018-05-21T09:52:13+08:00</lastmod>
 </url>
 
+
+<url>
+  <loc>https://cstfb.github.io/%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html</loc>
+</url>
 
 <url>
   <loc>https://cstfb.github.io/distribute-system.html</loc>
