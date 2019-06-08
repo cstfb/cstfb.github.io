@@ -128,20 +128,36 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="190113-production-crash.html">
+                <a class="clearlink" href="190118-production-crash.html">
                 
-                  <h1>记一次xxl-job问题的排查过程</h1>
+                  <h1>记一次java版本问题的排查过程</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>xxl-job是一个开源的分布式任务调度中心，基于quartz的集群模式而设计;<br/>
-前几天发现任务调度失效，具体就体现在特定的时间点不进行调度，通过查看日志发现异常：<br/>
-<code>This scheduler instance instance_name is still active but was recovered by another instance in the cluster.  This may cause inconsistent behavior.</code><br/>
-可以看出的是由于某种原因调度器被恢复掉了，而且是被集群里面的另外一台机器，但是我们环境就一台机器，然后在数据库中发现了另外一台机器，由于是开发环境，所以是允许连接的，那么为什么会被恢复掉了，继续看代码，发现这样一段:<br/>
-<img src="media/15478279775439/15478287783259.jpg" alt="" style="width:621px;"/><br/>
-<img src="media/15478279775439/15478288261038.jpg" alt="" style="width:501px;"/><br/>
-大致是检测其他节点的上一次检测时间是否超过阈值(默认为两台机器的时间是一致的)，如果是那么认为是不可用的节点， 所以时间差的问题就清楚了是因为开发同学本地和服务器时间的时间差引起的，最后关掉开发同学机器的实例 或者 同步两台机器的时间解决这个问题.</p>
+                        	<h2 id="toc_0">问题描述</h2>
+
+<p>我们会提供一些jar包出去给业务同学，然后发现报错:<br/>
+<code>com.**.**, unsupported major.minor version 52.0</code><br/>
+52表示的是java8<br/>
+这明显是我们提供的jar包的版本太高了，好吧，还好我们的客户端刚切换java8没多久，没有用到java8的特性，所以改一下目标版本到1.7重新打一个吧，打完之后发现还是不行，这就尴尬了</p>
+
+<h2 id="toc_1">排查&amp;解决</h2>
+
+<p>查来查去很蛋疼，尽管降低了版本，业务方还是报一样的问题，然后业务方如果升级到java8的话是OK的， 说明还是我们提供的包有问题；<br/>
+既然还是报这个问题的话，只能到环境里面看一下服务器里面的代码的版本了，跑到对应的资源目录下面查看原始代码:</p>
+
+<ol>
+<li><code>jav -xvf **.jar</code> 解压缩</li>
+<li>找到对应的类， <code>javap -verbose ***.class</code>, 反编译看一下代码的版本，发现<code>major:52</code><br/>
+这就奇怪了，我明明改了版本了再打包的:
+<img src="media/15478289621564/15478295213415.jpg" alt="" style="width:399px;"/>
+在本地进行模拟，先打成1.8的包，然后再打1.7的包，发现1.7出来的包，竟然还是52的：
+<img src="media/15478289621564/15478297070941.jpg" alt="" style="width:788px;"/>
+难道是缓存? 先进行<code>mvn clean</code>之后再打包，发现正常了<br/>
+:(<br/>
+使用idea的菜单进行的操作，以后还是命令行吧..</li>
+</ol>
 
                         
                       </div>
@@ -261,6 +277,12 @@
 	      
 		      
 			      <li class="post">
+			        <a href="rw-splitting.html">Spring + Mybatis 读写分离</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="CompressedOops.html">JVM压缩指针(CompressedOops)</a>
 			      </li>
 		     
@@ -280,12 +302,6 @@
 		      
 			      <li class="post">
 			        <a href="how-to-learn.html">关于学习</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="kafka-in-bigdata.html">Kafka In BigData</a>
 			      </li>
 		     
 		  
