@@ -4,13 +4,63 @@
   <title><![CDATA[cstfb]]></title>
   <link href="https://cstfb.github.io/atom.xml" rel="self"/>
   <link href="https://cstfb.github.io/"/>
-  <updated>2019-05-12T17:51:38+08:00</updated>
+  <updated>2019-05-12T17:54:33+08:00</updated>
   <id>https://cstfb.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[JVM压缩指针(CompressedOops)]]></title>
+    <link href="https://cstfb.github.io/CompressedOops.html"/>
+    <updated>2019-06-08T21:08:36+08:00</updated>
+    <id>https://cstfb.github.io/CompressedOops.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">问题背景</h2>
+
+<p>之前看到一篇文章说到<a href="https://www.elastic.co/cn/blog/a-heap-of-trouble?nsukey=ycffxylI5WOlirpUecMZ0%2Bh6dId%2F6txxdsCpmHZgpChzNei9bZBIb5k0f9y5MKNNnkdZW7301ucVHpE0ODBPYdqnmTUToaWRoRTXDaylGHoP%2BFuwyBHyl6E18mobs1pLswxMBan5gDjYNs74O9RcV7kMcjgr3HZ2jyStMP9hbxU9i88t%2FFDGLn36j3jcOq5lh81YNxpf37kwDWQX5v4qNQ%3D%3D">es的内存调优</a>, 文章说到现在的服务器越来越大， 那么给JVM设置多大的内存比较合适呢？太大的话虽然内存充足，但是会带来gc停顿时间的增大，对于es这一类需要快速响应的应用来说是不可接受的，太小则会有OOM的风险。因此内存需要设置的刚刚好。</p>
+
+<h2 id="toc_1">What is CompressedOops</h2>
+
+<p>压缩指针则提供了一种既可以享受到大内存的好处，同时可以节约内存空间并且提高性能的方法。在某些情况下，它可以达到性能与停顿时间的平衡。</p>
+
+<blockquote>
+<p><a href="https://docs.oracle.com/javase/7/docs/technotes/guides/vm/performance-enhancements-7.html#zeroBasedCompressedOop">ref</a> On an LP64 system, the heap used by a given program might have to be around 1.5 times larger than when it is run on an ILP32 system.</p>
+</blockquote>
+
+<p>在64位系统中，对象指针也是64位，因此可以使用更大的内存，而在32位系统中是32位，最多只能使用4G的内存。对象指针长度的增大也会带来内存开销，而这种开销的差距在64位和32位系统之间可能是1.5倍，也就是说在如果32位系统使用4G内存达到的效果可能64位系统使用6G内存才能达到。<br/>
+在很多情况下，这种开销是不必要的，并且会提高系统停顿时间，因为很多时候应用只需要32位指针就够了。<br/>
+压缩指针提供了一种折中的选择，在JDK7中(64位)，如果堆小于4G，JVM会默认使用32位对象指针。<br/>
+那显然这种优化只能覆盖一部分的情况，为了享受大内存，很多应用会开比4G大得多的堆，这时候是不是就必须用64位指针了呢？ 答案是不是，在堆小于32G(不精确)的情况下，此时对象地址只需要使用35位地址(32位=4G, 4G * 2<sup>3</sup> = 32G)即可, 此时如果操作系统允许，JVM会将对象指针右移3位进行存储，也就是说还是只需要32位地址就行了，此时会有两个问题:</p>
+
+<ul>
+<li>那么这时候会出现的问题就是右边3位丢失了怎么办？ </li>
+<li>存储的地址和实际的地址相差八倍，即每两个指针之间有8个字节的空档，这其中存在内存的‘空隙’如何处理?</li>
+</ul>
+
+<p>第一个问题最简单的情况下就是右边3位全是0，那么在转换过程中只需要右移三位和左移三位即可(也即是zero-based compressed oops)，非常方便；如果右边三位不为0，那么这时候就需要加入一个偏移量的计算，对性能会有一定的损耗。<br/>
+第二个问题是关于为什么是三位而不是四位五位的问题， 压缩后的指针有可能是0x0, 0x1, 0x2， 解压后的指针则是0x0, 0x8, 0x10, 中间有8个字节的空档，这个问题的答案和对象对齐有关，在JVM中对象是默认8字节对齐的，所以基本上着正好符合JVM本身的设计，(要注意的是对象对齐本身也会提高内存开销)。<br/>
+<img src="media/15599993168030/WechatIMG27.jpeg" alt="WechatIMG27"/></p>
+
+<h2 id="toc_2">最佳实践</h2>
+
+<p>在满足内存和吞吐量的情况下，JVM堆内存设置的越小越好； 如果不能，那么考虑分配的内存满足压缩指针的要求，从而达到优化的效果。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[负载均衡算法]]></title>
+    <link href="https://cstfb.github.io/load-balancer-algorithm.html"/>
+    <updated>2019-05-12T18:06:59+08:00</updated>
+    <id>https://cstfb.github.io/load-balancer-algorithm.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">Round-Robin(轮询)</h2>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[LVS & HAPROXY & NGINX]]></title>
@@ -1179,157 +1229,6 @@ jstack -lF $java_pid&gt;&gt; ~/jstack.log
 </ul>
 
 <p>以上参数都是针对连接池中未分配的连接而定的， 对于已分配的连接是无效的，我纯粹是被它们的名称给欺骗了:((</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[MWEB网站--自定义]]></title>
-    <link href="https://cstfb.github.io/mweb-beautiful.html"/>
-    <updated>2018-12-29T18:34:03+08:00</updated>
-    <id>https://cstfb.github.io/mweb-beautiful.html</id>
-    <content type="html"><![CDATA[
-<h2 id="toc_0">搜索引擎提交</h2>
-
-<p>改模版的header的meta元数据</p>
-
-<h2 id="toc_1">自定义css</h2>
-
-<p>改样式模版的css的文件<br/>
-例如阴影文字:</p>
-
-<pre><code class="language-text">.markdown-body p {
-  letter-spacing: 0.01rem;
-  margin: 0px 0px 20px;
-  line-height: 2em;
-  text-shadow: 0 0 1px rgba(0,0,0,0.22);
-}
-</code></pre>
-
-<h2 id="toc_2">添加dc word cloud</h2>
-
-<p>在首页添加对应的js代码<br/>
-其中<code>d3.select()</code> 需要自定义一个元素, 用作单词云的容易</p>
-
-<pre><code class="language-text">&lt;script src=&quot;//d3js.org/d3.v3.min.js&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;asset/js/d3.layout.cloud.js&quot;&gt;&lt;/script&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-    var fill = d3.scale.category20();
-    var words = [{&quot;text&quot;:&quot;This&quot;, &quot;url&quot;:&quot;http://google.com/&quot;},
-                 {&quot;text&quot;:&quot;is&quot;, &quot;url&quot;:&quot;http://bing.com/&quot;},
-                 {&quot;text&quot;:&quot;some&quot;, &quot;url&quot;:&quot;http://somewhere.com/&quot;},
-                 {&quot;text&quot;:&quot;random&quot;, &quot;url&quot;:&quot;http://random.org/&quot;},
-                 {&quot;text&quot;:&quot;text&quot;, &quot;url&quot;:&quot;http://text.com/&quot;}]
-    var width = 800;
-    var height = 300;
-    for (var i = 0; i &lt; words.length; i++) {
-        words[i].size = 10 + Math.random() * 90;
-    }
-    
-    d3.layout.cloud()
-      .size([width, height])
-      .words(words)
-      .padding(5)
-      .rotate(function() { return ~~ (Math.random() * 2) * 90; })
-      .font(&quot;Impact&quot;)
-      .fontSize(function(d) { return d.size;})
-      .on(&quot;end&quot;, draw)
-      .start();
-    
-    function draw(words) {
-        d3.select(&quot;#wcloud&quot;)
-          .append(&quot;svg&quot;)
-          .attr(&quot;width&quot;, width)
-          .attr(&quot;height&quot;, height)
-          .append(&quot;g&quot;)
-          .attr(&quot;transform&quot;, &quot;translate(&quot;+ width/2 +&quot;,&quot;+ height/2 +&quot;)&quot;)
-          .selectAll(&quot;text&quot;)
-          .data(words)
-          .enter()
-          .append(&quot;text&quot;)
-          .style(&quot;font-size&quot;, function(d) { return d.size + &quot;px&quot;; })
-          .style(&quot;font-family&quot;, &quot;Impact&quot;)
-          .style(&quot;fill&quot;, function(d, i) { return fill(i); })
-          .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
-          .attr(&quot;transform&quot;, function(d) {
-              return &quot;translate(&quot; + [d.x, d.y] + &quot;)rotate(&quot; + d.rotate + &quot;)&quot;; 
-          })
-          .text(function(d) { return d.text; })
-          .on(&quot;click&quot;, function (d, i){
-                window.location.href = d.url;
-          });
-    }
-&lt;/script&gt;
-</code></pre>
-
-<h2 id="toc_3">配色表</h2>
-
-<p><a href="https://flatuicolors.com/">flatUi配色表</a><br/>
-<img src="media/15460796439586/15528379979534.jpg" alt="" style="width:1237px;"/></p>
-
-<p><a href="http://metrocolor.live/index.html">香港地铁配色表</a><br/>
-<img src="media/15460796439586/15528380200720.jpg" alt="" style="width:1200px;"/></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[如何解决MAC打开Zwift时的"Update server connection error - Error ZLM01"问题]]></title>
-    <link href="https://cstfb.github.io/zwift-network-error.html"/>
-    <updated>2018-12-09T00:33:42+08:00</updated>
-    <id>https://cstfb.github.io/zwift-network-error.html</id>
-    <content type="html"><![CDATA[
-<p>前几天安装了zwift的APP， 然后打开的时候遇到了&quot;zwift can&#39;t connect to the update server...Error ZLM01&quot;这样的问题， 因此记录一下解决的过程， 过程参考了<a href="https://zhuanlan.zhihu.com/p/31958059">Zwift 联网问题解决方案 ZLM01——大x小视频1</a>这片文章， 解决过程也大多相似。然后以下是问题描述以及解决步骤:</p>
-
-<h2 id="toc_0">问题原因</h2>
-
-<p>我下载的zwift版本是1.0，由于zwift启动的时候由于某种原因需要访问google等墙外网站，但是由于GFW的存在， 访问不同应用则会提示上面的错误；那么通过连接例如shadowsocks这样的vpn能不能解决问题呢？ 不能，因为shadowsocks仅能将HTTP协议的请求转发到shadowsocks代理端口，zwift使用的不是http协议，因此仅仅通过shadowsocks无法解决这个问题， 解决这个问题的办法也很简单，就是借助另外一种工具将zwift的请求转发到shadowsocks代理端口, 即 proxifier + shadowsocks的解决方案;</p>
-
-<h2 id="toc_1">步骤</h2>
-
-<h3 id="toc_2">准备具有socket代理功能的VPN</h3>
-
-<p>常见的工具有例如Shadowsocks,OpenVpn等，网上教程有许多，可以选择自己搭建，也可以购买现成的服务；<br/>
-目标: 能够翻墙访问google, 然后需要了解vpn的sockV5的监听端口以及ip(shadowsocks默认是<code>127.0.0.1:1086</code>, 也可以在shadowsocks的偏好设置中查看)<br/>
-<img src="media/15442868225544/15442881552211.jpg" alt="" style="width:242px;"/><br/>
-<img src="media/15442868225544/15442881820659.jpg" alt="" style="width:470px;"/><br/>
-VPN安装完成之后，设置成自动代理模式即可</p>
-
-<h3 id="toc_3">准备proxifier</h3>
-
-<p>proxifier可以自行去<a href="https://www.proxifier.com/">官网</a>下载， 软件收费，自己找破解码破解；<br/>
-完了之后按照VPN的代理配置添加一个代理:<br/>
-<img src="media/15442868225544/15442883833656.jpg" alt="" style="width:469px;"/><br/>
-然后就是设置一个规则:<br/>
-<img src="media/15442868225544/15442884203782.jpg" alt="" style="width:833px;"/><br/>
-<img src="media/15442868225544/15442884481244.jpg" alt="" style="width:526px;"/></p>
-
-<h3 id="toc_4">最后</h3>
-
-<p>打开app，在proxifier应该会出现一些应用与外部通信的日志，例如：<br/>
-<img src="media/15442868225544/15442885848326.jpg" alt="" style="width:978px;"/><br/>
-如果sent/received正常的话代表连接成功，直观一点就是zwift应用正常了:<br/>
-<img src="media/15442868225544/15442886504433.jpg" alt="" style="width:796px;"/></p>
-
-<h3 id="toc_5">我遇到的问题?</h3>
-
-<h4 id="toc_6">shadowsocks的代理地址和端口号找不到</h4>
-
-<p><img src="media/15442868225544/15442886915954.jpg" alt="" style="width:215px;"/><br/>
-我一开始用的shadowsocks的客户端找不到对应的配置,推荐使用开发者重新开发的一个客户端，那个里面有: <a href="https://github.com/shadowsocks/ShadowsocksX-NG/releases/">ShadowsocksX-NG</a></p>
-
-<h4 id="toc_7">能访问google了，proxiefier也按照教程设置了，但还是打不开app</h4>
-
-<p>检查一下shadowsocks的模式是否是自动模式<br/>
-检查一下zwift的请求是否正确代理到了响应的ip+端口，如果没有，那么需要检查规则或者代理的配置</p>
-
-<h4 id="toc_8">关于自建shadowsocks</h4>
-
-<p>推荐使用搬瓦工这个提供商，用了很久了， 比较好用，游戏没有测试过，正常科学上网还是比较靠谱的， 并且自己搭建的话也比较稳定，很多付费的用了一段时间就被查了。<br/>
-<a href="https://bwh8.net/aff.php?aff=45197">国内地址1</a><br/>
-<a href="https://bwh88.net/aff.php?aff=45197">国内地址2</a><br/>
-<a href="https://bandwagonhost.com/aff.php?aff=45197">国外地址</a><br/>
-关于自建的时候线路的选择也有一些道道，自己晚上搜索接口， 尽量选择直连大陆的那一条。</p>
 
 ]]></content>
   </entry>

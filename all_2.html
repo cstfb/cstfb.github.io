@@ -81,6 +81,8 @@
         
             <li><a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html">内功心法</a></li>
         
+            <li><a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">算法&数据结构</a></li>
+        
             <li><a href="distribute-system.html">分布式</a></li>
         
             <li><a href="others.html">杂七杂八</a></li>
@@ -126,14 +128,109 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="kafka-in-bigdata.html">
+                <a class="clearlink" href="LVS-HAPROXY-NGINX.html">
                 
-                  <h1>Kafka In BigData</h1>
+                  <h1>LVS & HAPROXY & NGINX</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	
+                        	<table>
+<thead>
+<tr>
+<th style="text-align: center"></th>
+<th style="text-align: center">LVS</th>
+<th style="text-align: center">HAPROXY</th>
+<th style="text-align: center">NGINX</th>
+<th style="text-align: center">F5</th>
+<th style="text-align: center">ARRAY</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td style="text-align: center">出品方</td>
+<td style="text-align: center">Linux</td>
+<td style="text-align: center">Willy Tarreau</td>
+<td style="text-align: center">Igor Sysoev</td>
+<td style="text-align: center">F5 Networks</td>
+<td style="text-align: center">Array Networks</td>
+</tr>
+<tr>
+<td style="text-align: center">负载原理</td>
+<td style="text-align: center">软件L4</td>
+<td style="text-align: center">软件L7</td>
+<td style="text-align: center">软件L7</td>
+<td style="text-align: center">硬件L4~L7</td>
+<td style="text-align: center">硬件L4~L7</td>
+</tr>
+<tr>
+<td style="text-align: center">稳定性</td>
+<td style="text-align: center">集成到Linux内核，自带keepalived双机热备</td>
+<td style="text-align: center">可做keepalived双机热备</td>
+<td style="text-align: center">C10K级别，可做keepalived双机热备</td>
+<td style="text-align: center"></td>
+<td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">性能</td>
+<td style="text-align: center">比硬件低，在软负载中数一数二</td>
+<td style="text-align: center">低于LVS，高于Nginx</td>
+<td style="text-align: center">高</td>
+<td style="text-align: center">很高</td>
+<td style="text-align: center">很高</td>
+</tr>
+<tr>
+<td style="text-align: center">功能性</td>
+<td style="text-align: center">支持大部分协议，所以支持基本上所有应用，例如WEB/数据库/中间件等</td>
+<td style="text-align: center">TCP/HTTP/HTTPS/EMAIL</td>
+<td style="text-align: center">HTTP/HTTPS/EMAIL</td>
+<td style="text-align: center"></td>
+<td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">配置</td>
+<td style="text-align: center">配置复杂，对网络要求较高</td>
+<td style="text-align: center"></td>
+<td style="text-align: center">简单</td>
+<td style="text-align: center"></td>
+<td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">算法支持</td>
+<td style="text-align: center">Round-robin(轮询)，Weight-round-robin(带权轮询)、Least-Connection(最小连接)、Weighte-Least-Connection(带权最小连接)</td>
+<td style="text-align: center">Round-robin（轮循）、Weight-round-robin（带权轮循）、source（原地址保持）、RI（请求URL）、rdp-cookie（根据cookie）</td>
+<td style="text-align: center">Round-robin（轮循）、Weight-round-robin（带权轮循）、Ip-hash（Ip哈希）</td>
+<td style="text-align: center"></td>
+<td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">缺点</td>
+<td style="text-align: center">不支持正则处理，不能做动静分离， 大规模网站实施起来很复杂</td>
+<td style="text-align: center">不能做Web服务器即Cache</td>
+<td style="text-align: center">支持协议较少</td>
+<td style="text-align: center">贵</td>
+<td style="text-align: center">贵</td>
+</tr>
+<tr>
+<td style="text-align: center">其他优点</td>
+<td style="text-align: center">配置性低(优点稳定)</td>
+<td style="text-align: center">支持虚拟主机，session保持，cookie引导，支持TCP负载均衡</td>
+<td style="text-align: center">可做反向代理服务器，正则规则灵活，服务器状态检测，缓存，静态网页/图片服务器，功能丰富</td>
+<td style="text-align: center">应用交付/支持完善</td>
+<td style="text-align: center">应用交付/支持完善</td>
+</tr>
+<tr>
+<td style="text-align: center">适用场景</td>
+<td style="text-align: center">大规模应用</td>
+<td style="text-align: center">性能稍强于Nginx，适用于小规模应用</td>
+<td style="text-align: center">小规模应用，日PV小于1000w</td>
+<td style="text-align: center">大规模应用</td>
+<td style="text-align: center">大规模应用</td>
+</tr>
+</tbody>
+</table>
+
                         
                       </div>
                   </div>
@@ -141,7 +238,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/5/7</span>
+                    <span class="date">2019/5/12</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='distribute-system.html'>分布式</a></span>
@@ -211,6 +308,8 @@
         
             <a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html"><strong>内功心法</strong></a>
         
+            <a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html"><strong>算法&数据结构</strong></a>
+        
             <a href="distribute-system.html"><strong>分布式</strong></a>
         
             <a href="others.html"><strong>杂七杂八</strong></a>
@@ -250,6 +349,18 @@
 	      
 		      
 			      <li class="post">
+			        <a href="CompressedOops.html">JVM压缩指针(CompressedOops)</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="load-balancer-algorithm.html">负载均衡算法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
 			      </li>
 		     
@@ -263,18 +374,6 @@
 		      
 			      <li class="post">
 			        <a href="kafka-in-bigdata.html">Kafka In BigData</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="RabbitMq-delay-queue.html">RabbitMq Delay Queue</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="stock-starter.html">集合竞价/连续竞价/实时股价</a>
 			      </li>
 		     
 		  

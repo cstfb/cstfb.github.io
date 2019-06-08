@@ -81,6 +81,8 @@
         
             <li><a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html">内功心法</a></li>
         
+            <li><a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">算法&数据结构</a></li>
+        
             <li><a href="distribute-system.html">分布式</a></li>
         
             <li><a href="others.html">杂七杂八</a></li>
@@ -126,108 +128,42 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="LVS-HAPROXY-NGINX.html">
+                <a class="clearlink" href="CompressedOops.html">
                 
-                  <h1>LVS & HAPROXY & NGINX</h1>
+                  <h1>JVM压缩指针(CompressedOops)</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<table>
-<thead>
-<tr>
-<th style="text-align: center"></th>
-<th style="text-align: center">LVS</th>
-<th style="text-align: center">HAPROXY</th>
-<th style="text-align: center">NGINX</th>
-<th style="text-align: center">F5</th>
-<th style="text-align: center">ARRAY</th>
-</tr>
-</thead>
+                        	<h2 id="toc_0">问题背景</h2>
 
-<tbody>
-<tr>
-<td style="text-align: center">出品方</td>
-<td style="text-align: center">Linux</td>
-<td style="text-align: center">Willy Tarreau</td>
-<td style="text-align: center">Igor Sysoev</td>
-<td style="text-align: center">F5 Networks</td>
-<td style="text-align: center">Array Networks</td>
-</tr>
-<tr>
-<td style="text-align: center">负载原理</td>
-<td style="text-align: center">软件L4</td>
-<td style="text-align: center">软件L7</td>
-<td style="text-align: center">软件L7</td>
-<td style="text-align: center">硬件L4~L7</td>
-<td style="text-align: center">硬件L4~L7</td>
-</tr>
-<tr>
-<td style="text-align: center">稳定性</td>
-<td style="text-align: center">集成到Linux内核，自带keepalived双机热备</td>
-<td style="text-align: center">可做keepalived双机热备</td>
-<td style="text-align: center">C10K级别，可做keepalived双机热备</td>
-<td style="text-align: center"></td>
-<td style="text-align: center"></td>
-</tr>
-<tr>
-<td style="text-align: center">性能</td>
-<td style="text-align: center">比硬件低，在软负载中数一数二</td>
-<td style="text-align: center">低于LVS，高于Nginx</td>
-<td style="text-align: center">高</td>
-<td style="text-align: center">很高</td>
-<td style="text-align: center">很高</td>
-</tr>
-<tr>
-<td style="text-align: center">功能性</td>
-<td style="text-align: center">支持大部分协议，所以支持基本上所有应用，例如WEB/数据库/中间件等</td>
-<td style="text-align: center">TCP/HTTP/HTTPS/EMAIL</td>
-<td style="text-align: center">HTTP/HTTPS/EMAIL</td>
-<td style="text-align: center"></td>
-<td style="text-align: center"></td>
-</tr>
-<tr>
-<td style="text-align: center">配置</td>
-<td style="text-align: center">配置复杂，对网络要求较高</td>
-<td style="text-align: center"></td>
-<td style="text-align: center">简单</td>
-<td style="text-align: center"></td>
-<td style="text-align: center"></td>
-</tr>
-<tr>
-<td style="text-align: center">算法支持</td>
-<td style="text-align: center">Round-robin(轮询)，Weight-round-robin(带权轮询)、Least-Connection(最小连接)、Weighte-Least-Connection(带权最小连接)</td>
-<td style="text-align: center">Round-robin（轮循）、Weight-round-robin（带权轮循）、source（原地址保持）、RI（请求URL）、rdp-cookie（根据cookie）</td>
-<td style="text-align: center">Round-robin（轮循）、Weight-round-robin（带权轮循）、Ip-hash（Ip哈希）</td>
-<td style="text-align: center"></td>
-<td style="text-align: center"></td>
-</tr>
-<tr>
-<td style="text-align: center">缺点</td>
-<td style="text-align: center">不支持正则处理，不能做动静分离， 大规模网站实施起来很复杂</td>
-<td style="text-align: center">不能做Web服务器即Cache</td>
-<td style="text-align: center">支持协议较少</td>
-<td style="text-align: center">贵</td>
-<td style="text-align: center">贵</td>
-</tr>
-<tr>
-<td style="text-align: center">其他优点</td>
-<td style="text-align: center">配置性低(优点稳定)</td>
-<td style="text-align: center">支持虚拟主机，session保持，cookie引导，支持TCP负载均衡</td>
-<td style="text-align: center">可做反向代理服务器，正则规则灵活，服务器状态检测，缓存，静态网页/图片服务器，功能丰富</td>
-<td style="text-align: center">应用交付/支持完善</td>
-<td style="text-align: center">应用交付/支持完善</td>
-</tr>
-<tr>
-<td style="text-align: center">适用场景</td>
-<td style="text-align: center">大规模应用</td>
-<td style="text-align: center">性能稍强于Nginx，适用于小规模应用</td>
-<td style="text-align: center">小规模应用，日PV小于1000w</td>
-<td style="text-align: center">大规模应用</td>
-<td style="text-align: center">大规模应用</td>
-</tr>
-</tbody>
-</table>
+<p>之前看到一篇文章说到<a href="https://www.elastic.co/cn/blog/a-heap-of-trouble?nsukey=ycffxylI5WOlirpUecMZ0%2Bh6dId%2F6txxdsCpmHZgpChzNei9bZBIb5k0f9y5MKNNnkdZW7301ucVHpE0ODBPYdqnmTUToaWRoRTXDaylGHoP%2BFuwyBHyl6E18mobs1pLswxMBan5gDjYNs74O9RcV7kMcjgr3HZ2jyStMP9hbxU9i88t%2FFDGLn36j3jcOq5lh81YNxpf37kwDWQX5v4qNQ%3D%3D">es的内存调优</a>, 文章说到现在的服务器越来越大， 那么给JVM设置多大的内存比较合适呢？太大的话虽然内存充足，但是会带来gc停顿时间的增大，对于es这一类需要快速响应的应用来说是不可接受的，太小则会有OOM的风险。因此内存需要设置的刚刚好。</p>
+
+<h2 id="toc_1">What is CompressedOops</h2>
+
+<p>压缩指针则提供了一种既可以享受到大内存的好处，同时可以节约内存空间并且提高性能的方法。在某些情况下，它可以达到性能与停顿时间的平衡。</p>
+
+<blockquote>
+<p><a href="https://docs.oracle.com/javase/7/docs/technotes/guides/vm/performance-enhancements-7.html#zeroBasedCompressedOop">ref</a> On an LP64 system, the heap used by a given program might have to be around 1.5 times larger than when it is run on an ILP32 system.</p>
+</blockquote>
+
+<p>在64位系统中，对象指针也是64位，因此可以使用更大的内存，而在32位系统中是32位，最多只能使用4G的内存。对象指针长度的增大也会带来内存开销，而这种开销的差距在64位和32位系统之间可能是1.5倍，也就是说在如果32位系统使用4G内存达到的效果可能64位系统使用6G内存才能达到。<br/>
+在很多情况下，这种开销是不必要的，并且会提高系统停顿时间，因为很多时候应用只需要32位指针就够了。<br/>
+压缩指针提供了一种折中的选择，在JDK7中(64位)，如果堆小于4G，JVM会默认使用32位对象指针。<br/>
+那显然这种优化只能覆盖一部分的情况，为了享受大内存，很多应用会开比4G大得多的堆，这时候是不是就必须用64位指针了呢？ 答案是不是，在堆小于32G(不精确)的情况下，此时对象地址只需要使用35位地址(32位=4G, 4G * 2<sup>3</sup> = 32G)即可, 此时如果操作系统允许，JVM会将对象指针右移3位进行存储，也就是说还是只需要32位地址就行了，此时会有两个问题:</p>
+
+<ul>
+<li>那么这时候会出现的问题就是右边3位丢失了怎么办？ </li>
+<li>存储的地址和实际的地址相差八倍，即每两个指针之间有8个字节的空档，这其中存在内存的‘空隙’如何处理?</li>
+</ul>
+
+<p>第一个问题最简单的情况下就是右边3位全是0，那么在转换过程中只需要右移三位和左移三位即可(也即是zero-based compressed oops)，非常方便；如果右边三位不为0，那么这时候就需要加入一个偏移量的计算，对性能会有一定的损耗。<br/>
+第二个问题是关于为什么是三位而不是四位五位的问题， 压缩后的指针有可能是0x0, 0x1, 0x2， 解压后的指针则是0x0, 0x8, 0x10, 中间有8个字节的空档，这个问题的答案和对象对齐有关，在JVM中对象是默认8字节对齐的，所以基本上着正好符合JVM本身的设计，(要注意的是对象对齐本身也会提高内存开销)。<br/>
+<img src="media/15599993168030/WechatIMG27.jpeg" alt="WechatIMG27"/></p>
+
+<h2 id="toc_2">最佳实践</h2>
+
+<p>在满足内存和吞吐量的情况下，JVM堆内存设置的越小越好； 如果不能，那么考虑分配的内存满足压缩指针的要求，从而达到优化的效果。</p>
 
                         
                       </div>
@@ -236,10 +172,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/5/12</span>
+                    <span class="date">2019/6/8</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='distribute-system.html'>分布式</a></span>
+          					    <span class="posted-in"><a href='JDK.html'>JDK</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -306,6 +242,8 @@
         
             <a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html"><strong>内功心法</strong></a>
         
+            <a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html"><strong>算法&数据结构</strong></a>
+        
             <a href="distribute-system.html"><strong>分布式</strong></a>
         
             <a href="others.html"><strong>杂七杂八</strong></a>
@@ -345,6 +283,18 @@
 	      
 		      
 			      <li class="post">
+			        <a href="CompressedOops.html">JVM压缩指针(CompressedOops)</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="load-balancer-algorithm.html">负载均衡算法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
 			      </li>
 		     
@@ -358,18 +308,6 @@
 		      
 			      <li class="post">
 			        <a href="kafka-in-bigdata.html">Kafka In BigData</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="RabbitMq-delay-queue.html">RabbitMq Delay Queue</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="stock-starter.html">集合竞价/连续竞价/实时股价</a>
 			      </li>
 		     
 		  

@@ -81,6 +81,8 @@
         
             <li><a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html">内功心法</a></li>
         
+            <li><a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">算法&数据结构</a></li>
+        
             <li><a href="distribute-system.html">分布式</a></li>
         
             <li><a href="others.html">杂七杂八</a></li>
@@ -126,103 +128,73 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="MP-recoding-black-mirror-part2.html">
+                <a class="clearlink" href="MP-recoding-black-mirror-part4.html">
                 
-                  <h1>(译文)Re-coding Black Mirror -- part 2</h1>
+                  <h1>(译文)Re-coding Black Mirror -- part 4</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><mark>原文地址：<a href="https://blog.acolyer.org/2018/05/15/re-coding-black-mirror-part-ii/">https://blog.acolyer.org/2018/05/15/re-coding-black-mirror-part-ii/</a></mark><br/>
-今天我们看来自<a href="https://kmitd.github.io/recoding-black-mirror/">re-coding Black Mirror workshop</a>另外几篇文章。</p>
+                        	<p><mark>原文地址：<a href="http://blog.acolyer.org/2018/05/17/re-coding-black-mirror-part-iv">http://blog.acolyer.org/2018/05/17/re-coding-black-mirror-part-iv</a></mark><br/>
+这是一览来自Re-coding Black Mirror的论文的第四部分，探讨了未来的技术场景及其对社会和伦理的影响，今天要阅读的两篇论文如下：</p>
 
 <ul>
-<li>情感计算的缺陷(<a href="https://dl.acm.org/citation.cfm?id=3191611">Pitfalls of affective computing, Cooney et al.</a>)</li>
-<li>黑镜中用户数据分析的简易性和伦理学(<a href="https://dl.acm.org/citation.cfm?id=3191614">Ease and ethics of user profiling in Black Mirror, Pandit &amp; Lewis</a>)</li>
+<li>这是错误信息的年代吗？结合社交机器人和假新闻来蒙骗大众(<a href="https://dl.acm.org/citation.cfm?id=3191610">Is this the era of misinformation yet? Combining social bots and fake news to deceive the masses Wang et al.</a>)</li>
+<li>Gnirut:在一个AI统治的世界里出生的人类的问题(<a href="https://dl.acm.org/citation.cfm?id=3191612">Gnirut: the trouble with being born human in an autonomous world Viganò and Sempreboni</a>)<br/>
+(如果你没有ACM数字图书馆访问权限，上述的论文也可以从<a href="">Morning Paper</a>网站或者<a href="https://www2018.thewebconf.org/proceedings/">www 2018议程</a>获取)<br/>
+## 这是错误信息的年代吗？<br/>
+&gt; 2016年，全世界都目击了美国总统大选期间社交媒体上的机器人散播假新闻事件...研究人员在最终投票前四周收集了Twitter数据，以估计这一现象的严重程度。结果显示有15%的账号为机器人账号，并且制造了19%的推特...当假新闻如此常见以至于事实无法到达普通人的时候会发生什么事情呢？</li>
 </ul>
 
-<p>(如果你没有ACM数字图书馆访问权限，上述的论文也可以从<a href="">Morning Paper</a>网站或者<a href="https://www2018.thewebconf.org/proceedings/">www 2018议程</a>获取)</p>
+<p>假新闻和恶作剧由来已久，但社交媒体的本质却火上浇油。任何用户都可以在基本不经过第三方过滤或事实检查的情况下来创建和转发内容;许多成年人通过社交媒体获取新闻;研究表明，那些接触假新闻的人倾向于相信其真实性。<br/>
+我们制造令人信服的假新闻的技术发展越来越快，特别是在社交媒体帖子的关注范围内。文字内容可以由人类,或自然语言生成（在小短文社交媒体上工作尤其出色），不仅能够使用表情，还可以根据个体的风格生成对应的内容，就像之前在<code>Be Right Back</code>中看到的那样。<br/>
+我们可以使用从零开始的语音生成来模仿给定的人的声音，也可以使用语音转换来改变源说话人的声音。在语音转换中，演员的声音被转换成像给定目标的声音。<br/>
+我们可以生成看上去<a href="https://blog.acolyer.org/2018/05/10/progressive-growing-of-gans-for-improved-quality-stability-and-variation/">很真实的图片甚至是一个完全不存在的人</a>。我们甚至可以伪造视频，例如<a href="http://grail.cs.washington.edu/projects/AudioToObama/siggraph17_obama.pdf">利用素材中唇同步</a>来实现我们想说的任何东西；<a href="https://youtu.be/ohmajJTcpNk">将演员的面部表情实时的转换视频中的面部上面</a>；甚至利用深度学习把视频中将面部替换掉(<a href="https://hackernoon.com/exploring-deepfakes-20c9947c22d9">这里有一篇关于这项技术的好文章</a>).<br/>
+所以我们可以制作内容。信息扩散分析告诉我们如何让它传播。信息扩散通常遵循以下步骤:</p>
 
-<h2 id="toc_0">情感计算的缺陷</h2>
+<ol>
+<li>当一个节点分享这个信息之后整个网络暴露于外部信息并被感染</li>
+<li>这种外部感染引起内部暴露</li>
+<li>内部暴露导致节点传递信息从而内部感染</li>
+<li>在最初的感染爆发后，外部和内部接触继续助长传染<br/>
+(简单来说就是某人发了一个推特，然后其他人看到并转发...:))<br/>
+最终，我们可以想象将这些功能结合在一个智能的社交机器人中，给定一些目标然后用来制造和传播内容(一些强化学习可能也会在这里派上用场，使用reach作为奖励功能的关键部分)。首先，机器人选择或创建一个外部信息，然后通过传递它来创建内部暴露的初始爆发。
+<img src="media/15280441233010/era-of-misinformation-fig-1.jpeg" alt="era-of-misinformation-fig-1"/>
+在第三步中，机器人的目标是让尽可能多的人接收到消息。<br/>
+&gt; 例如，社交机器人可以实现意见挖掘和情绪分析技术，以定位那些观点与散布的欺骗信息一致的用户。</li>
+</ol>
 
-<p>通过可穿戴设备或者遥感设备采集面部表情，手势，声音， 目前的技术是可以识别出用户的情绪的。</p>
+<p>人工检查永远达不到机器人产生消息的速度，因此我们需要自动化的工具来检测，<a href="http://ranger.uta.edu/%7Ecli/pubs/2017/claimbuster-kdd17-hassan.pdf">ClaimBuster</a>是这方面的一个例子。</p>
 
-<blockquote>
-<p>在当前的论文中，我们设想了这样一种未来:这种技术具有很高的准确性，并且广泛分布，因此人们的情绪通常可以被其他人看到。</p>
-</blockquote>
+<h2 id="toc_0">Gnirut:在一个AI统治的世界里出生的人类的问题</h2>
 
-<p>显然，这会泄露人们并不想泄露的信息。由于面部微表情以及肢体语言非常难以隐藏，因此很容易就会泄露。如果人们认为没有必要说话或移动来传达情感, 它也会削弱社交技能。&quot;善意的谎言&quot; 可能变得不可能, 这可能会消除一个人的同情心。它还可能造成物理上的伤害:</p>
-
-<blockquote>
-<p>通过消极或积极情绪快速检测威胁和机会的能力可能会增加战斗和暴力的发生率，例如，一个人可能会因为看到他们的伴侣和潜在的对手对彼此产生强烈的正面情绪而感到威胁，这可能会导致愤怒和暴力。</p>
-</blockquote>
-
-<p>误读情绪，或过度简化情绪(例如将事情归结为一种情绪，而不是复杂的现实中的多种情绪的混合体)，也会导致误解。</p>
-
-<blockquote>
-<p>..如果一个人对他人情绪的推断不同于他的想象，那么就会产生不和谐和不信任感。最后，一个系统可能被黑客攻击，使一个人感受到一种不同的情绪，这可能使政客、律师或罪犯受益。</p>
-</blockquote>
-
-<p>当然如果有了可以读取他人情绪的计算机或者机器人，那么就可以更加容易的说服他人，从而可能获取商业上的利益。试想如果有一个针对特定人群例如老年人的骗局，通过检查老人们的情绪就可以知道他们是否上钩了（相信编造的谎言）。<br/>
-作者提出了一个指导原则，即“一个人的情绪只应在他们的同意下，对值得信任的人进行可视化。”但要防范那些默默观察你的系统是很困难的。一个患有抑郁症的人不应该被迫向完全陌生的人暴露他们的情况，员工也不应该害怕因为一些情绪上的失误被监控而失去工作。</p>
-
-<blockquote>
-<p>...在类似于<a href="GDPR-1">GDPR</a>这样的规定之下,一个人的情绪状态可以被视为个人信息，所以应该受到保护。我们相信在考虑了可能出现的问题以及如何避免之后，情绪可视化会对人类有正面的影响。</p>
-</blockquote>
-
-<h2 id="toc_1">黑镜中用户数据分析的简易性和伦理学</h2>
-
-<p>这篇论文是基于“<a href="https://en.m.wikipedia.org/wiki/Nosedive">Nosedive</a>”这一集，并分析了用户被广泛建立画像并深入到日常生活中的场景。(想想中国的社会信用体系吧!)考虑一个虚拟的组织F-social为其用户提供服务(免费或付费)，并设法在此过程中积累大量个人信息。</p>
+<p>一个小男孩长大后想要开飞机，然后父母不得不给他泼冷水 -- 现在只有AI才能开飞机了 -- 人类太容易犯错误了。<br/>
+很多安全相关的一些工作已经交给机器人处理了，通常再给每个机器人配置几个操作员(例如5:1的操作员-机器人的比例).例如在军事行动中，自动运输，水下作业，远程手术等等。我们正在迈向一个人可以操纵一堆机器人的世界。</p>
 
 <blockquote>
-<p>一家餐厅将顾客的面部照片发送给F-social，以得到他们拥有的购买力的衡量标准，以及他们挥霍的可能性。他们可以通过一种看似无伤大雅的通知来做这件事，他们会说，“进入你同意被识别的前提。”</p>
+<p>当然不止这些，人们正在寻找不使用人力而将原来的人工车间替换成的井然有序的机器人的全自动化系统，就像汽车流水线，甚至Amazon的仓库一样...</p>
 </blockquote>
 
-<p>F-social通过在其用户数据库中寻找匹配的面部轮廓来识别个体。如果个人不使用F-social，他们的朋友的标签照片可能仍然可以识别。如果真的没有信息，F-social就会返回“不匹配”的结果，餐馆会认为是模棱两可和可疑的。<br/>
-在下一步，F-social为餐馆计算出得分，显示顾客可能的消费能力，以及他们今天挥霍的潜力。它可能通过查看过去的购买记录或者关联的财务数据来计算出这个结果。然后，F-social在资料中寻找潜在的特殊的指标-生日、周年纪念、促销等...最后，F-social考虑客户距离工资月还有多远。顾客在餐馆中收到的服务可能会因为后台的计算收到很大的影响...(注：例如滴滴价格歧视，推荐等)&quot;This second-hand effect of limiting access or discriminating based on some metric results in a pressure to conform to accepted behaviours.&quot;</p>
+<p>由于许多任务不一定需要AI参与，我们也可以更一般地讨论人工智能的比例。如果我们更进一步，开始考虑由一个或多个人工智能监控的人类呢?我们可以通过观察儿童与Alexa(AI)的互动来了解这一点。Rachel Botsman观察到她三岁的女儿与Alexa的长时间互动:</p>
 
 <blockquote>
-<p>目前的规范应该考虑一项技术在大规模使用之后的影响，但是大多情况下只能在感受到风险的时候才会提出反对意见...技术人员缺乏讨论背后的核心问题是没有将道德伦理集成到工作中的好办法。</p>
+<p>&quot;我有些担心，看着女儿将决定权高兴的交了出去，&#39;Alexa，我今天应该做什么&#39;, 没过多久，她就信任了AI的重大选择,第三天，Grace用唱歌的声音问道,&#39;Alexa,我今天应该穿什么?粉红色还是闪亮的裙子?&#39;&quot;</p>
 </blockquote>
 
-<p>为了帮助解决这个问题，作者给我们提供了&quot;道德模式图&quot;，基于流行的“<a href="https://en.m.wikipedia.org/wiki/Business_Model_Canvas">商业模式图</a>”<br/>
-<img src="media/15275264621520/imgb.jpg" alt="imgb"/><br/>
-画布有九个主题块，通常分为四个阶段.</p>
-
-<ul>
-<li><strong>利益相关者的识别</strong>。块1和块2根据所考虑的技术确定个人和团体涉众。</li>
-<li><strong>识别潜在的伦理影响</strong>。下一步是填写第3、4、5和6块，并确定潜在的道德影响(见图表中的问题)。</li>
-<li><strong>考虑对非利益相关者的道德影响</strong>(关于失败和使用资源的影响的第7和第8块)。</li>
-<li><strong>制定执行计划</strong>(第9块)</li>
-</ul>
+<p>为什么是多个AI为一个人类服务？而不是一个AI管理多个人类呢？ </p>
 
 <blockquote>
-<p>伦理画布可以<a href="https://ethicscanvas.org">打印或用作web应用程序</a>，可以在没有帐户的情况下使用，也可以下载。某些特性，例如协作编辑、注释、标记和持久性，可以通过帐户获得。该应用程序的源代码是在线托管的，并且可以在CC-by-SA 3.0许可下使用。</p>
+<p>这正在慢慢发生，一开始的区别太小以至于没有人注意到，或者我们没有真正意识到，长时间的微小的变化已经引起了巨大的改变。</p>
 </blockquote>
 
-<p>让我们来看看这模型如何帮助我们分析假设的f -社交餐厅场景。</p>
-
-<h3 id="toc_2">利益相关者</h3>
-
-<p>个人利益相关者包括F-social的任何用户，以及在F-social中被标记为F-social的任何非用户，以及该餐厅的顾客。看看F-social在幕后使用的数据集(比如信用公司的数据)，我们还可以包括那些在这些数据集中作为涉众出现的用户。<br/>
-受影响的群体可以由任何不愿意被跟踪的人组成，比如寻找安全地点的记者，或者是在权力位置上的人，他们的行踪信息可能构成安全风险。任何可能在无意中被定性为劣势的少数群体也面临着风险。</p>
-
-<h3 id="toc_3">对利益相关者的影响</h3>
-
-<p>用户可能会发现发布能提高他们的评级的正面的东西会获得更多奖励。“如果有金钱或者其他的利益的话他们也更有可能提供信息，从而使服务根据评分来分析用户。“此外，如果评分考虑用户的社交圈子，那么用户更有可能希望他们的社交圈由那些对他们的评价有积极影响的人组成。最终，评级较高的人可能会看不起那些评级较低的人(就像我们在“Nosedive”一集里看到的那样)。</p>
+<p>例如，“在一项值得称赞的保护人类安全的努力中，我们可能很快就会通过立法，规定某些工作只能由智能机器来完成。”这将延伸到人性和主观性可能会减缓反应时间或对最终结果产生负面影响的场景。(举个小例子，当一辆汽车检测到迎面而来的碰撞时，可以考虑自动制动系统)。<br/>
+一种分析欧洲人权法院判决的智能算法发现，模式使它能够以79%的准确率预测案件的结果。这样的算法可以用来帮助人类决策者。</p>
 
 <blockquote>
-<p>例如，那些只会自动迎合高评分的人会被认为“排外”，而那些容易接受低评级的人可能被认为不是“上等人”。在一定程度上，这一现象在今天的货币消费能力上是可以观察到的。</p>
+<p>当然不止这些， 为什么不把真正的立法权交给智能机器呢?毕竟，智能机器有能力做出更好、更一致的决定。“他们”可能会通过立法，将人类无法接触到的职业列表扩展到包括司机、飞行员、医生、外科医生、会计师、律师、法官、立法者、士兵……等所有职业.</p>
 </blockquote>
 
-<h3 id="toc_4">对非利益相关者的影响</h3>
-
-<p>F-social数据可能被操纵，被攻击或者禁用。用户将被拒绝服务。服务可能会被某些客户用来以达到不可告人的目的。政府或者国家层面的实体可能会要求获取相关的数据。</p>
-
-<h3 id="toc_5">缓和措施？</h3>
-
-<p>假设F-social所提供的服务是合法的且可以接受的,因此在不被关闭在此基础上,作者建议添加更多的透明度:用来计算评分的算法公开评估(如果这是一个神经网络?)提供一定程度的真实性和监督使用的数据,并帮助防止虚假信息服务传播。在这一节中，作者似乎偏离了(我对)box 9的意图(我的解释)，即它应该被F-social组织本身用来考虑自己所提供的服务，并不断的回顾。而不是关注于那些F-social可能会让用户做的不喜欢的事情。<br/>
-关于画布如果想了解更多<a href="https://ethicscanvas.org/">https://ethicscanvas.org/</a></p>
+<p>回到我们的孩子，她想成为一名飞行员，为了被允许训练和飞行，她会把自己伪装成一个人工智能吗?也许她将不得不通过Gnirut测试(想想!),其中包含了一个AI裁判和一个试图将自己伪装成人工智能的人…可悲的是,我发现相比于一个人类通过Gnirut测试，一个机器人通过图灵测试会更加简单。</p>
 
                         
                       </div>
@@ -231,7 +203,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/5/29</span>
+                    <span class="date">2018/6/4</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Morning-Paper.html'>Morning-Paper</a></span>
@@ -301,6 +273,8 @@
         
             <a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html"><strong>内功心法</strong></a>
         
+            <a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html"><strong>算法&数据结构</strong></a>
+        
             <a href="distribute-system.html"><strong>分布式</strong></a>
         
             <a href="others.html"><strong>杂七杂八</strong></a>
@@ -340,6 +314,18 @@
 	      
 		      
 			      <li class="post">
+			        <a href="CompressedOops.html">JVM压缩指针(CompressedOops)</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="load-balancer-algorithm.html">负载均衡算法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
 			      </li>
 		     
@@ -353,18 +339,6 @@
 		      
 			      <li class="post">
 			        <a href="kafka-in-bigdata.html">Kafka In BigData</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="RabbitMq-delay-queue.html">RabbitMq Delay Queue</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="stock-starter.html">集合竞价/连续竞价/实时股价</a>
 			      </li>
 		     
 		  
