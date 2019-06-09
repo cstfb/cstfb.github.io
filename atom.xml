@@ -4,7 +4,7 @@
   <title><![CDATA[cstfb]]></title>
   <link href="https://cstfb.github.io/atom.xml" rel="self"/>
   <link href="https://cstfb.github.io/"/>
-  <updated>2019-06-08T22:22:36+08:00</updated>
+  <updated>2019-06-08T23:23:20+08:00</updated>
   <id>https://cstfb.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -115,6 +115,287 @@
     <id>https://cstfb.github.io/load-balancer-algorithm.html</id>
     <content type="html"><![CDATA[
 <h2 id="toc_0">Round-Robin(轮询)</h2>
+
+<pre><code class="language-text">public class RoundRobin {
+    private Object[] hosts; // hosts列表
+    private int len; // hosts数量
+    private AtomicInteger increr = new AtomicInteger(0); // 自增器
+    // constructor
+    public RoundRobin(Object... hosts) {
+        Preconditions.checkNotNull(hosts);
+        this.hosts = hosts;
+        len = hosts.length;
+    }
+    // get next hosts
+    public Object get() {
+        int cur = increr.incrementAndGet();
+        if (cur &gt; 0x70000000) {
+            increr.set(0);
+        }
+        return hosts[cur % len];
+    }
+    // get request cnt
+    public int getCnt() {
+        return increr.get();
+    }
+
+    public static void main(String[] args) throws Exception {
+        int i = 0;
+        RoundRobin rr = new RoundRobin(&quot;10.1.1.1&quot;, &quot;10.1.1.2&quot;, &quot;10.1.1.3&quot;);
+        AtomicLong totalTime = new AtomicLong(0L);
+
+        // 模拟多线程环境测试QPS
+        int maxThread = 1;
+        // 10线程
+        ExecutorService es = Executors.newFixedThreadPool(maxThread);
+        while (maxThread &gt; 0) {
+            es.execute(() -&gt; {
+                long t1 = System.currentTimeMillis();
+                try {
+                    while (!Thread.interrupted()) {
+                        rr.get();
+                    }
+                    long t2 = System.currentTimeMillis();
+                    totalTime.addAndGet(t2 - t1);
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+            });
+
+            maxThread --;
+        }
+
+        // 
+        Thread.sleep(1000);
+        
+        es.shutdownNow();
+        es.awaitTermination(1, TimeUnit.MINUTES);
+
+        System.out.println(&quot;total cpu time:&quot; + totalTime.get());
+        System.out.println(&quot;total request count:&quot; + rr.getCnt());
+    }
+}
+</code></pre>
+
+<p>使用juc提供的Atomic类来做自增操作。</p>
+
+<h2 id="toc_1">Weighted Round-Robin(加权轮询)</h2>
+
+<p>当需要为不同的节点分配不同的权重时，例如当各个节点的吞吐量不同，这时候可以使用加权轮询， 例如有A,B,C三个服务器，然后权重分别是4，3，2，那么一个典型的请求序列可以是AABCACABC;</p>
+
+<pre><code class="language-text">public class WeightedRoundRobin {
+    private List&lt;Server&gt; servers;
+    private int totalWeight;
+    // init
+    public WeightedRoundRobin() {
+        this.servers = new ArrayList();
+        this.totalWeight = 0;
+    }
+    // 添加hosts
+    public void addServer(String ip, int weight) {
+        this.servers.add(new Server(ip, weight));
+        this.totalWeight += weight;
+    }
+    // get
+    public Server getServer() {
+        Server best = null;
+
+        for (Server srv : servers) {
+            srv.effectiveWeight += srv.weight;
+
+            if (null == best || best.effectiveWeight &lt; srv.effectiveWeight) {
+                best = srv;
+            }
+        }
+        if (best != null) {
+            best.effectiveWeight -= totalWeight;
+        }
+        return best;
+    }
+
+    public static void main(String[] args) {
+        WeightedRoundRobin wrr = new WeightedRoundRobin();
+        wrr.addServer(&quot;10.1.1.1&quot;, 3);
+        wrr.addServer(&quot;10.1.1.2.&quot;, 2);
+        wrr.addServer(&quot;10.1.1.3&quot;, 1);
+
+        int cnt = 50;
+        while(cnt &gt; 0) {
+            System.out.println(wrr.getServer());
+            cnt -= 1;
+        }
+    }
+}
+
+class Server{
+    String ip;
+    int weight;
+    int effectiveWeight;
+
+    public Server(String ip, int weight) {
+        this.ip = ip;
+        this.weight = weight;
+        this.effectiveWeight = 0;
+    }
+
+    @Override
+    public String toString() {
+        return &quot;ip:&quot; + ip + &quot;, weight:&quot; + weight;
+    }
+}
+</code></pre>
+
+<p>上面的代码时<code>平滑加权平均算法</code>的一个实现, 这个算法实现比较巧妙， 对于一个<code>Server</code>对象，除了<code>weight权重</code>外， 还有一个<code>effectiveWeight有效权重</code>字段， 表示<code>server</code>当前的权重，每次轮询，<code>effectiveWeight</code>加一次的<code>weight</code>, 然后选取<code>effectiveWeight</code>最大的那个<code>server</code>, 然后<code>effectiveWeight</code>减去<code>totalWeight</code>, 循环这个过程, 算法描述如下:</p>
+
+<ol>
+<li>初始化每个<code>server</code>的权重<code>wi</code>, 设置当前有效权重<code>cwi</code>为<code>wi</code>, 并求得<code>totalWeight</code></li>
+<li>选取<code>cwi</code>最大的<code>server</code>, 并且将<code>cwi</code>减去<code>totalWeight</code>, <code>best</code>指向当前<code>server</code></li>
+<li>将每个<code>server</code>的<code>cwi</code>加上<code>wi</code></li>
+<li>返回<code>best</code></li>
+<li>每次调度重复2,3,4步</li>
+</ol>
+
+<h2 id="toc_2">Least-Connection Scheduling(最小连接)</h2>
+
+<p>最小连接调度把当前连接数最小的服务器分配给新的连接。</p>
+
+<pre><code class="language-text">public class LeastConnection {
+    private List&lt;LeastConnectionServer&gt; servers;
+    public LeastConnection(String... ips) {
+        servers = new ArrayList&lt;&gt;();
+        for(String ip : ips) {
+            servers.add(new LeastConnectionServer(ip));
+        }
+    }
+    public LeastConnectionServer getServer() {
+        LeastConnectionServer best = null;
+        for (LeastConnectionServer srv : servers) {
+            if(null ==  best || best.connCnt.get() &gt; srv.connCnt.get()) {
+                best = srv;
+            }
+        }
+        best.connCnt.incrementAndGet();
+        return best;
+    }
+    public void returnServer(LeastConnectionServer srv) {
+        if (null != srv) {
+            srv.connCnt.getAndAdd(-1);
+        }
+    }
+    public static void main(String[] args) {
+        LeastConnection wrr = new LeastConnection(&quot;10.1.1.1&quot;, &quot;10.1.1.2&quot;, &quot;10.1.1.3&quot;);
+
+        int cnt = 50;
+        while(cnt &gt; 0) {
+            System.out.println(wrr.getServer());
+            cnt -= 1;
+        }
+    }
+}
+
+class LeastConnectionServer{
+    String ip;
+    AtomicInteger connCnt;
+
+    public LeastConnectionServer(String ip) {
+        this.ip = ip;
+        this.connCnt = new AtomicInteger(0);
+    }
+
+    @Override
+    public String toString() {
+        return &quot;ip:&quot; + ip + &quot;, connection_cnt:&quot; + connCnt.get();
+    }
+}
+</code></pre>
+
+<h2 id="toc_3">Weighted Least-Connection Scheduling(加权最小连接)</h2>
+
+<p>加权最小连接工作方式如下:<br/>
+假如有n个服务器, 服务器i权重为\(W_i (i=1,..,n)\), 存活连接数为\(C_i (i=1,..,n)\), \(ALL\_CONNECTIONS = sum(C_i (i=1,..,n)\), 下面的连接会指向服务器\(j\)满足条件：<br/>
+\((C_j/ALL\_CONNECTIONS)/W_j = min { (C_i/ALL\_CONNECTIONS)/W_i } (i=1,..,n)\)<br/>
+\(ALL\_CONNECTIONS\)可以约掉:<br/>
+\(C_j/W_j = min { C_i/W_i } (i=1,..,n)\)</p>
+
+<pre><code class="language-text">public class WeightedLeastConnection {
+    private List&lt;WeightedLeastConnectionServer&gt; servers;
+    
+    public WeightedLeastConnection() {
+        this.servers = new ArrayList&lt;&gt;();
+    }
+    public void addServer(String ip, int weight) {
+        this.servers.add(new WeightedLeastConnectionServer(ip, weight));
+    }
+    public WeightedLeastConnectionServer getServer() {
+        WeightedLeastConnectionServer best = null;
+        for (WeightedLeastConnectionServer srv : servers) {
+            if(null ==  best || best.connCnt.get() / best.weight &gt; srv.connCnt.get() / srv.weight) {
+                best = srv;
+            }
+        }
+        best.connCnt.incrementAndGet();
+        return best;
+    }
+    public void returnServer(WeightedLeastConnectionServer srv) {
+        if (null != srv) {
+            srv.connCnt.getAndAdd(-1);
+        }
+    }
+    public static void main(String[] args) {
+        WeightedLeastConnection wrr = new WeightedLeastConnection();
+        wrr.addServer(&quot;10.1.1.1&quot;, 5);
+        wrr.addServer(&quot;10.1.1.2&quot;, 3);
+        wrr.addServer(&quot;10.1.1.3&quot;, 1);
+
+        int cnt = 50;
+        while(cnt &gt; 0) {
+            System.out.println(wrr.getServer());
+            cnt -= 1;
+        }
+    }
+}
+
+class WeightedLeastConnectionServer{
+    String ip;
+    int weight;
+    AtomicInteger connCnt;
+
+    public WeightedLeastConnectionServer(String ip, int weight) {
+        this.ip = ip;
+        this.weight = weight;
+        this.connCnt = new AtomicInteger(0);
+    }
+
+    @Override
+    public String toString() {
+        return &quot;ip:&quot; + ip + &quot;, connection_cnt:&quot; + connCnt.get();
+    }
+}
+</code></pre>
+
+<h2 id="toc_4">Locality-Based Least-Connection Scheduling(基于局部性的最少链接调度)</h2>
+
+<p>//todo</p>
+
+<h2 id="toc_5">Locality-Based Least-Connection with Replication Scheduling</h2>
+
+<p>(带复制的基于局部性最少链接调度)</p>
+
+<h2 id="toc_6">Destination Hashing Scheduling(目标地址散列调度)</h2>
+
+<p>//todo</p>
+
+<h2 id="toc_7">Source Hashing Scheduling(源地址散列调度)</h2>
+
+<p>//todo</p>
+
+<h2 id="toc_8">Shortest Expected Delay Scheduling(最短的期望延迟)</h2>
+
+<p>//todo</p>
+
+<h2 id="toc_9">Never Queue Scheduling(最少队列调度)</h2>
+
+<p>//todo</p>
 
 ]]></content>
   </entry>
