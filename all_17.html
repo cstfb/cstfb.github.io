@@ -126,14 +126,49 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="recommend-system-alg.html">
+                <a class="clearlink" href="190213-production-crash.html">
                 
-                  <h1>推荐系统算法</h1>
+                  <h1>记一次线上疑似内存泄漏问题</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><img src="media/15521354602578/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E7%AE%97%E6%B3%95-2.png" alt="推荐系统算法-2"/></p>
+                        	<h2 id="toc_0">现象</h2>
+
+<p>线上环境机器中有两个应用，最近发现机器的可用内存每天都在成阶梯式下降，因此怀疑是内存泄漏导致的问题</p>
+
+<ul>
+<li>现象1 ： linux系统日志
+<img src="media/15525795356441/15528318231565.jpg" alt=""/></li>
+<li>现象2 ： 机器状况
+<img src="media/15525795356441/15528318499218.jpg" alt=""/>
+23点系统宕机
+<img src="media/15525795356441/15528319024343.jpg" alt=""/>
+cpu压力正常
+<img src="media/15525795356441/15528319063789.jpg" alt=""/>
+io正常</li>
+<li>现象3 : OOM日志<br/>
+没有OOM日志, tomcat配置正常</li>
+<li>现象4 : 应用负载<br/>
+查看日志发现负载不高， 但是23点的时候执行了一个python脚本， 内存占用&gt;100M</li>
+</ul>
+
+<h2 id="toc_1">原因推测</h2>
+
+<p>因为没有系统当时的内存快照和OOM日志;因此无法准确判断宕机原因.<br/>
+推测是早上应用中触发了某个操作，导致内存泄漏，10:20分左右内存降到了最低点, 最后晚上23:00的脚本由于申请了大量内存，导致了系统内存不足而被kill掉。<br/>
+两个系统均有可能发生内存泄漏</p>
+
+<h2 id="toc_2">问题跟踪&amp;解决</h2>
+
+<p>临时增加了机器内存。<br/>
+另外定时打印应用的内存快照，观察是否存在内存泄漏.</p>
+
+<pre><code class="language-text">jmap -histo:live $java_pid | head -100 &gt;&gt; ~/jmap.log
+jstack -lF $java_pid&gt;&gt; ~/jstack.log
+</code></pre>
+
+<p>长期来看，一是不能因为系统宕机而长时间使系统处于无妨访问的状态，可以使用运维工具监控并且自动重启，自己脚本实现也可以。 二是需要规范大家的编码习惯， 减少低级失误。</p>
 
                         
                       </div>
@@ -142,10 +177,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/3/9</span>
+                    <span class="date">2019/3/15</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html'>数据仓库</a></span>
+          					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -253,6 +288,12 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15642435099895.html">2019年环法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="ongl.html">OGNL</a>
 			      </li>
 		     
@@ -272,12 +313,6 @@
 		      
 			      <li class="post">
 			        <a href="load-balancer-algorithm.html">负载均衡算法</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
 			      </li>
 		     
 		  
