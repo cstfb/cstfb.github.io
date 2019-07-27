@@ -3,8 +3,6 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="google-site-verification" content="Tu09pj_cAQ3MsUoUIBYwUxJJPwuYRDCZmPZty7Jwa-Y" />
-    <meta name="baidu-site-verification" content="AlBwWkWk9y" />
     <title>
     
   cstfb
@@ -128,61 +126,14 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="rw-splitting.html">
+                <a class="clearlink" href="ongl.html">
                 
-                  <h1>Spring + Mybatis 读写分离</h1>
+                  <h1>OGNL</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>现在的应用在存储上很多都是一主一从或者一主多从，为了充分发挥从库的优势，在应用层面做到读写分离是一个很好的切入点，在Spring+mybatis的技术栈下，有几个方法:</p>
-
-<h2 id="toc_0">方法一：SQL做数据源隔离</h2>
-
-<p>将查询主库的SQL和查询从库的SQL放在不同的目录下，然后配置不同的数据源。</p>
-
-<pre><code class="language-text">&lt;!--w--&gt;
-&lt;bean id=&quot;masterSqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;
-    &lt;property name=&quot;dataSource&quot; ref=&quot;masterDataSource&quot;/&gt;
-    &lt;property name=&quot;mapperLocations&quot; value=&quot;classpath*:updateDao/mapper/*.xml&quot;/&gt;
-&lt;/bean&gt;
-&lt;bean class=&quot;org.mybatis.spring.mapper.MapperScannerConfigurer&quot;&gt;
-    &lt;property name=&quot;basePackage&quot; value=&quot;com.xxx.updateDao&quot; /&gt;
-    &lt;property name=&quot;sqlSessionFactoryBeanName&quot; value=&quot;masterSqlSessionFactory&quot; /&gt;
-&lt;/bean&gt;
-&lt;!--r--&gt;
-&lt;bean id=&quot;slaveSqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;
-    &lt;property name=&quot;dataSource&quot; ref=&quot;slaveDataSource&quot;/&gt;
-    &lt;property name=&quot;mapperLocations&quot; value=&quot;classpath*:queryDao/mapper/*.xml&quot;/&gt;
-&lt;/bean&gt;
-&lt;bean class=&quot;org.mybatis.spring.mapper.MapperScannerConfigurer&quot;&gt;
-    &lt;property name=&quot;basePackage&quot; value=&quot;com.xxx.queryDao&quot; /&gt;
-    &lt;property name=&quot;sqlSessionFactoryBeanName&quot; value=&quot;slaveSqlSessionFactory&quot; /&gt;
-&lt;/bean&gt;
-&lt;!--  --&gt;
-&lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
-    &lt;property name=&quot;dataSource&quot; ref=&quot;masterDataSource&quot;/&gt;
-&lt;/bean&gt;
-</code></pre>
-
-<p>这么做比较简单，但会造成读和写的代码分开；</p>
-
-<p>接下来的方法都会用到AbstractRoutingDataSource这个抽象类。</p>
-
-<h2 id="toc_1">方法二: Mybatis拦截器+AbstractRoutingDataSource</h2>
-
-<p>通过mybatis插件拦截sql执行，通过对每条sql的xml配置解析来判断走主库还是从库。将主库或者从库的对应枚举设置到全局的ThreadLocal中，结合Abstra ctRoutingDataSource通过读取当前线程的数据源类型来控制执行sql时采用哪一个DataSource，sql完成之后清除ThreadLocal。<br/>
-<img src="media/15600040161314/%E2%80%9CWechatIMG28%E2%80%9D%E7%9A%84%E5%89%AF%E6%9C%AC.jpg" alt="“WechatIMG28”的副本"/></p>
-
-<h2 id="toc_2">方法三: 注解AOP+AbstractRoutingDataSource</h2>
-
-<p>不使用Mybatis插件也可以使用AOP拦截。<br/>
-<img src="media/15600040161314/%E2%80%9CWechatIMG29%E2%80%9D%E7%9A%84%E5%89%AF%E6%9C%AC.jpg" alt="“WechatIMG29”的副本"/></p>
-
-<h2 id="toc_3">注意事项</h2>
-
-<p>1.在高负载下，数据库更新会存在主从延迟。如果业务代码要求读实时数据的场景，必须强制注解从主库查询。</p>
-
+                        	
                         
                       </div>
                   </div>
@@ -190,10 +141,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/6/8</span>
+                    <span class="date">2019/6/16</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
+          					    <span class="posted-in"><a href='%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html'>算法&数据结构</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -301,6 +252,12 @@
 	      
 		      
 			      <li class="post">
+			        <a href="ongl.html">OGNL</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="rw-splitting.html">Spring + Mybatis 读写分离</a>
 			      </li>
 		     
@@ -320,12 +277,6 @@
 		      
 			      <li class="post">
 			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="how-to-learn.html">关于学习</a>
 			      </li>
 		     
 		  

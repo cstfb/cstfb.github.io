@@ -4,13 +4,23 @@
   <title><![CDATA[cstfb]]></title>
   <link href="https://cstfb.github.io/atom.xml" rel="self"/>
   <link href="https://cstfb.github.io/"/>
-  <updated>2019-06-09T22:02:41+08:00</updated>
+  <updated>2019-07-27T17:55:44+08:00</updated>
   <id>https://cstfb.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[OGNL]]></title>
+    <link href="https://cstfb.github.io/ongl.html"/>
+    <updated>2019-06-16T22:22:28+08:00</updated>
+    <id>https://cstfb.github.io/ongl.html</id>
+    <content type="html"><![CDATA[
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Spring + Mybatis 读写分离]]></title>
@@ -245,7 +255,7 @@ class Server{
 }
 </code></pre>
 
-<p>上面的代码时<code>平滑加权平均算法</code>的一个实现, 这个算法实现比较巧妙， 对于一个<code>Server</code>对象，除了<code>weight权重</code>外， 还有一个<code>effectiveWeight有效权重</code>字段， 表示<code>server</code>当前的权重，每次轮询，<code>effectiveWeight</code>加一次的<code>weight</code>, 然后选取<code>effectiveWeight</code>最大的那个<code>server</code>, 然后<code>effectiveWeight</code>减去<code>totalWeight</code>, 循环这个过程, 算法描述如下:</p>
+<p>上面的代码是<code>平滑加权平均算法</code>的一个实现, 这个算法实现比较巧妙， 对于一个<code>Server</code>对象，除了<code>weight权重</code>外， 还有一个<code>effectiveWeight有效权重</code>字段， 表示<code>server</code>当前的权重，每次轮询，<code>effectiveWeight</code>加一次的<code>weight</code>, 然后选取<code>effectiveWeight</code>最大的那个<code>server</code>, 然后<code>effectiveWeight</code>减去<code>totalWeight</code>, 循环这个过程, 算法描述如下:</p>
 
 <ol>
 <li>初始化每个<code>server</code>的权重<code>wi</code>, 设置当前有效权重<code>cwi</code>为<code>wi</code>, 并求得<code>totalWeight</code></li>
@@ -1500,23 +1510,6 @@ jstack -lF $java_pid&gt;&gt; ~/jstack.log
 :(<br/>
 使用idea的菜单进行的操作，以后还是命令行吧..</li>
 </ol>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[记一次xxl-job问题的排查过程]]></title>
-    <link href="https://cstfb.github.io/190113-production-crash.html"/>
-    <updated>2019-01-19T00:12:57+08:00</updated>
-    <id>https://cstfb.github.io/190113-production-crash.html</id>
-    <content type="html"><![CDATA[
-<p>xxl-job是一个开源的分布式任务调度中心，基于quartz的集群模式而设计;<br/>
-前几天发现任务调度失效，具体就体现在特定的时间点不进行调度，通过查看日志发现异常：<br/>
-<code>This scheduler instance instance_name is still active but was recovered by another instance in the cluster.  This may cause inconsistent behavior.</code><br/>
-可以看出的是由于某种原因调度器被恢复掉了，而且是被集群里面的另外一台机器，但是我们环境就一台机器，然后在数据库中发现了另外一台机器，由于是开发环境，所以是允许连接的，那么为什么会被恢复掉了，继续看代码，发现这样一段:<br/>
-<img src="media/15478279775439/15478287783259.jpg" alt="" style="width:621px;"/><br/>
-<img src="media/15478279775439/15478288261038.jpg" alt="" style="width:501px;"/><br/>
-大致是检测其他节点的上一次检测时间是否超过阈值(默认为两台机器的时间是一致的)，如果是那么认为是不可用的节点， 所以时间差的问题就清楚了是因为开发同学本地和服务器时间的时间差引起的，最后关掉开发同学机器的实例 或者 同步两台机器的时间解决这个问题.</p>
 
 ]]></content>
   </entry>

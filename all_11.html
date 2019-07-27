@@ -3,8 +3,6 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="google-site-verification" content="Tu09pj_cAQ3MsUoUIBYwUxJJPwuYRDCZmPZty7Jwa-Y" />
-    <meta name="baidu-site-verification" content="AlBwWkWk9y" />
     <title>
     
   cstfb
@@ -128,21 +126,43 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="project-tablesaw-pandas.html">
+                <a class="clearlink" href="20190328-mvn-messed.html">
                 
-                  <h1>JtableSaw-Pandas</h1>
+                  <h1>一次maven缓存引发的血案</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>项目fork于JtableSaw</p>
+                        	<h2 id="toc_0">现象</h2>
 
-<h2 id="toc_0">目标</h2>
+<p>Back发布后，Back-yp发布失败 (Back-yp 依赖Back)<br/>
+报错信息为:<br/>
+<img src="media/15537038043202/15537039791960.jpg" alt="" style="width:1215px;"/><br/>
+错误信息大意是依赖的Back中依赖的中转中心的包少了一个枚举对象,<br/>
+以下中转中心使用trans代替</p>
+
+<h2 id="toc_1">排查</h2>
 
 <ul>
-<li>封装pandas-like API, 但是由于java缺少python中运算符重载的能力，所以不完全</li>
-<li>添加新的API</li>
+<li>首先排查了back-yp应用中实际使用到的Back和Trans的版本，依次是1.2.1和1.0.40,<br/>
+然后Back中的1.2.1是有新加代码的(版本号未升级), 而对应的Trans的1.0.40的代码是老的代码. 而且理论上Back中1.2.1的代码是mvn私服的release版本，所以理论上不应该有新的代码。</li>
+<li>由于我们在打包环境上打包，然后会使用到mvn本地缓存，所以我们看了mvn本地缓存的情况，Back 1.2.1的代码确实已经变了，然后对应依赖的Trans的版本是test-SNAPSHOT</li>
+<li>查找资料发现mvn install会更新本地的mvn缓存， 即Back的1.2.1的本地缓存，然后Back-yp打包的时候使用了本地缓存，从而有了新代码，然后理论上Trans的版本应该也改变成为test-SNAPSHOT，怎么会是1.0.40呢 ？ 既不是test-SNAPSHOT, 也不是1.0.10(Back 1.2.1实际依赖的Trans版本)</li>
+<li>看来除了mvn install的错误之外，还存在其他的问题, 否则不应该出现错误，除非代码向后不兼容。<br/>
+于是问题变成了如图:
+<img src="media/15537038043202/15537041212073.jpg" alt=""/></li>
 </ul>
+
+<h2 id="toc_2">结果</h2>
+
+<p>经过排查，Back-yp中还有一个依赖Saint.bundle也引用了Trans,版本正式1.0.40, 由于两个Trans版本发生了冲突，mvn选择了1.0.40, 加上mvn install更新了本地缓存，导致了问题的发生</p>
+
+<h2 id="toc_3">解决方案</h2>
+
+<ol>
+<li> Mvn install停用， 使用mvn package， 不覆盖本地缓存， 使用私服上面的发行版本</li>
+<li> 解决Back-yp中的Trans版本冲突，使用一个前置的统一版本</li>
+</ol>
 
                         
                       </div>
@@ -151,10 +171,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/3/17</span>
+                    <span class="date">2019/3/28</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Project.html'>Project</a></span>
+          					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -262,6 +282,12 @@
 	      
 		      
 			      <li class="post">
+			        <a href="ongl.html">OGNL</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="rw-splitting.html">Spring + Mybatis 读写分离</a>
 			      </li>
 		     
@@ -281,12 +307,6 @@
 		      
 			      <li class="post">
 			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="how-to-learn.html">关于学习</a>
 			      </li>
 		     
 		  

@@ -3,12 +3,7 @@
 	background-color: rgba(255,255,255,0.2);
 }
 
-.markdown-body p {
-  letter-spacing: 0.01rem;
-  margin: 0px 0px 20px;
-  line-height: 2em;
-  text-shadow: 0 0 1px rgba(0,0,0,0.22);
-}
+
 .top-bar,.tab-bar{ background-color: #fff; height: 65px;  border-bottom: solid 1px #F5F5F5;}
 
 .tab-bar{ padding-top: 6px; height: 59px;}

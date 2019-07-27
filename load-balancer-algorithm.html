@@ -3,8 +3,6 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="google-site-verification" content="Tu09pj_cAQ3MsUoUIBYwUxJJPwuYRDCZmPZty7Jwa-Y" />
-    <meta name="baidu-site-verification" content="AlBwWkWk9y" />
     <title>
     
   负载均衡算法 - cstfb
@@ -279,7 +277,7 @@ class Server{
 }
 </code></pre>
 
-<p>上面的代码时<code>平滑加权平均算法</code>的一个实现, 这个算法实现比较巧妙， 对于一个<code>Server</code>对象，除了<code>weight权重</code>外， 还有一个<code>effectiveWeight有效权重</code>字段， 表示<code>server</code>当前的权重，每次轮询，<code>effectiveWeight</code>加一次的<code>weight</code>, 然后选取<code>effectiveWeight</code>最大的那个<code>server</code>, 然后<code>effectiveWeight</code>减去<code>totalWeight</code>, 循环这个过程, 算法描述如下:</p>
+<p>上面的代码是<code>平滑加权平均算法</code>的一个实现, 这个算法实现比较巧妙， 对于一个<code>Server</code>对象，除了<code>weight权重</code>外， 还有一个<code>effectiveWeight有效权重</code>字段， 表示<code>server</code>当前的权重，每次轮询，<code>effectiveWeight</code>加一次的<code>weight</code>, 然后选取<code>effectiveWeight</code>最大的那个<code>server</code>, 然后<code>effectiveWeight</code>减去<code>totalWeight</code>, 循环这个过程, 算法描述如下:</p>
 
 <ol>
 <li>初始化每个<code>server</code>的权重<code>wi</code>, 设置当前有效权重<code>cwi</code>为<code>wi</code>, 并求得<code>totalWeight</code></li>
@@ -563,6 +561,12 @@ class WeightedLeastConnectionServer{
 	      
 		      
 			      <li class="post">
+			        <a href="ongl.html">OGNL</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="rw-splitting.html">Spring + Mybatis 读写分离</a>
 			      </li>
 		     
@@ -582,12 +586,6 @@ class WeightedLeastConnectionServer{
 		      
 			      <li class="post">
 			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="how-to-learn.html">关于学习</a>
 			      </li>
 		     
 		  
