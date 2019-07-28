@@ -126,147 +126,363 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="RabbitMq-vs-Kafka.html">
+                <a class="clearlink" href="java-nmt.html">
                 
-                  <h1>RabbitMQ vs Kafka</h1>
+                  <h1>一个JDK的Bug与NMT</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>RabbitMQ和Kafka是两种很经典的分布式消息中间件，这篇文章试着从设计理念，基础特性，适用场景几个方面来描述这两种中间件。</p>
+                        	<h1 id="toc_0">问题复现</h1>
 
-<h2 id="toc_0">关于RabbitMq</h2>
+<pre><code class="language-text">import java.util.UUID;
+import java.util.concurrent.locks.LockSupport;
 
-<ul>
-<li>Consumer</li>
-<li>Publisher</li>
-<li>Exchange: 消息交换</li>
-<li>Route: 消息路由</li>
-</ul>
+public class StringInterner {
+    public static volatile String lastString;
 
-<h2 id="toc_1">关于Kafka</h2>
+    public static void main(String[] args) {
+        for (int iterations = 0; iterations &lt; 40;) {
+            String baseName = UUID.randomUUID().toString();
+            for (int i = 0; i &lt; 1_000_000; i++) {
+                lastString = (baseName + i).intern();
+            }
+            if (++iterations % 10 == 0) {
+                System.gc();
+            }
+            LockSupport.parkNanos(500_000_000);
+        }
+    }
+}
+</code></pre>
 
-<ul>
-<li>Consumer,ConsumerGroup</li>
-<li>Producer</li>
-<li>Kafka source connect</li>
-<li>Kafka sink connect</li>
-<li>Topic and topic partition</li>
-<li>Kafka stream</li>
-<li>Broker</li>
-<li>Zookeeper</li>
-</ul>
+<p>将代码编译(javac)打包(jar)后分别使用G1和CMS运行:</p>
 
-<h2 id="toc_2">设计理念</h2>
+<pre><code class="language-text">java -XX:NativeMemoryTracking=detail -XX:+UnlockDiagnosticVMOptions -XX:+PrintNMTStatistics -XX:+UseG1GC -XX:MetaspaceSize=100m -XX:MaxMetaspaceSize=100m -Xloggc:gc-jdk8-g1.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xms256m -Xmx256m -cp classes StringInterner
+--&gt;
+Symbol (reserved=360278KB, committed=360278KB)
+                            (malloc=359758KB #44949) 
+                            (arena=520KB #1)
+</code></pre>
 
-<h2 id="toc_3">可扩展，分布式，可靠性是两个系统的共同特点。</h2>
+<pre><code class="language-text">java -XX:NativeMemoryTracking=detail -XX:+UnlockDiagnosticVMOptions -XX:+PrintNMTStatistics -XX:MetaspaceSize=100m -XX:MaxMetaspaceSize=100m -XX:+UseStringDeduplication -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -Xloggc:gc-jdk8-marksweep.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xms256m -Xmx256m -cp classes StringInterner
+--&gt;
+Symbol (reserved=20830KB, committed=20830KB)
+                            (malloc=20310KB #2518) 
+                            (arena=520KB #1)
+</code></pre>
 
-<p>RabbitMq是经典的面向消息队列而设计的，它实现了AMQP协议。RabbitMq强大的地方在于它实现了高度灵活的消息路由功能，非常便于使用和拓展。<br/>
-<img src="media/15550739440669/15558383060583.jpg" alt=""/></p>
+<p>上面的代码模拟了填充字符串缓存池的过程, 这里引出了java8(1.8.0_144-b01可复现,具体可见<a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8180048">Bug描述</a>和<a href="https://bugs.openjdk.java.net/browse/JDK-8180048">补丁进度</a>)中的一个G1垃圾收集器的bug:维护字符串缓冲区的数据结构内存泄漏(G1垃圾收集器)。</p>
 
-<hr/>
+<h1 id="toc_1">问题解释</h1>
 
-<p>Kafka是一个分布式的提交日志，这个提交日志<code>(commit-log)</code>的概念上来说和数据库的没有区别：都能够记录数据的变化并且可以重放。但是和数据库不同的是数据库的日志用来做恢复用而在Kafka中日志是一等公民。Kafka中没有队列的概念，一开始可能会让人感觉到奇怪。但这也是它的优势所在。<br/>
-<img src="media/15550739440669/15558631089848.jpg" alt=""/></p>
-
-<hr/>
-
-<p>从设计上来说，两者比较明显的一个区别是rabbitmq的中的消息是不进行持久化的，Kafka则相反(有淘汰策略)。因此Kafka支持多个消费者同时消费一个topic而互不影响，RabbitMq则不能做到多个消费者消费同一个队列而画像不受到影响(消费后即删除)。但RabbitMq的灵活的消息路由机制可以达到相同的目的。<br/>
-另外RabbitMq是以队列(queue)为单位的。而Kafka是以分区(partition)为单位的。</p>
-
-<h2 id="toc_4">PUB and SUB</h2>
-
-<h2 id="toc_5">RabbitMq和Kafka都支持并发的消息生产和消费，但是两者各自的特性不同。</h2>
-
-<p>RabbitMq和Kafka都支持基础的消息的发布功能，RabbitMq为了支持丰富的路由策略，因此生产者不是直接将消息发送到队列而是发送到Exchange中<code>Channel.basicPublish(String exchange, String routingKey, boolean mandatory, boolean immediate, BasicProperties props, byte[] body)</code>,然后根据exchange type和routingKey还有其他属性决定将消息发送到什么队列:</p>
-
-<ul>
-<li>exchange type = fanout, 广播模式，exchange会将消息广播到所有绑定到这个exchange的其他exchange和queue</li>
-<li>exchange type = direct, 精确匹配, 根据消息的routingKey精确发送到和Exchange绑定的Queue(Queue申明绑定时同时指定routingkey)</li>
-<li>exchange type = Topic , 模糊匹配，Queue绑定时可以指定正则，*代表任意字符, #代表任意数字</li>
-<li>exchange type = Header, 消息头匹配，这种方式忽略routingKey，而是根据发送消息时指定的消息头匹配，同样队列绑定时也要指定消息头匹配规则</li>
-<li>exchange type = Consistent Hashing, 一致性哈希，exchange根据routingKey, header, message properties 的哈希值将消息分布到不同的队列中去，这个特性提供了类似于Kafka中分区的功能</li>
-<li>死信队列，队列可以配置条件(size,ttl等)将消息驱逐到指定的exchange中</li>
-<li>其他例如临时类型(Ephemeral Exchanges)和优先类型(Priority Exchanges)</li>
-</ul>
-
-<p>从性能上来说，fanout的性能时最高的，不用做任何判断，direct性能差一点，需要精确匹配，Header最强大也性能也最差。<br/>
-RabbitMq中一个队列可以有多个消费者，但一条消息只允许一个消费者消费，消费完之后会从队列中消除，提高吞吐量的方法是使用Push API;</p>
-
-<hr/>
-
-<p>Kafka的消息是持久化的，RabbitMq中的消息是会消亡的。因此类似于RabbitMq中的重新入队或者延迟对Kakfa来说没有意义，重新入队会造成消息顺序混乱和重复，Kafka也没有内置的延迟策略。<br/>
-Kafka通过类似于<code>KafkaProducer.send(new ProducerRecord(topic, key, data))</code>的API将消息发送到指定主题和分区，如果采用默认的分区器，那么Kafka会对key进行散列，同一个key被发送到同一个分区，如果没有指定key，那么分区器将随机分配到某一个分区，另外也可以指定自定义的分区器，这取决于你想要怎么样的分区策略。<br/>
-Kafka要对消息做持久化，那么是不是意味着Kafka消息生产的性能很低？并不是，Kafka使用操作系统缓冲区缓存消息，相当于每次都是操作内存，因此效率是非常高，另一方面Kafka在硬盘中的存储方式是顺序存储的，对于硬盘来说，数据寻址是性能消耗的主要原因之一，由于是顺序存储，Kafka在写入的时候顺序写入硬盘的效率比一般的写入效率高出很多。顺序存储的另一个好处是读取的效率很高，另外Kafka使用了零复制技术，意味着原本从文件系统-&gt;内核空间-&gt;用户空间-&gt;网卡通道要经过两次内存缓存区复制变成了直接从文件系统发送到网络通道，而不需要经过任何内存缓存区，避免了字节复制，从而提高了性能。<br/>
-Kafka中的消息持久化使得各个消费者可以同时消费而互不影响，Kafka中的消费群组保证了同一条消息只被其中一个消费者消费（再均衡的情况下可能发生重复消费）。</p>
-
-<h2 id="toc_6">PULL or PUSH</h2>
-
-<h2 id="toc_7">RabbitMq使用推模型，而Kafka使用拉模型。</h2>
-
-<p>RabbitMq使用的是推送模型（push)，同时通过设置<code>prefetch limit</code>预取值来防止生产速度大于消费速度，这样做的好处是消息延迟低并且也很适合基于队列的消息架构。<br/>
-但其实RabbitMq也支持拉API, 从Spring-AMQP的实现来讲，Push API使用Listner Container并且注册回调函数， 然后Pull API使用的是Channel.basicGet。</p>
-
-<hr/>
-
-<p>Kafka使用的拉模型（pull），消费者从给定的偏移量开始批量请求消息。为了防止无意义的请求轮询，Kakfa允许长轮询（long-polling）。<br/>
-由于分区的设计，Kafka使用拉模型是比较合理的，使用推模型的话就不灵活了。由于Kafka消息的消费没有竞争，所以通过批量获取消息可以达到很高的吞吐量。对于RabbitMq来说这么做没有太大的意义因为希望尽快的分配一个消息并且完成处理。</p>
-
-<h2 id="toc_8">消息投递保证</h2>
-
-<ul>
-<li><code>最多一次</code> :意味着消息不会重复投递但是可能丢失(RabbitMq &amp; Kafka)</li>
-<li><code>最少一次</code> :意味着消息不会丢失但可能重复投递，意味着消息可能被成功处理两次(RabbitMq &amp; Kafka)</li>
-<li><code>精确一次</code> :消息系统的皇冠，准确投递一次(Kafka在很有限的情况下满足)</li>
-</ul>
-
-<hr/>
-
-<p>消息系统可以简单的抽象化为两个组件:生产者和消费者, 不管是消息的生产还是消费都离不开这两种角色:<br/>
-<img src="media/15550739440669/15570192785099.jpg" alt="" style="width:362px;"/></p>
-
-<p>正常情况下，为了保证消息成功消费，生产者和消费者会进行两次通信：发送消息和确认消费，那么其中有四个地方可能会发生中断或者失败(网络原因/bug/故障等等)。<br/>
-在看相关的资料之前，我很疑惑这种投递保证要保证的究竟是什么？指的是消息发送还是处理成功的次数？如果四个步骤中发生了问题应该如何处理？ 在send和process阶段如果出错，那么重发消息是正确的， 如果是response和ack阶段出错那就不应该再重发，kafka保证的exactly once究竟是怎么做到的呢？看了资料之后才有了大概的理解。<br/>
-首先，消息投递的保证从结果来看比较好理解一点，最多一次(at-most-once), 最少一次(at-least-once)都不能保证除了问题之后消息处理的结果不会发生变化，精确一次(exactly-once)就可以做到正常情况下和出了问题的情况下消息的处理结果还是一样的，例如消息计数。</p>
+<p>在java6时代，字符串缓存区是放在永久代也就是MetaSpace中的，并且是一个固定大小，因此在java6中应该谨慎使用<code>String.intern()</code>方法, 以免造成OOM;<br/>
+java7以后，字符串缓存区移到了堆内存中，同时可以进行垃圾回收。<a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8180048">原文见:</a></p>
 
 <blockquote>
-<p>the result of computaion -- including all state changes -- is the same if the error occurs during processing or not.</p>
+<p>the issue is that some C++ helper data structure for managing the interned string list leaks in G1; it is shown in the &quot;Symbol&quot; category in NMT output, but that has nothing to do with Metaspace.</p>
 </blockquote>
 
-<p>那么其实不难看出，无论生产者和消费者的组件如何设计，一般情况下都存在某个阶段需要用户代码参与，此时exactly-once的保证是极难达成的，因为用户代码的幂等性无法保证，所以从结果来看，完成精确一次的保证是需要生产者和消费者之间步伐完全统一的，那么kafka是如何做到这一点的呢？其实kafka所说的exactly-once保证也只在它的stream api和producer中有，再producer中，kafka为每个消息附加一个唯一的id，这样保证消息不会被重复处理。stream api的场景是几个topic的结果处理后输出到另一个topic，在可以掌控输入和输出端的情况下做到了exactly-once的保证(<a href="https://www.youtube.com/watch?v=JPcT1GGzszA">Exactly-Once Semantics in Apache Kafka</a>)</p>
+<h1 id="toc_2">NMT</h1>
 
-<h2 id="toc_9">消息排序</h2>
+<p>NMT = Native Memory Tracking 本地内存跟踪<br/>
+NMT是Java HotSpot VM提供的跟踪内部内存使用的工具，结合jcmd命令可以在不同级别上分析内存的使用, NMT的关键特性有:</p>
 
-<h2 id="toc_10">Kafka和RabbitMq都能保证消息的顺序</h2>
+<ul>
+<li>NMT默认在HotSpot上是关闭的，要打开需要使用<code>-XX:NativeMemoryTracking=summary</code> 或者<code>-XX:NativeMemoryTracking=detail</code></li>
+<li>内存跟踪数据可以使用jcmd命令查看，具体用法<code>jcmd &lt;pid&gt; VM.native_memory [summary | detail | baseline | summary.diff | detail.diff | shutdown] [scale= KB | MB | GB]</code></li>
+<li>NMT可以生成汇总和明细内存数据</li>
+<li>建立内存基线方便后面进行对比</li>
+<li>JVM退出时可以输出内存使用报告, 具体用法<code>-XX:+UnlockDiagnosticVMOptions -XX:+PrintNMTStatistics</code></li>
+<li>NMT可以使用jcmd工具关闭，但无法start或者restart</li>
+<li>NMT无法跟踪非java代码分配的内存，例如native方法</li>
+</ul>
 
-<p>具体情况是两者在单线程情况下都能保证在队列和分区中的消息的顺序是和发送顺序一样的。这很好理解，因为在多线程的情况下的顺序是很难定义的，而kafka中还有分区的概念。</p>
+<h2 id="toc_3">使用NMT检测内存泄漏</h2>
 
-<h2 id="toc_11">高可用&amp;容错</h2>
+<ul>
+<li>开启NMT , <code>-XX:NativeMemoryTracking=summary</code> 或者<code>-XX:NativeMemoryTracking=detail</code></li>
+<li>使用<code>jcmd &lt;pid&gt; VM.native_memory baseline</code>建立内存基线</li>
+<li>使用<code>jcmd &lt;pid&gt; VM.native_memory detail.diff</code>检测内存变化</li>
+<li>如果内存泄漏比较缓慢，那么需要多等待一会儿</li>
+</ul>
 
-<h2 id="toc_12">Kafka和RabbitMq都有良好的高可用机制。例如分区副本，镜像队列，消息和元数据持久化等等。</h2>
+<h2 id="toc_4">读懂NMT输出的数据</h2>
 
-<p>分布式系统总是离不开可用性和一致性的问题，CAP理论是其中的一个代表, <a href="https://www.infoq.cn/article/cap-twelve-years-later-how-the-rules-have-changed">CAP理论十二年回顾：&quot;规则&quot;变了</a><br/>
-正如前文提到的， Kafka是一个分布式的提交日志，所以是对消息做了持久化，另外Kafka会对Topic以及Partition做多副本。另外Kafka使用ZK保存集群的元数据信息和消费者的信息。<br/>
-RabbitMq中存在镜像队列的概念，即存在一主多从的队列，所有操作会在镜像队列中重放，保证队列的高可用，另外元数据信息使用的是内置的<a href="https://zh.wikipedia.org/wiki/Mnesia">Mnesia</a>数据库.</p>
+<p>下表展示了NMT的的内存分类</p>
 
-<h2 id="toc_13">使用场景</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
 
-<h2 id="toc_14">RabbitMq适用于低延迟的业务处理系统，Kafka使用与高吞吐的流处理系统。</h2>
+<tbody>
+<tr>
+<td>Java Heap</td>
+<td>堆</td>
+</tr>
+<tr>
+<td>Class</td>
+<td>类元数据</td>
+</tr>
+<tr>
+<td>Code</td>
+<td>代码</td>
+</tr>
+<tr>
+<td>GC</td>
+<td>GC使用的数据，例如卡表</td>
+</tr>
+<tr>
+<td>Compiler</td>
+<td>编译器生成代码使用的内存</td>
+</tr>
+<tr>
+<td>Symbol</td>
+<td>符号，例如变量名</td>
+</tr>
+<tr>
+<td>Memory Tracking</td>
+<td>NMT</td>
+</tr>
+<tr>
+<td>Pooled Free Chunks</td>
+<td>Arena内存块池使用</td>
+</tr>
+<tr>
+<td>Shared space for classes</td>
+<td>类共享存档映射的内存</td>
+</tr>
+<tr>
+<td>Thread</td>
+<td>线程使用，包括线程数据结构，资源区和句柄区</td>
+</tr>
+<tr>
+<td>Thread stack</td>
+<td>线程堆栈,被标记为已提交</td>
+</tr>
+<tr>
+<td>Internal</td>
+<td>不在以上类别，例如命令行解释器</td>
+</tr>
+<tr>
+<td>Unknown</td>
+<td>无法确定的内存</td>
+</tr>
+</tbody>
+</table>
 
-<p>RabbitMq的Push API的延迟较低，但相对于Kafka对于吞吐的优化而言，RabbitMq的吞吐没有那么高，并且由于低延迟所以适合于业务相关的消息处理，例如交易支付等。Kafka由于其Pull API和高吞吐设计，比较适用于数据仓库类的流计算处理，但若业务系统对于持久化的需求很强烈，那么采用Kafka也是很好的选择。</p>
+<hr/>
 
-<h1 id="toc_15">总结</h1>
+<h3 id="toc_5">准备知识</h3>
 
-<p>水平有限, 仅限参考。</p>
+<p><code>committed</code>已提交内存是实际使用的,例如<code>-Xms100m -Xmx1000m</code>，那么jvm会<code>reserve 1000MB</code>，因为初始内存为<code>100MB</code>， 因此<code>committed 100MB</code><br/>
+<code>Arena</code>是一块使用<code>malloc</code>分配出来的内存。当退出范围或离开代码区域时，内存会从这些块中大量释放。这些块可以在其他子系统中重用，以保存临时内存，例如线程前分配。Arena malloc策略确保没有内存泄漏。因此Arena是作为一个整体而不是单个对象进行跟踪的。某些初始内存无法被跟踪。<br/>
+需要注意的是启用NMT会降低机器5%到10%的性能，并且会带来内存使用的提升，因为NMT会在每个<code>malloc</code>的内存头部添加<code>2 machine words</code>作为<code>malloc header</code>, NMT使用的内存也会被NMT追踪。<a href="https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/tooldescr007.html">文档</a>原话如下:</p>
 
-<h1 id="toc_16">Refer</h1>
+<blockquote>
+<p>Enabling NMT will result in a 5-10 percent JVM performance drop and memory usage for NMT adds 2 machine words to all malloc memory as malloc header. NMT memory usage is also tracked by NMT.</p>
+</blockquote>
 
-<p><a href="https://jack-vanlightly.com/blog/2017/12/4/rabbitmq-vs-kafka-part-1-messaging-topologies">rabbitmq-vs-kafka-part-1-messaging-topologies</a><br/>
-<a href="https://jack-vanlightly.com/blog/2017/12/5/rabbitmq-vs-kafka-part-2-rabbitmq-messaging-patterns-and-topologies">rabbitmq-vs-kafka-part-2-rabbitmq-messaging-patterns-and-topologies</a><br/>
-<a href="https://jack-vanlightly.com/blog/2017/12/8/rabbitmq-vs-kafka-part-3-kafka-messaging-patterns">rabbitmq-vs-kafka-part-3-kafka-messaging-patterns</a><br/>
-<a href="https://jack-vanlightly.com/blog/2017/12/15/rabbitmq-vs-kafka-part-4-message-delivery-semantics-and-guarantees">rabbitmq-vs-kafka-part-4-message-delivery-semantics-and-guarantees</a><br/>
-<a href="https://jack-vanlightly.com/blog/2018/8/31/rabbitmq-vs-kafka-part-5-fault-tolerance-and-high-availability-with-rabbitmq">rabbitmq-vs-kafka-part-5-fault-tolerance-and-high-availability-with-rabbitmq</a><br/>
-<a href="https://jack-vanlightly.com/blog/2018/9/2/rabbitmq-vs-kafka-part-6-fault-tolerance-and-high-availability-with-kafka">rabbitmq-vs-kafka-part-6-fault-tolerance-and-high-availability-with-kafka</a></p>
+<hr/>
+
+<h3 id="toc_6">NMT汇总数据</h3>
+
+<p>使用NMT追踪内存分配汇总数据需要使用<code>-XX:NativeMemoryTracking=summary</code>开启<br/>
+然后使用<code>jcmd &lt;pid&gt; VM.native_memory summary</code>打印汇总数据，样例如下:</p>
+
+<pre><code class="language-text">Total:  reserved=664192KB,  committed=253120KB                                           &lt;--- NMT追踪的总内存
+ 
+-                 Java Heap (reserved=516096KB, committed=204800KB)                      &lt;--- 堆内存
+                            (mmap: reserved=516096KB, committed=204800KB)
+ 
+-                     Class (reserved=6568KB, committed=4140KB)                          &lt;--- 类的元数据
+                            (classes #665)                                               &lt;--- 类加载数 665
+                            (malloc=424KB, #1000)                                        &lt;--- malloc分配的内存大小，malloc数1000
+                            (mmap: reserved=6144KB, committed=3716KB)
+ 
+-                    Thread (reserved=6868KB, committed=6868KB)
+                            (thread #15)                                                 &lt;--- 线程数
+                            (stack: reserved=6780KB, committed=6780KB)                   &lt;--- 线程堆栈使用内存数
+                            (malloc=27KB, #66)
+                            (arena=61KB, #30)                                            &lt;--- 资源&amp;句柄
+ 
+-                      Code (reserved=102414KB, committed=6314KB)
+                            (malloc=2574KB, #74316)
+                            (mmap: reserved=99840KB, committed=3740KB)
+ 
+-                        GC (reserved=26154KB, committed=24938KB)
+                            (malloc=486KB, #110)
+                            (mmap: reserved=25668KB, committed=24452KB)
+ 
+-                  Compiler (reserved=106KB, committed=106KB)
+                            (malloc=7KB, #90)
+                            (arena=99KB, #3)
+ 
+-                  Internal (reserved=586KB, committed=554KB)
+                            (malloc=554KB, #1677)
+                            (mmap: reserved=32KB, committed=0KB)
+ 
+-                    Symbol (reserved=906KB, committed=906KB)
+                            (malloc=514KB, #2736)
+                            (arena=392KB, #1)
+ 
+-           Memory Tracking (reserved=3184KB, committed=3184KB)
+                            (malloc=3184KB, #300)
+ 
+-        Pooled Free Chunks (reserved=1276KB, committed=1276KB)
+                            (malloc=1276KB)
+ 
+-                   Unknown (reserved=33KB, committed=33KB)
+                            (arena=33KB, #1)
+</code></pre>
+
+<hr/>
+
+<h3 id="toc_7">NMT明细数据</h3>
+
+<p>使用<code>-XX:NativeMemoryTracking=detail</code>开启明细追踪，NMT会追踪分配内存最多的几个方法，然后使用<code>jcmd &lt;pid&gt; VM.native_memory detail</code>打印明细数据，样例如下:</p>
+
+<pre><code class="language-text">Virtual memory map:
+ 
+[0x8f1c1000 - 0x8f467000] reserved 2712KB for Thread Stack
+                from [Thread::record_stack_base_and_size()+0xca]
+        [0x8f1c1000 - 0x8f467000] committed 2712KB from [Thread::record_stack_base_and_size()+0xca]
+ 
+[0x8f585000 - 0x8f729000] reserved 1680KB for Thread Stack
+                from [Thread::record_stack_base_and_size()+0xca]
+        [0x8f585000 - 0x8f729000] committed 1680KB from [Thread::record_stack_base_and_size()+0xca]
+ 
+[0x8f930000 - 0x90100000] reserved 8000KB for GC
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x555]
+        [0x8f930000 - 0x90100000] committed 8000KB from [PSVirtualSpace::expand_by(unsigned int)+0x95]
+ 
+[0x902dd000 - 0x9127d000] reserved 16000KB for GC
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x555]
+        [0x902dd000 - 0x9127d000] committed 16000KB from [os::pd_commit_memory(char*, unsigned int, unsigned int, bool)+0x36]
+ 
+[0x9127d000 - 0x91400000] reserved 1548KB for Thread Stack
+                from [Thread::record_stack_base_and_size()+0xca]
+        [0x9127d000 - 0x91400000] committed 1548KB from [Thread::record_stack_base_and_size()+0xca]
+ 
+[0x91400000 - 0xb0c00000] reserved 516096KB for Java Heap                                                                            &lt;--- 保留的内存地址范围
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x190]                  &lt;--- 保留内存的方法调用(callsite)
+        [0x91400000 - 0x93400000] committed 32768KB from [VirtualSpace::initialize(ReservedSpace, unsigned int)+0x3e8]               &lt;--- 已提交的内存以及方法调用
+        [0xa6400000 - 0xb0c00000] committed 172032KB from [PSVirtualSpace::expand_by(unsigned int)+0x95]
+ 
+[0xb0c61000 - 0xb0ce2000] reserved 516KB for Thread Stack
+                from [Thread::record_stack_base_and_size()+0xca]
+        [0xb0c61000 - 0xb0ce2000] committed 516KB from [Thread::record_stack_base_and_size()+0xca]
+ 
+[0xb0ce2000 - 0xb0e83000] reserved 1668KB for GC
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x555]
+        [0xb0ce2000 - 0xb0cf0000] committed 56KB from [PSVirtualSpace::expand_by(unsigned int)+0x95]
+        [0xb0d88000 - 0xb0d96000] committed 56KB from [CardTableModRefBS::resize_covered_region(MemRegion)+0xebf]
+        [0xb0e2e000 - 0xb0e83000] committed 340KB from [CardTableModRefBS::resize_covered_region(MemRegion)+0xebf]
+ 
+[0xb0e83000 - 0xb7003000] reserved 99840KB for Code
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x555]
+        [0xb0e83000 - 0xb0e92000] committed 60KB from [VirtualSpace::initialize(ReservedSpace, unsigned int)+0x3e8]
+        [0xb1003000 - 0xb139b000] committed 3680KB from [VirtualSpace::initialize(ReservedSpace, unsigned int)+0x37a]
+ 
+[0xb7003000 - 0xb7603000] reserved 6144KB for Class
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x555]
+        [0xb7003000 - 0xb73a4000] committed 3716KB from [VirtualSpace::initialize(ReservedSpace, unsigned int)+0x37a]
+ 
+[0xb7603000 - 0xb760b000] reserved 32KB for Internal
+                from [PerfMemory::create_memory_region(unsigned int)+0x8ba]
+ 
+[0xb770b000 - 0xb775c000] reserved 324KB for Thread Stack
+                from [Thread::record_stack_base_and_size()+0xca]
+        [0xb770b000 - 0xb775c000] committed 324KB from [Thread::record_stack_base_and_size()+0xca]
+</code></pre>
+
+<hr/>
+
+<h3 id="toc_8">NMT内存基线以及对比</h3>
+
+<p>开启汇总或者明细追踪，然后使用<code>jcmd &lt;pid&gt; VM.native_memory baseline</code>建立内存基线，然后预热应用，然后使用<code>jcmd &lt;pid&gt; VM.native_memory summary.diff</code> 或者 <code>jcmd &lt;pid&gt; VM.native_memory detail.diff</code>打印内存变化的情况,<br/>
+汇总样例如下:</p>
+
+<pre><code class="language-text">Total:  reserved=664624KB  -20610KB, committed=254344KB -20610KB                         &lt;--- 总内存与基线对比. &#39;+&#39;=增加 &#39;-&#39;=减少
+ 
+-                 Java Heap (reserved=516096KB, committed=204800KB)
+                            (mmap: reserved=516096KB, committed=204800KB)
+ 
+-                     Class (reserved=6578KB +3KB, committed=4530KB +3KB)
+                            (classes #668 +3)                                            &lt;--- 新加载了3个类
+                            (malloc=434KB +3KB, #930 -7)                                 &lt;--- malloc的内存新增了3KB,但malloc数量减少了7次
+                            (mmap: reserved=6144KB, committed=4096KB)
+ 
+-                    Thread (reserved=60KB -1129KB, committed=60KB -1129KB)
+                            (thread #16 +1)                                              &lt;--- 新增了一个线程
+                            (stack: reserved=7104KB +324KB, committed=7104KB +324KB)
+                            (malloc=29KB +2KB, #70 +4)
+                            (arena=31KB -1131KB, #32 +2)                                 &lt;--- 新增2块arena(多了一个资源区和一个句柄区)
+ 
+-                      Code (reserved=102328KB +133KB, committed=6640KB +133KB)
+                            (malloc=2488KB +133KB, #72694 +4287)
+                            (mmap: reserved=99840KB, committed=4152KB)
+ 
+-                        GC (reserved=26154KB, committed=24938KB)
+                            (malloc=486KB, #110)
+                            (mmap: reserved=25668KB, committed=24452KB)
+ 
+-                  Compiler (reserved=106KB, committed=106KB)
+                            (malloc=7KB, #93)
+                            (arena=99KB, #3)
+ 
+-                  Internal (reserved=590KB +35KB, committed=558KB +35KB)
+                            (malloc=558KB +35KB, #1699 +20)
+                            (mmap: reserved=32KB, committed=0KB)
+ 
+-                    Symbol (reserved=911KB +5KB, committed=911KB +5KB)
+                            (malloc=519KB +5KB, #2921 +180)
+                            (arena=392KB, #1)
+ 
+-           Memory Tracking (reserved=2073KB -887KB, committed=2073KB -887KB)
+                            (malloc=2073KB -887KB, #84 -210)
+ 
+-        Pooled Free Chunks (reserved=2624KB -15876KB, committed=2624KB -15876KB)
+                            (malloc=2624KB -15876KB)
+</code></pre>
+
+<p>明细样例如下：</p>
+
+<pre><code class="language-text">Details:
+ 
+[0x01195652] ChunkPool::allocate(unsigned int)+0xe2
+                            (malloc=482KB -481KB, #8 -8)
+ 
+[0x01195652] ChunkPool::allocate(unsigned int)+0xe2
+                            (malloc=2786KB -19742KB, #134 -618)
+ 
+[0x013bd432] CodeBlob::set_oop_maps(OopMapSet*)+0xa2
+                            (malloc=591KB +6KB, #681 +37)
+ 
+[0x013c12b1] CodeBuffer::block_comment(int, char const*)+0x21                &lt;--- [方法调用地址] 方法名 + 偏移量
+                            (malloc=562KB +33KB, #35940 +2125)               &lt;--- malloc大小增加33KB #malloc数增加2125
+ 
+[0x0145f172] ConstantPool::ConstantPool(Array&lt;unsigned char&gt;*)+0x62
+                            (malloc=69KB +2KB, #610 +15)
+ 
+...
+ 
+[0x01aa3ee2] Thread::allocate(unsigned int, bool, unsigned short)+0x122
+                            (malloc=21KB +2KB, #13 +1)
+ 
+[0x01aa73ca] Thread::record_stack_base_and_size()+0xca
+                            (mmap: reserved=7104KB +324KB, committed=7104KB +324KB)
+</code></pre>
+
+<hr/>
+
+<h3 id="toc_9">关闭NMT</h3>
+
+<p><code>jcmd &lt;pid&gt; VM.native_memory shutdown</code></p>
 
                         
                       </div>
@@ -275,10 +491,10 @@ RabbitMq中存在镜像队列的概念，即存在一主多从的队列，所有
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/4/12</span>
+                    <span class="date">2019/4/16</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='distribute-system.html'>分布式</a></span>
+          					    <span class="posted-in"><a href='JDK.html'>JDK</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -386,6 +602,12 @@ RabbitMq中存在镜像队列的概念，即存在一主多从的队列，所有
 	      
 		      
 			      <li class="post">
+			        <a href="classloader.html">ClassLoader</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="2019-tour-de-france.html">2019年环法</a>
 			      </li>
 		     
@@ -405,12 +627,6 @@ RabbitMq中存在镜像队列的概念，即存在一主多从的队列，所有
 		      
 			      <li class="post">
 			        <a href="CompressedOops.html">JVM压缩指针(CompressedOops)</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="load-balancer-algorithm.html">负载均衡算法</a>
 			      </li>
 		     
 		  

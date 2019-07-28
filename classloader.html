@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  杂七杂八 - cstfb
+  ClassLoader - cstfb
   
   </title>
-  
-  
+  <meta name="keywords" content="ClassLoader" />
+  <meta name="description" content="JDK ClassLoader" />
   <link href="atom.xml" rel="alternate" title="cstfb" type="application/atom+xml">
     <link rel="stylesheet" href="asset/css/foundation.min.css" />
     <link rel="stylesheet" href="asset/css/docs.css" />
@@ -117,143 +117,169 @@
        
 
  <script type="text/javascript">
-	$(function(){
-		$('#menu_item_index').addClass('is_active');
-	});
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
 </script>
 <div class="row">
-	<div class="large-8 medium-8 columns">
-		<div class="markdown-body home-categories">
-		
-			<div class="article">
-                <a class="clearlink" href="mweb-beautiful.html">
-                
-                  <h1>MWEB网站--自定义</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">搜索引擎提交</h2>
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>ClassLoader</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2019/7/28</span>
 
-<p>改模版的header的meta元数据</p>
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='JDK.html'>JDK</a></span>
+           
+         
+          <span class="comments">
+            
 
-<h2 id="toc_1">自定义css</h2>
+            
+          </span>
 
-<p>改样式模版的css的文件<br/>
-例如阴影文字:</p>
+        </div>
+      </div><!-- article -->
 
-<pre><code class="language-text">.markdown-body p {
-  letter-spacing: 0.01rem;
-  margin: 0px 0px 20px;
-  line-height: 2em;
-  text-shadow: 0 0 1px rgba(0,0,0,0.22);
+      <div class="article-content">
+      <ul>
+<li>
+<a href="#toc_0">特性</a>
+<ul>
+<li>
+<a href="#toc_1">双亲委派</a>
+</li>
+<li>
+<a href="#toc_2">类关系的判断</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_3">类隔离</a>
+</li>
+<li>
+<a href="#toc_4">类隔离中的坑</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">特性</h2>
+
+<h3 id="toc_1">双亲委派</h3>
+
+<p>双亲委派是说类加载的时候首先委托父加载器去加载，如果爸爸加载不出来再自己尝试加载，这是一个递归的过程，然后：</p>
+
+<ul>
+<li>并不是所有类加载器都遵循这个规则，这个逻辑在各自的实现中是可以自定义的，例如需要对类进行隔离的时候（插件，热加载），多个版本存在的情况下，需要子类首先对需要对类进行拦截加载，这样才能做到多个版本的类同时并存；另外一种情况可以参见JDK对jdbc接口的加载，实际的加载动作是BootStrap委托给线程的ContextClassLoader去加载的；</li>
+<li>双亲委派导致的一个结果是，父加载器加载的类对子类是可见的，但反之是不成立的</li>
+</ul>
+
+<h3 id="toc_2">类关系的判断</h3>
+
+<p>由于使用了自定义的ClassLoader之后同一个类可以存在多个Class（不管实现一样不一样），所以在对类型进行判定时，除了我们平时看到的类路径之外，还有就是ClassLoader，所以不同类型ClassLoader加载出来的类之间是不能进行转换的，所以这样会造成一个特别奇怪的现象就是明明一样的类却无法做类型转换</p>
+
+<pre><code class="language-text">package com.cs.cs.web.testcode.jvm;
+
+import com.cs.cs.web.testcode.jvm.helper.SimpleClass1;
+
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
+
+public class HowClassLoaderWork {
+
+    public static void main(String[] args) throws Exception {
+        // AppClassLoader加载一次
+        SimpleClass1 class1 = new SimpleClass1();
+        // 这边parent设置为null, 不然会代理到AppClassLoader
+        URLClassLoader classLoader = new URLClassLoader(
+                new URL[]{ new URL(&quot;file:cs.jar&quot;) },
+                null);
+
+        Class clz = classLoader.loadClass(&quot;com.cs.cs.web.testcode.jvm.helper.SimpleClass1&quot;);
+        // ok
+        Object object = clz.newInstance();
+        System.out.println(object.getClass().getName());
+        // error
+        SimpleClass1 obj = (com.cs.cs.web.testcode.jvm.helper.SimpleClass1)clz.newInstance();
+
+//        obj = class1;
+    }
+
 }
 </code></pre>
 
-<h2 id="toc_2">添加dc word cloud</h2>
+<h2 id="toc_3">类隔离</h2>
 
-<p>在首页添加对应的js代码<br/>
-其中<code>d3.select()</code> 需要自定义一个元素, 用作单词云的容易</p>
+<p>想象一个实际的场景，现在我们需要设计一个热加载的插件，然后我们需要动态加载然后运行， 这其中可能涉及到了很多类，并且依赖了一些开源的组件，那么：</p>
 
-<pre><code class="language-text">&lt;script src=&quot;//d3js.org/d3.v3.min.js&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;asset/js/d3.layout.cloud.js&quot;&gt;&lt;/script&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-    var fill = d3.scale.category20();
-    var words = [{&quot;text&quot;:&quot;This&quot;, &quot;url&quot;:&quot;http://google.com/&quot;},
-                 {&quot;text&quot;:&quot;is&quot;, &quot;url&quot;:&quot;http://bing.com/&quot;},
-                 {&quot;text&quot;:&quot;some&quot;, &quot;url&quot;:&quot;http://somewhere.com/&quot;},
-                 {&quot;text&quot;:&quot;random&quot;, &quot;url&quot;:&quot;http://random.org/&quot;},
-                 {&quot;text&quot;:&quot;text&quot;, &quot;url&quot;:&quot;http://text.com/&quot;}]
-    var width = 800;
-    var height = 300;
-    for (var i = 0; i &lt; words.length; i++) {
-        words[i].size = 10 + Math.random() * 90;
-    }
+<ul>
+<li>为了保证插件的稳定性，我们需要把插件的类和应用环境的类开来，这么一来需要用到自定义ClassLoader，然后在ClassLoader中对某些我们关注的类做拦截，这样对于一些显示加载的类我们可以使用自定义类加载器去加载</li>
+<li>假设我们有一个入口类，名叫<code>PluginLauncher</code>, 这个类我们可以通过<code>ClassLoader.loadClass(&#39;PluginLauncher&#39;)</code>来动态加载，那么其他<code>PluginLauncher</code>很多隐式依赖的类怎么保证隔离呢？</li>
+</ul>
+
+<p>这里一个是显示加载，一个是隐式加载，幸运的是JDK已经考虑到了这一点，对于隐式加载的类JVM会默认使用最初始开始的加载器即ClassLoader.loadClass()对应的加载器;这样一来，用户只需要保证自定义加载器包含了所有需要类即可；</p>
+
+<h2 id="toc_4">类隔离中的坑</h2>
+
+<p>上面有说到就是父加载器加载的类对于子加载器是可见的，但是反之不成立，因此这个地方存在的一个坑可能是: 父加载器加载了ClassA，然后ClassA依赖了ClassB，然而ClassB被子加载器拦截了，虽然ClassB加载成功，但是ClassA却会因此失败，因为子加载器加载的类对父加载器是不可见的，因此在做类隔离设计的时候，应尽量保证拦截中的类不会被父加载器隐式依赖；<br/>
+自定义类加载器带来的问题可能不太好排查，所以在使用的过程中，我们一方面想要享受双亲委派带来的好处，另一方面需要打破一部分双亲委派这条链路，如果没有把控好，可能会给自己埋下坑。</p>
+
+
     
-    d3.layout.cloud()
-      .size([width, height])
-      .words(words)
-      .padding(5)
-      .rotate(function() { return ~~ (Math.random() * 2) * 90; })
-      .font(&quot;Impact&quot;)
-      .fontSize(function(d) { return d.size;})
-      .on(&quot;end&quot;, draw)
-      .start();
-    
-    function draw(words) {
-        d3.select(&quot;#wcloud&quot;)
-          .append(&quot;svg&quot;)
-          .attr(&quot;width&quot;, width)
-          .attr(&quot;height&quot;, height)
-          .append(&quot;g&quot;)
-          .attr(&quot;transform&quot;, &quot;translate(&quot;+ width/2 +&quot;,&quot;+ height/2 +&quot;)&quot;)
-          .selectAll(&quot;text&quot;)
-          .data(words)
-          .enter()
-          .append(&quot;text&quot;)
-          .style(&quot;font-size&quot;, function(d) { return d.size + &quot;px&quot;; })
-          .style(&quot;font-family&quot;, &quot;Impact&quot;)
-          .style(&quot;fill&quot;, function(d, i) { return fill(i); })
-          .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
-          .attr(&quot;transform&quot;, function(d) {
-              return &quot;translate(&quot; + [d.x, d.y] + &quot;)rotate(&quot; + d.rotate + &quot;)&quot;; 
-          })
-          .text(function(d) { return d.text; })
-          .on(&quot;click&quot;, function (d, i){
-                window.location.href = d.url;
-          });
-    }
-&lt;/script&gt;
-</code></pre>
 
-<h2 id="toc_3">配色表</h2>
+      </div>
 
-<p><a href="https://flatuicolors.com/">flatUi配色表</a><br/>
-<img src="media/15460796439586/15528379979534.jpg" alt="" style="width:1237px;"/></p>
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="2019-tour-de-france.html" 
+          title="Next Post: 2019年环法">2019年环法 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <!-- 来必力City版安装代码 -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC80MTg4NS8xODQzMQ==">
+	<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
 
-<p><a href="http://metrocolor.live/index.html">香港地铁配色表</a><br/>
-<img src="media/15460796439586/15528380200720.jpg" alt="" style="width:1200px;"/></p>
+       if (typeof LivereTower === 'function') { return; }
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/29</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-              
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+	</script>
+<noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+</div>
+<!-- City版安装代码已完成 -->
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
 
 
-			<div class="row">
-			  <div class="large-6 columns">
-			  <p class="text-left" style="padding-top:25px;">
-			   <a href="others_7.html">&laquo; Prev Page</a>  
-			  </p>
-			  </div>
-			  <div class="large-6 columns">
-			<p class="text-right" style="padding-top:25px;">
-			 <a href="others_9.html">&raquo; Next Page</a> 
-			</p>
-			  </div>
-			</div>
-		</div>
-	</div><!-- large 8 -->
+
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">
