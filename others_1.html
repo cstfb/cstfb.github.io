@@ -128,43 +128,60 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="20190328-mvn-messed.html">
+                <a class="clearlink" href="rw-splitting.html">
                 
-                  <h1>一次maven缓存引发的血案</h1>
+                  <h1>Spring + Mybatis 读写分离</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">现象</h2>
+                        	<p>现在的应用在存储上很多都是一主一从或者一主多从，为了充分发挥从库的优势，在应用层面做到读写分离是一个很好的切入点，在Spring+mybatis的技术栈下，有几个方法:</p>
 
-<p>Back发布后，Back-yp发布失败 (Back-yp 依赖Back)<br/>
-报错信息为:<br/>
-<img src="media/15537038043202/15537039791960.jpg" alt="" style="width:1215px;"/><br/>
-错误信息大意是依赖的Back中依赖的中转中心的包少了一个枚举对象,<br/>
-以下中转中心使用trans代替</p>
+<h2 id="toc_0">方法一：SQL做数据源隔离</h2>
 
-<h2 id="toc_1">排查</h2>
+<p>将查询主库的SQL和查询从库的SQL放在不同的目录下，然后配置不同的数据源。</p>
 
-<ul>
-<li>首先排查了back-yp应用中实际使用到的Back和Trans的版本，依次是1.2.1和1.0.40,<br/>
-然后Back中的1.2.1是有新加代码的(版本号未升级), 而对应的Trans的1.0.40的代码是老的代码. 而且理论上Back中1.2.1的代码是mvn私服的release版本，所以理论上不应该有新的代码。</li>
-<li>由于我们在打包环境上打包，然后会使用到mvn本地缓存，所以我们看了mvn本地缓存的情况，Back 1.2.1的代码确实已经变了，然后对应依赖的Trans的版本是test-SNAPSHOT</li>
-<li>查找资料发现mvn install会更新本地的mvn缓存， 即Back的1.2.1的本地缓存，然后Back-yp打包的时候使用了本地缓存，从而有了新代码，然后理论上Trans的版本应该也改变成为test-SNAPSHOT，怎么会是1.0.40呢 ？ 既不是test-SNAPSHOT, 也不是1.0.10(Back 1.2.1实际依赖的Trans版本)</li>
-<li>看来除了mvn install的错误之外，还存在其他的问题, 否则不应该出现错误，除非代码向后不兼容。<br/>
-于是问题变成了如图:
-<img src="media/15537038043202/15537041212073.jpg" alt=""/></li>
-</ul>
+<pre><code class="language-text">&lt;!--w--&gt;
+&lt;bean id=&quot;masterSqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;
+    &lt;property name=&quot;dataSource&quot; ref=&quot;masterDataSource&quot;/&gt;
+    &lt;property name=&quot;mapperLocations&quot; value=&quot;classpath*:updateDao/mapper/*.xml&quot;/&gt;
+&lt;/bean&gt;
+&lt;bean class=&quot;org.mybatis.spring.mapper.MapperScannerConfigurer&quot;&gt;
+    &lt;property name=&quot;basePackage&quot; value=&quot;com.xxx.updateDao&quot; /&gt;
+    &lt;property name=&quot;sqlSessionFactoryBeanName&quot; value=&quot;masterSqlSessionFactory&quot; /&gt;
+&lt;/bean&gt;
+&lt;!--r--&gt;
+&lt;bean id=&quot;slaveSqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;
+    &lt;property name=&quot;dataSource&quot; ref=&quot;slaveDataSource&quot;/&gt;
+    &lt;property name=&quot;mapperLocations&quot; value=&quot;classpath*:queryDao/mapper/*.xml&quot;/&gt;
+&lt;/bean&gt;
+&lt;bean class=&quot;org.mybatis.spring.mapper.MapperScannerConfigurer&quot;&gt;
+    &lt;property name=&quot;basePackage&quot; value=&quot;com.xxx.queryDao&quot; /&gt;
+    &lt;property name=&quot;sqlSessionFactoryBeanName&quot; value=&quot;slaveSqlSessionFactory&quot; /&gt;
+&lt;/bean&gt;
+&lt;!--  --&gt;
+&lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
+    &lt;property name=&quot;dataSource&quot; ref=&quot;masterDataSource&quot;/&gt;
+&lt;/bean&gt;
+</code></pre>
 
-<h2 id="toc_2">结果</h2>
+<p>这么做比较简单，但会造成读和写的代码分开；</p>
 
-<p>经过排查，Back-yp中还有一个依赖Saint.bundle也引用了Trans,版本正式1.0.40, 由于两个Trans版本发生了冲突，mvn选择了1.0.40, 加上mvn install更新了本地缓存，导致了问题的发生</p>
+<p>接下来的方法都会用到AbstractRoutingDataSource这个抽象类。</p>
 
-<h2 id="toc_3">解决方案</h2>
+<h2 id="toc_1">方法二: Mybatis拦截器+AbstractRoutingDataSource</h2>
 
-<ol>
-<li> Mvn install停用， 使用mvn package， 不覆盖本地缓存， 使用私服上面的发行版本</li>
-<li> 解决Back-yp中的Trans版本冲突，使用一个前置的统一版本</li>
-</ol>
+<p>通过mybatis插件拦截sql执行，通过对每条sql的xml配置解析来判断走主库还是从库。将主库或者从库的对应枚举设置到全局的ThreadLocal中，结合Abstra ctRoutingDataSource通过读取当前线程的数据源类型来控制执行sql时采用哪一个DataSource，sql完成之后清除ThreadLocal。<br/>
+<img src="media/15600040161314/%E2%80%9CWechatIMG28%E2%80%9D%E7%9A%84%E5%89%AF%E6%9C%AC.jpg" alt="“WechatIMG28”的副本"/></p>
+
+<h2 id="toc_2">方法三: 注解AOP+AbstractRoutingDataSource</h2>
+
+<p>不使用Mybatis插件也可以使用AOP拦截。<br/>
+<img src="media/15600040161314/%E2%80%9CWechatIMG29%E2%80%9D%E7%9A%84%E5%89%AF%E6%9C%AC.jpg" alt="“WechatIMG29”的副本"/></p>
+
+<h2 id="toc_3">注意事项</h2>
+
+<p>1.在高负载下，数据库更新会存在主从延迟。如果业务代码要求读实时数据的场景，必须强制注解从主库查询。</p>
 
                         
                       </div>
@@ -173,7 +190,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/3/28</span>
+                    <span class="date">2019/6/8</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
@@ -284,6 +301,12 @@
 	      
 		      
 			      <li class="post">
+			        <a href="industrial-socity-and-its-future.html">工业化社会及其未来</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="classloader.html">ClassLoader</a>
 			      </li>
 		     
@@ -303,12 +326,6 @@
 		      
 			      <li class="post">
 			        <a href="rw-splitting.html">Spring + Mybatis 读写分离</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="CompressedOops.html">JVM压缩指针(CompressedOops)</a>
 			      </li>
 		     
 		  
