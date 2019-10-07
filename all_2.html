@@ -83,6 +83,8 @@
         
             <li><a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">算法&数据结构</a></li>
         
+            <li><a href="netty.html">netty</a></li>
+        
             <li><a href="distribute-system.html">分布式</a></li>
         
             <li><a href="others.html">杂七杂八</a></li>
@@ -128,15 +130,41 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="2019-tour-de-france.html">
+                <a class="clearlink" href="netty-AtomicIntegerFieldUpdater.html">
                 
-                  <h1>2019年环法</h1>
+                  <h1>Netty性能压榨系列(1)--AtomicIntegerFieldUpdater</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><img src="media/15642435099895/WechatIMG967.jpeg" alt="WechatIMG967"/><br/>
-从天空到英力士，从弗鲁姆到贝尔纳尔，变的是冠军归属，不变的是对总冠军的统治力！</p>
+                        	<p>netty 4里面对ByteBuf引入了引用计数技术。在对对象进行引用计数加减的时候，有如下的代码:</p>
+
+<pre><code class="language-text"># version: 4.1.9.Final
+# class: AbstractReferenceCountedByteBuf
+private static final AtomicIntegerFieldUpdater&lt;AbstractReferenceCounted&gt; refCntUpdater =
+            AtomicIntegerFieldUpdater.newUpdater(AbstractReferenceCounted.class, &quot;refCnt&quot;);
+private volatile int refCnt = 1;
+    
+private ReferenceCounted retain0(int increment) {
+        for (;;) {
+            int refCnt = this.refCnt;
+            final int nextCnt = refCnt + increment;
+
+            // Ensure we not resurrect (which means the refCnt was 0) 
+            // and also that we encountered an overflow.
+            if (nextCnt &lt;= increment) {
+                throw new IllegalReferenceCountException(refCnt, increment);
+            }
+            if (refCntUpdater.compareAndSet(this, refCnt, nextCnt)) {
+                break;
+            }
+        }
+        return this;
+}
+</code></pre>
+
+<p>这里为什么不用JDK提供的现成的封装类AtomicInteger呢？ <br/>
+原来<code>AtomicIntegerFieldUpdater</code>是静态对象，如果使用AtomicInteger的话，那么每个ByteBuf对象都需要实例化一个<code>AtomicInteger</code>(包含<code>valueOffset</code> + <code>value</code>两个值)，而现在所有静态对象共享一个<code>updater</code>即可，并且省去了计算<code>valueOffset</code>的过程，这样又抠了一点点性能回来。</p>
 
                         
                       </div>
@@ -145,10 +173,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/7/28</span>
+                    <span class="date">2019/10/7</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html'>大事件记录</a></span>
+          					    <span class="posted-in"><a href='netty.html'>netty</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -217,6 +245,8 @@
         
             <a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html"><strong>算法&数据结构</strong></a>
         
+            <a href="netty.html"><strong>netty</strong></a>
+        
             <a href="distribute-system.html"><strong>分布式</strong></a>
         
             <a href="others.html"><strong>杂七杂八</strong></a>
@@ -256,6 +286,24 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15704266401410.html">Netty纵观全局(1)--Reactor模式</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15704266053336.html">Netty设计模式系列(1)--命令模式</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="netty-AtomicIntegerFieldUpdater.html">Netty性能压榨系列(1)--AtomicIntegerFieldUpdater</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="industrial-socity-and-its-future.html">工业化社会及其未来</a>
 			      </li>
 		     
@@ -263,24 +311,6 @@
 		      
 			      <li class="post">
 			        <a href="classloader.html">ClassLoader</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="2019-tour-de-france.html">2019年环法</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="ongl.html">OGNL</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="rw-splitting.html">Spring + Mybatis 读写分离</a>
 			      </li>
 		     
 		  

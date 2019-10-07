@@ -83,6 +83,8 @@
         
             <li><a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">算法&数据结构</a></li>
         
+            <li><a href="netty.html">netty</a></li>
+        
             <li><a href="distribute-system.html">分布式</a></li>
         
             <li><a href="others.html">杂七杂八</a></li>
@@ -128,53 +130,15 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="190110-production-crash.html">
+                <a class="clearlink" href="big-data-summary.html">
                 
-                  <h1>记一次线上数据库问题的排查过程</h1>
+                  <h1>大数据知识体系梳理</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">问题描述</h2>
-
-<p>在使用activiti做工作流的过程中，偶尔出现有长时间运行的任务出现数据库异常，主要片段如下：<br/>
-<img src="media/15478265383881/15478268239152.jpg" alt="" style="width:1166px;"/><br/>
-<img src="media/15478265383881/15478268356391.jpg" alt="" style="width:674px;"/><br/>
-<img src="media/15478265383881/15478268443485.jpg" alt="" style="width:1144px;"/><br/>
-<img src="media/15478265383881/15478268573604.jpg" alt="" style="width:581px;"/></p>
-
-<ul>
-<li>Could not retrieve transation read-only status server</li>
-<li>The last packet successfully received from the server was 4,555,119 milliseconds ago.</li>
-<li>Caused by: java.net.SocketException: Connection reset</li>
-</ul>
-
-<h2 id="toc_1">排查&amp;解决</h2>
-
-<p>跟踪到数据库驱动里面查看发现这段代码：<br/>
-<img src="media/15478265383881/15478270089767.jpg" alt="" style="width:818px;"/><br/>
-大意是通过语句<code>select @@session.tx_read_only</code>来探测连接是否只读，然后发生了异常，异常的原因是距离上一个包接收的时间太长了，连接被重置了；<br/>
-到这里的话基本上可以确定是服务器将长时间未使用的连接给回收掉了，服务器经过多长时间回收是由配置项<code>wait_timeout</code>来设置的， 可以通过<code>show global variables like &#39;wait_timeout&#39;</code>来查看，单位是s；然后我们服务器配置的时间是3600s, 一个小时，所以有两个办法去解决问题:</p>
-
-<ul>
-<li>每隔一段时间去访问一次数据库，主动保持连接是活的</li>
-<li>延长<code>wait_timeout</code></li>
-</ul>
-
-<p>最终是通过延长<code>wait_timeout</code>来解决的，但是不是调整服务器的全局配置，而是在连接参数里面设置session的<code>wait_timeout</code>参数，例如<code>jdbc:mysql://localhost:3306/db?sessionVariables=wait_timeout=10800</code></p>
-
-<h2 id="toc_2">插曲</h2>
-
-<p>一开始我想通过第一种方法解决， 我觉得驱动参数是可以有对应的配置的(结果证明是没有的)， 让我产生误解的参数有几个(dbcp连接池):</p>
-
-<ul>
-<li>testWhileIdle [true/false]：对空闲连接进行测试，如果失败，直接从线程池中移除</li>
-<li>validationQuery：进行以上测试的sql语句</li>
-<li>timeBetweenEvictionRunsMillis：每隔多久运行一次清理线程</li>
-<li>minEvictableIdleTimeMillis：发现空闲线程后最小多长时间回收</li>
-</ul>
-
-<p>以上参数都是针对连接池中未分配的连接而定的， 对于已分配的连接是无效的，我纯粹是被它们的名称给欺骗了:((</p>
+                        	<p>2019年，花一年的时间去慢慢的写一下体系中的一些东西，同时进行系统的学习；<br/>
+<img src="media/15479046524543/BI%E4%BD%93%E7%B3%BB%E6%A2%B3%E7%90%86.png" alt="BI体系梳理"/></p>
 
                         
                       </div>
@@ -183,10 +147,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/1/18</span>
+                    <span class="date">2019/1/19</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html'>数据仓库</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -255,6 +219,8 @@
         
             <a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html"><strong>算法&数据结构</strong></a>
         
+            <a href="netty.html"><strong>netty</strong></a>
+        
             <a href="distribute-system.html"><strong>分布式</strong></a>
         
             <a href="others.html"><strong>杂七杂八</strong></a>
@@ -294,6 +260,24 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15704266401410.html">Netty纵观全局(1)--Reactor模式</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15704266053336.html">Netty设计模式系列(1)--命令模式</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="netty-AtomicIntegerFieldUpdater.html">Netty性能压榨系列(1)--AtomicIntegerFieldUpdater</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="industrial-socity-and-its-future.html">工业化社会及其未来</a>
 			      </li>
 		     
@@ -301,24 +285,6 @@
 		      
 			      <li class="post">
 			        <a href="classloader.html">ClassLoader</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="2019-tour-de-france.html">2019年环法</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="ongl.html">OGNL</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="rw-splitting.html">Spring + Mybatis 读写分离</a>
 			      </li>
 		     
 		  

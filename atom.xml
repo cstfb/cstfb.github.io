@@ -4,13 +4,71 @@
   <title><![CDATA[cstfb]]></title>
   <link href="https://cstfb.github.io/atom.xml" rel="self"/>
   <link href="https://cstfb.github.io/"/>
-  <updated>2019-10-07T11:41:32+08:00</updated>
+  <updated>2019-10-07T11:49:43+08:00</updated>
   <id>https://cstfb.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[Netty纵观全局(1)--Reactor模式]]></title>
+    <link href="https://cstfb.github.io/15704266401410.html"/>
+    <updated>2019-10-07T13:37:20+08:00</updated>
+    <id>https://cstfb.github.io/15704266401410.html</id>
+    <content type="html"><![CDATA[
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Netty设计模式系列(1)--命令模式]]></title>
+    <link href="https://cstfb.github.io/15704266053336.html"/>
+    <updated>2019-10-07T13:36:45+08:00</updated>
+    <id>https://cstfb.github.io/15704266053336.html</id>
+    <content type="html"><![CDATA[
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Netty性能压榨系列(1)--AtomicIntegerFieldUpdater]]></title>
+    <link href="https://cstfb.github.io/netty-AtomicIntegerFieldUpdater.html"/>
+    <updated>2019-10-07T12:04:03+08:00</updated>
+    <id>https://cstfb.github.io/netty-AtomicIntegerFieldUpdater.html</id>
+    <content type="html"><![CDATA[
+<p>netty 4里面对ByteBuf引入了引用计数技术。在对对象进行引用计数加减的时候，有如下的代码:</p>
+
+<pre><code class="language-text"># version: 4.1.9.Final
+# class: AbstractReferenceCountedByteBuf
+private static final AtomicIntegerFieldUpdater&lt;AbstractReferenceCounted&gt; refCntUpdater =
+            AtomicIntegerFieldUpdater.newUpdater(AbstractReferenceCounted.class, &quot;refCnt&quot;);
+private volatile int refCnt = 1;
+    
+private ReferenceCounted retain0(int increment) {
+        for (;;) {
+            int refCnt = this.refCnt;
+            final int nextCnt = refCnt + increment;
+
+            // Ensure we not resurrect (which means the refCnt was 0) 
+            // and also that we encountered an overflow.
+            if (nextCnt &lt;= increment) {
+                throw new IllegalReferenceCountException(refCnt, increment);
+            }
+            if (refCntUpdater.compareAndSet(this, refCnt, nextCnt)) {
+                break;
+            }
+        }
+        return this;
+}
+</code></pre>
+
+<p>这里为什么不用JDK提供的现成的封装类AtomicInteger呢？ <br/>
+原来<code>AtomicIntegerFieldUpdater</code>是静态对象，如果使用AtomicInteger的话，那么每个ByteBuf对象都需要实例化一个<code>AtomicInteger</code>(包含<code>valueOffset</code> + <code>value</code>两个值)，而现在所有静态对象共享一个<code>updater</code>即可，并且省去了计算<code>valueOffset</code>的过程，这样又抠了一点点性能回来。</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[工业化社会及其未来]]></title>
@@ -1782,216 +1840,6 @@ RabbitMq中存在镜像队列的概念，即存在一主多从的队列，所有
     <id>https://cstfb.github.io/project-canal-rabbit.html</id>
     <content type="html"><![CDATA[
 <p>Canal原生支持接入RabbitMq</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Zwift促销代码]]></title>
-    <link href="https://cstfb.github.io/zwift-promo-codes.html"/>
-    <updated>2019-03-17T23:31:03+08:00</updated>
-    <id>https://cstfb.github.io/zwift-promo-codes.html</id>
-    <content type="html"><![CDATA[
-<p>在游戏界面键入<code>p</code>然后输入代码即可解锁不同套装</p>
-
-<table border="0" cellpadding="0" cellspacing="0" width="479" style="border-collapse:
- collapse;width:359pt">
-<!--StartFragment-->
- <colgroup><col width="196" span="2" style="mso-width-source:userset;mso-width-alt:6272;
- width:147pt" />
- <col width="87" style="width:65pt" />
- </colgroup><tbody><tr height="21" style="height:16.0pt">
-  <td height="21" class="xl64" align="left" width="196" style="height:16.0pt;
-  width:147pt">1-18</td>
-  <td class="xl63" align="left" width="196" style="width:147pt">19-36</td>
-  <td class="xl63" align="left" width="87" style="width:65pt">37-53</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">ATOC2015</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">GOLDCOAST</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">PCGKIT32516</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">BICYCLINGMAG</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">GOLONGRIDERS</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">RADAVIST</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">BIKEANDBEER</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">GOPEARSON</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">RIDEAUSTRALIA</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">BIKERADAR</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">GOSKRYE</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">RIDEPOWERTAP</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">CANBERRACCKIT</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">GOTACX</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">RIDEQUARQ</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">CRCANYC</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">GOTRAINSHARP</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">ROAD.CC</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">DOCOMO</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">GOUSMES</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">SIGMASPORT</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">GEARPATROL</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">GOVISION</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">SLOWTWITCH</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">GEELONGCCKIT</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">GOWBR</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">SOIGNEURDK</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">GOALIENWARE</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">GOWSR</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">STKILDA2015KIT</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">GOAMGENTOC</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">HIKKIT32616</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">SYDNEYCCKIT</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">GOBATTENKILL</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">JENSIE</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">TDP2015</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">GOCIS</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">LAFUGA.CC</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">TRIATHLETEMAG</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">GOCYCLEOPS</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">LAVA</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">TSBIKES</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">GOELITE</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">MDCCKIT</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">VCGHKIT</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">GOFREESPEED</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">MGCCKIT</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">WAHOOFITNESS</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">GOGCN</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">MTSKIT</td>
-  <td align="left" style="background-color:rgba(255, 255, 255, 0.8)">ZTHKIT</td>
- </tr>
- <tr height="21" style="height:16.0pt;background-color:rgba(255, 255, 255, 0.8)">
-  <td height="21" align="left" style="height:16.0pt;font-variant-ligatures: normal;
-  font-variant-caps: normal;font-variant-numeric: inherit;font-variant-east-asian: inherit;
-  font-stretch: inherit;line-height:inherit;background-color:rgba(255, 255, 255, 0.8);
-  orphans: 2;widows: 2;-webkit-text-stroke-width: 0px;text-decoration-style: initial;
-  text-decoration-color: initial">GOINGAMBA</td>
-  <td align="left" style="font-variant-ligatures: normal;font-variant-caps: normal;
-  font-variant-numeric: inherit;font-variant-east-asian: inherit;font-stretch: inherit;
-  line-height:inherit;background-color:rgba(255, 255, 255, 0.8);orphans: 2;
-  widows: 2;-webkit-text-stroke-width: 0px;text-decoration-style: initial;
-  text-decoration-color: initial">NCCMAKIT</td>
-  <td></td>
- </tr>
-<!--EndFragment-->
-</tbody></table>
-
-<h1 id="toc_0">source</h1>
-
-<p><a href="https://www.reddit.com/r/Zwift/comments/84m4te/list_of_zwift_kit_promo_codes/">zwift-promo-code</a></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[数据库事务隔离级别引发的血案]]></title>
-    <link href="https://cstfb.github.io/isolation-problem.html"/>
-    <updated>2019-03-17T22:24:06+08:00</updated>
-    <id>https://cstfb.github.io/isolation-problem.html</id>
-    <content type="html"><![CDATA[
-<p>生产环境中有一台实时监控数据库binlog日志的应用，用于数据的实时统计等。 <br/>
-由于用来读取数据的库和线上主库是主从关系，因此存在在一定的延迟。<br/>
-生产环境中，由于延迟的存在，有时候实时消息依赖的数据可能不会马上能够获取到。<br/>
-<img src="media/15528326468637/15528340979248.jpg" alt="" style="width:1183px;"/><br/>
-有时候延迟还是比较恐怖的.</p>
-
-<h2 id="toc_0">一开始的解决方案</h2>
-
-<p>由于延迟的时间不确定， 因此开发同学将这一块的逻辑进行了改进，那就是如果没有查到依赖的数据，那么线程进入睡眠，然后重试几次，如果仍然失败，那没办法， 记录错误日志，后面再手工进行处理。<br/>
-然而事实表明，修复之后情况并没有缓解，而且本地模拟问题的时候依然会出现数据取不到的情况</p>
-
-<h2 id="toc_1">排查问题</h2>
-
-<p>这让人百思不得其解，我们只好认为是代码的问题，因为我们监控了mybatis的查询执行情况，并且禁用了缓存，发现即时的查询并没有返回结果，这就变得很诡异了，这是什么情况？<br/>
-也是出于偶然吧， 发现了方法上面的<code>@Transcational</code>注解，这个注解的默认事物隔离级别是<code>repeatable_read</code>，也就是<code>可重复读</code>, 简单说就是在同一个事物中，同一个查询不管在什么位置执行，得到的结果都是一样的， 不管其他会话有没有改变当前的数据。</p>
-
-<h2 id="toc_2">解决问题</h2>
-
-<p>尝试更改隔离级别，但似乎无效，可能spring或者驱动支持有限.<br/>
-后来暂时干掉了事务注解，解决了问题</p>
-
-<h2 id="toc_3">附</h2>
-
-<p><img src="media/15528326468637/15528361407452.jpg" alt="" style="width:1050px;"/></p>
-
-<p><img src="media/15528326468637/%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%20-%20%E7%BB%B4%E5%9F%BA%E7%99%BE%E7%A7%91%EF%BC%8C%E8%87%AA%E7%94%B1%E7%9A%84%E7%99%BE%E7%A7%91%E5%85%A8%E4%B9%A6.png" alt="事务隔离 - 维基百科，自由的百科全书"/></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[记一次线上疑似内存泄漏问题]]></title>
-    <link href="https://cstfb.github.io/190213-production-crash.html"/>
-    <updated>2019-03-15T00:05:35+08:00</updated>
-    <id>https://cstfb.github.io/190213-production-crash.html</id>
-    <content type="html"><![CDATA[
-<h2 id="toc_0">现象</h2>
-
-<p>线上环境机器中有两个应用，最近发现机器的可用内存每天都在成阶梯式下降，因此怀疑是内存泄漏导致的问题</p>
-
-<ul>
-<li>现象1 ： linux系统日志
-<img src="media/15525795356441/15528318231565.jpg" alt=""/></li>
-<li>现象2 ： 机器状况
-<img src="media/15525795356441/15528318499218.jpg" alt=""/>
-23点系统宕机
-<img src="media/15525795356441/15528319024343.jpg" alt=""/>
-cpu压力正常
-<img src="media/15525795356441/15528319063789.jpg" alt=""/>
-io正常</li>
-<li>现象3 : OOM日志<br/>
-没有OOM日志, tomcat配置正常</li>
-<li>现象4 : 应用负载<br/>
-查看日志发现负载不高， 但是23点的时候执行了一个python脚本， 内存占用&gt;100M</li>
-</ul>
-
-<h2 id="toc_1">原因推测</h2>
-
-<p>因为没有系统当时的内存快照和OOM日志;因此无法准确判断宕机原因.<br/>
-推测是早上应用中触发了某个操作，导致内存泄漏，10:20分左右内存降到了最低点, 最后晚上23:00的脚本由于申请了大量内存，导致了系统内存不足而被kill掉。<br/>
-两个系统均有可能发生内存泄漏</p>
-
-<h2 id="toc_2">问题跟踪&amp;解决</h2>
-
-<p>临时增加了机器内存。<br/>
-另外定时打印应用的内存快照，观察是否存在内存泄漏.</p>
-
-<pre><code class="language-text">jmap -histo:live $java_pid | head -100 &gt;&gt; ~/jmap.log
-jstack -lF $java_pid&gt;&gt; ~/jstack.log
-</code></pre>
-
-<p>长期来看，一是不能因为系统宕机而长时间使系统处于无妨访问的状态，可以使用运维工具监控并且自动重启，自己脚本实现也可以。 二是需要规范大家的编码习惯， 减少低级失误。</p>
 
 ]]></content>
   </entry>
