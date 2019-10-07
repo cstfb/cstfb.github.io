@@ -4,13 +4,30 @@
   <title><![CDATA[cstfb]]></title>
   <link href="https://cstfb.github.io/atom.xml" rel="self"/>
   <link href="https://cstfb.github.io/"/>
-  <updated>2019-10-07T11:49:43+08:00</updated>
+  <updated>2019-10-07T14:18:32+08:00</updated>
   <id>https://cstfb.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[Morning-Paper翻译文章]]></title>
+    <link href="https://cstfb.github.io/MP-recoding-black-mirror.html"/>
+    <updated>2019-10-07T14:20:51+08:00</updated>
+    <id>https://cstfb.github.io/MP-recoding-black-mirror.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">Re-coding Black Mirror</h2>
+
+<p><a href="MP-recoding-black-mirror-part1">Re-coding Black Mirror -- part 1</a><br/>
+<a href="MP-recoding-black-mirror-part2">Re-coding Black Mirror -- part 2</a><br/>
+<a href="MP-recoding-black-mirror-part3">Re-coding Black Mirror -- part 3</a><br/>
+<a href="MP-recoding-black-mirror-part4">Re-coding Black Mirror -- part 4</a><br/>
+<a href="MP-recoding-black-mirror-part5">Re-coding Black Mirror -- part 5</a></p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Netty纵观全局(1)--Reactor模式]]></title>
@@ -1829,17 +1846,6 @@ RabbitMq中存在镜像队列的概念，即存在一主多从的队列，所有
 <li>封装pandas-like API, 但是由于java缺少python中运算符重载的能力，所以不完全</li>
 <li>添加新的API</li>
 </ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Canal-Rabbit]]></title>
-    <link href="https://cstfb.github.io/project-canal-rabbit.html"/>
-    <updated>2019-03-17T23:48:12+08:00</updated>
-    <id>https://cstfb.github.io/project-canal-rabbit.html</id>
-    <content type="html"><![CDATA[
-<p>Canal原生支持接入RabbitMq</p>
 
 ]]></content>
   </entry>
