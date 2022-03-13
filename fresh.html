@@ -1,0 +1,489 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  新鲜事物 - 西央
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="西央" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:fengbo.cool ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; 西央</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html">内功心法</a></li>
+        
+            <li><a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">算法&数据结构</a></li>
+        
+            <li><a href="distribute-system.html">分布式</a></li>
+        
+            <li><a href="others.html">杂七杂八</a></li>
+        
+            <li><a href="fresh.html">新鲜事物</a></li>
+        
+            <li><a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html">小知识点</a></li>
+        
+            <li><a href="Morning-Paper.html">Morning-Paper</a></li>
+        
+            <li><a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html">大事件记录</a></li>
+        
+            <li><a href="%E8%BD%AC%E8%BD%BD.html">转载</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html">数据仓库</a></li>
+        
+            <li><a href="Exit%20Music.html">Exit Music</a></li>
+        
+            <li><a href="Project.html">Project</a></li>
+        
+            <li><a href="JDK.html">JDK</a></li>
+        
+            <li><a href="%E6%93%8D%E7%9B%98%E6%89%8B.html">操盘手</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
+</script>
+<div class="row">
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="anna.html">
+                
+                  <h1>号称秒杀redis/cassandra的KV存储系统Anna</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>最近一段时间连续看到了两篇介绍这个存储系统的文章，所以产生了兴趣； 这个系统是由一个伯克利大名鼎鼎的一个实验室RISE开发的；<br/>
+之前记得也看过一个团队实现了一个超高性能的KV存储，好像是利用到了硬件；<br/>
+哎 ； 感觉英文阅读真的有点障碍了 ， 需要好好练习一下了， 否则是个大问题;</p>
+
+<ul>
+<li>
+<a href="#toc_0">我目前的了解</a>
+<ul>
+<li>
+<a href="#toc_1">理论基础</a>
+</li>
+<li>
+<a href="#toc_2">设计目标</a>
+</li>
+<li>
+<a href="#toc_3">架构</a>
+</li>
+<li>
+<a href="#toc_4">性能</a>
+</li>
+<li>
+<a href="#toc_5">伸缩可扩展性</a>
+</li>
+<li>
+<a href="#toc_6">缓存一致性</a>
+</li>
+<li>
+<a href="#toc_7">作者回复</a>
+<ul>
+<li>
+<a href="#toc_8">Anna vs. Redis</a>
+</li>
+<li>
+<a href="#toc_9">开源地址</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_10">前景</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_11">相关文章</a>
+</li>
+</ul>
+
+
+<h1 id="toc_0">我目前的了解</h1>
+
+<p>文章给这个系统的标签是<code>crazy fast</code>,<code>super-scalable</code> ,<code>flexibly consistent</code>厉害程度可见一斑</p>
+
+<h2 id="toc_1">理论基础</h2>
+
+<p><a href="http://db.cs.berkeley.edu/papers/sigrec10-declimperative.pdf">CALM 基础理论</a>: 没研究过，说的是无需协调的分布式系统<br/>
+<a href="http://bloom-lang.net/">编程语言 Bloom</a>:new language?为什么要用新语言?<br/>
+<a href="https://arxiv.org/pdf/1309.3324.pdf">跨平台程序分析框架 Blazes</a>:不知为何物<br/>
+<a href="http://www.vldb.org/pvldb/vol8/p185-bailis.pdf">事务协议 HATs</a></p>
+
+<h2 id="toc_2">设计目标</h2>
+
+<blockquote>
+<p>The high-level goal for Anna was to provide excellent performance on a single multi-core machine, while also being able to scale up elastically to geo-distributed cloud deployment. The system should support a range of consistency semantics to match application needs. From this, four design requirements emerged:<br/>
+1.The key space needs to be partitioned, not just across nodes when distributed, but also across cores within a node.<br/>
+2.To scale workloads (especially those with highly skewed distributions, aka. ‘hot keys’) the system should use multi-master replication to concurrently serve puts and gets against a single key from multiple threads.<br/>
+3.For maximum hardware utilisation and performance, the system should have wait-free execution such that a thread is never blocked on other threads. This rules out locking, consensus protocols, and even ‘lock-free’ retries.<br/>
+4.To support a wide-range of application semantics without compromising the other goals, the system should have a unified implementation for a wide range of coordination-free consistency models.</p>
+</blockquote>
+
+<p>翻译过来就是说:<br/>
+为了实现多核单机高性能的同时也满足可以基于云的地理可扩展性这个要求，系统必须支持一系列的一致性语义，基于这几点设计目标，有以下四点需要满足：</p>
+
+<ol>
+<li>键需要分区，不仅仅是在物理节点的级别，更要在节点的每个核上分区(加强扩展性的大杀器)</li>
+<li>为了平衡负载（例如某些热键）系统需要支持多主复制来支持多个线程的读和写(记:感觉这个特性很牛逼，听上去和复制差不多，但是要满足一致性的要求的同时还要保证高性能就很难了)</li>
+<li>为了最大化的利用硬件的性能，系统应不被阻塞； 这排除了例如锁，一致性协议和&#39;无锁&#39;重试的方案(记：这个也牛逼)</li>
+<li>为了在不向其他设计目标妥协的情况下支持宽泛的语义(例如一致性)；系统需要实现一个全局的无需协调的一致性模型（无需协调的这个厉害了）</li>
+</ol>
+
+<p>redis是单线程的，因为在单线程的情况下没有上下文切换的开销，可以最大化利用单线程的威力；Anna在支持分区的同时在每个核上都运行一个处理器；一致性语义；</p>
+
+<h2 id="toc_3">架构</h2>
+
+<p><img src="https://adriancolyer.files.wordpress.com/2018/03/anna-fig-1.jpeg?w=480&amp;zoom=2" alt="厉害"/></p>
+
+<h2 id="toc_4">性能</h2>
+
+<p><img src="https://adriancolyer.files.wordpress.com/2018/03/anna-fig-8.jpeg?w=520&amp;zoom=2" alt=""/><br/>
+从图 (a) 可以看出，在高并发情况下，Redis 集群的整体吞吐量几乎保持不变，而 Anna 可以在副本之间分散热键。Anna 的吞吐量随着复制系数的增加而增长，直到达到平缓。如果热键完全被复制，吞吐量还会随着线程的增加继续增长。从图 (b) 可以看出，在低并发情况下，Anna 和 Redis 集群都获得了不错的并行能力，它们的吞吐量都随着线程数的增加而增长。</p>
+
+<h2 id="toc_5">伸缩可扩展性</h2>
+
+<blockquote>
+<p>Anna gets its performance and its scalability from its fully coordination-free implementation of simple actors with private state, which only communicate† via background gossip. Essentially it&#39;s a distributed system deployed across cores as well as nodes. Coordination-freeness keeps every actor in its swimlane doing useful work: in high contention workloads we see 90% of Anna&#39;s cycles going toward serving requests. For the same workloads, systems like Masstree and Intel TBB get well below 10% of their cycles serving requests—that&#39;s because they spend over 90% of their waiting on coordination. However, even for low-contention workloads those systems suffer from processor cache misses due to shared memory.</p>
+</blockquote>
+
+<p>Anna 的性能和伸缩性主要归功于它的完全无协调机制，节点工作进程有 90% 的工作负载是在处理请求，而其他大部分系统（如 Masstree 和英特尔的 TBB）只有不到 10% 的时间在处理请求，它们其余的 90% 时间花在了等待协调上。不仅如此，其他系统因为使用了共享内存，还会出现处理器缓存击穿问题。</p>
+
+<h2 id="toc_6">缓存一致性</h2>
+
+<blockquote>
+<p>The key to achieving coordination-free progress is the use of lattice-based composition (strictly, bounded join semi-lattices). Such lattices operate over some domain S (the set of possible states), with a binary ‘least upper bound’ operator, \(\sqcup\), and a bottom value \(\perp\). The least upper bound operator must be associative, commutative, and idempotent (\(\perp(a,a) = a,\ \forall a \in S\)). Collectively these are known as the ACI properties. Such lattices are also the foundation of CRDTs.</p>
+</blockquote>
+
+<p>文章里面描述了实现几类一致性模型的大概思想； 但是我纠结的一个问题是：如果采用异步广播的方式同步数据，那么怎么保证其他的actor上的请求得到的一定是最新的数据呢？ <br/>
+作者回复：单纯的asynchronous gossip不能保证对每一个actor的读都能读到最新的数据， 如果想要这个保证的话需要外加<a href="https://zh.wikipedia.org/wiki/Quorum_(%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F)">quorum</a> </p>
+
+<h2 id="toc_7">作者回复</h2>
+
+<h3 id="toc_8">Anna vs. Redis</h3>
+
+<p>Anna可以理解为&quot;redis + multi-master-replication + lattice-based conflict resolution&quot;</p>
+
+<h3 id="toc_9">开源地址</h3>
+
+<p><a href="https://github.com/cw75/anna">Anna</a></p>
+
+<h2 id="toc_10">前景</h2>
+
+<p>只能说厉害厉害~</p>
+
+<h1 id="toc_11">相关文章</h1>
+
+<p><a href="http://mp.weixin.qq.com/s/3WmGpZkEuSz-ox_2CPCsqg">伯克利推出世界最快的KVS数据库Anna：秒杀Redis和Cassandra</a><br/>
+<a href="https://blog.acolyer.org/2018/03/27/anna-a-kvs-for-any-scale/">Anna: A KVS for any scale</a><br/>
+<a href="https://blog.acolyer.org/2017/11/23/kv-direct-high-performance-in-memory-key-value-store-with-programmable-nic/">KV-Direct: High-performance in-memory key-value store with programmable NIC</a><br/>
+<a href="https://rise.cs.berkeley.edu/blog/anna-kvs/?twitter=@bigdata">Anna: A Crazy Fast, Super-Scalable, Flexibly Consistent KVS</a><br/>
+<a href="http://db.cs.berkeley.edu/jmh/papers/anna_ieee18.pdf">原论文(Anna: A KVS For Any Scale)</a></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/4/1</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='fresh.html'>新鲜事物</a></span>
+          				   
+                    
+
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>西央</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="email" href="mailto:tianfengbo@jd.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html"><strong>内功心法</strong></a>
+        
+            <a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html"><strong>算法&数据结构</strong></a>
+        
+            <a href="distribute-system.html"><strong>分布式</strong></a>
+        
+            <a href="others.html"><strong>杂七杂八</strong></a>
+        
+            <a href="fresh.html"><strong>新鲜事物</strong></a>
+        
+            <a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html"><strong>小知识点</strong></a>
+        
+            <a href="Morning-Paper.html"><strong>Morning-Paper</strong></a>
+        
+            <a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html"><strong>大事件记录</strong></a>
+        
+            <a href="%E8%BD%AC%E8%BD%BD.html"><strong>转载</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html"><strong>数据仓库</strong></a>
+        
+            <a href="Exit%20Music.html"><strong>Exit Music</strong></a>
+        
+            <a href="Project.html"><strong>Project</strong></a>
+        
+            <a href="JDK.html"><strong>JDK</strong></a>
+        
+            <a href="%E6%93%8D%E7%9B%98%E6%89%8B.html"><strong>操盘手</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="ongl.html">OGNL</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="rw-splitting.html">Spring + Mybatis 读写分离</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="CompressedOops.html">JVM压缩指针(CompressedOops)</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="load-balancer-algorithm.html">负载均衡算法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

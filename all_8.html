@@ -1,0 +1,449 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  西央
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="西央" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:fengbo.cool ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; 西央</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html">内功心法</a></li>
+        
+            <li><a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">算法&数据结构</a></li>
+        
+            <li><a href="distribute-system.html">分布式</a></li>
+        
+            <li><a href="others.html">杂七杂八</a></li>
+        
+            <li><a href="fresh.html">新鲜事物</a></li>
+        
+            <li><a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html">小知识点</a></li>
+        
+            <li><a href="Morning-Paper.html">Morning-Paper</a></li>
+        
+            <li><a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html">大事件记录</a></li>
+        
+            <li><a href="%E8%BD%AC%E8%BD%BD.html">转载</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html">数据仓库</a></li>
+        
+            <li><a href="Exit%20Music.html">Exit Music</a></li>
+        
+            <li><a href="Project.html">Project</a></li>
+        
+            <li><a href="JDK.html">JDK</a></li>
+        
+            <li><a href="%E6%93%8D%E7%9B%98%E6%89%8B.html">操盘手</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
+</script>
+<div class="row">
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="stock-starter.html">
+                
+                  <h1>集合竞价/连续竞价/实时股价</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>最近对股票比较感兴趣，主要是觉得工作之余也应该去研究下自己感兴趣的一些事情，例如最近在买股票，虽然只是上下班的时候看一下，都是全凭运气玩玩，但是看着看着就对股票运作的机制产生了疑问，股价是如何定义的呢？ 为什么会有股票这种东西呢等等，周末的时候也是看了一些资料，主要是了解了一下股价形成的原理，所以觉得虽然并不能让人赚钱，但是能解释自己在卖股票的时候看到的一些现象，也算是学到了一点知识吧。</p>
+
+<h2 id="toc_0">集合竞价</h2>
+
+<p>一直对股市开盘价是怎么确定的有很浓厚的兴趣，最近总算是了解一点了。<br/>
+A股现在是9点半开盘，但其实买与卖在9点半之前就已经开始了， 具体是在9点15到9点半，存在一个<code>集合竞价</code>的阶段，这一阶段会决定9点半时候一只股票的开盘价。<br/>
+集合竞价阶段的原则是<code>价格优先，时间优先</code>，价格优先的意思可以理解为当想要买入时使用拍卖时候的逻辑，即出价高的优先，当想要卖出时使用竞标的逻辑，即出价低的优先； 例如A想买，B想卖， 那么从A的角度来讲A出价高自然在买家中优先级高，B出价低自然在其他卖家中优先级高，所以A和B的交易时首先被撮合的。时间优先的概念就比较简单了。那么出现一个问题就是如果A出的价格和B出的价格不一样的话会怎么样呢？在集合竞价阶段会最终按照上面买卖规则一直撮合下去的话最终在一个价格上面停止，直到无法撮合，这个最终的价格就是所有被撮合交易的最终成交价格，不管最一开始的出价是多少。</p>
+
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>委托买入价</th>
+<th>数量（手）</th>
+<th>序号</th>
+<th>委托卖出价</th>
+<th>数量（手）</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>1</td>
+<td>3.80</td>
+<td>2</td>
+<td>—1</td>
+<td>3.52</td>
+<td>5</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3.76</td>
+<td>6</td>
+<td>—2</td>
+<td>3.57</td>
+<td>1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>3．65</td>
+<td>4</td>
+<td>—3</td>
+<td>3．60</td>
+<td>2</td>
+</tr>
+<tr>
+<td>4</td>
+<td>3．60</td>
+<td>7</td>
+<td>—4</td>
+<td>3．6</td>
+<td>6</td>
+</tr>
+<tr>
+<td>5</td>
+<td>3．54</td>
+<td>6</td>
+<td>—5</td>
+<td>3．70</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+
+<p>上面的表格是一个集合竞价的例子，最终的开盘价会定格在3.65元, <a href="https://wiki.mbalib.com/wiki/%E9%9B%86%E5%90%88%E7%AB%9E%E4%BB%B7%E4%BA%A4%E6%98%93%E5%88%B6%E5%BA%A6">wiki</a></p>
+
+<h2 id="toc_1">连续竞价</h2>
+
+<p>集合竞价结束之后，没有撮合撮合的交易自动进入连续竞价的阶段，那么此时交易系统中可能会存在一些没有撮合的交易，在连续竞价阶段，当一个买入申请或者一个卖出申请进来时,有几种情况可能会发生:<br/>
+1）如果没有对应的卖出或者买入申请，那么申请放入池中，等待撮合<br/>
+2）如果买入申请低于最低的卖出申请的价格，那么买入申请放入池中，等待撮合<br/>
+3）如果卖出申请高于最高的买入申请的价格，那么卖出申请放入池中，等待撮合，以上是三种无法撮合的情况<br/>
+4）如果买入申请是当前最高价，且价格大于等于当前最低卖出价格，那么有两种情况：<br/>
+    a）两者价格相等，那么直接成交<br/>
+    b）买入价格大于卖出价格，那么以最低的卖出价格成交（类似于企业招标，价低者得）<br/>
+5）如果卖出申请价格是当前最低价格，且价格小于等于当前最高买入价格，那么有两种情况：<br/>
+    a）两者价格相等，那么直接成交<br/>
+    b）卖出申请价格小于最高买入价格，那么以最高的买入价格成交（类似于拍卖拍卖，价高者得）<br/>
+以上也是我们有时候看到自己会以比出价低的价格买到股票或者以比出价高的价格卖出股票的原因，本质上股票交易时结合了竞标和拍卖两种模型。</p>
+
+<h2 id="toc_2">实时股价</h2>
+
+<p>实时股价即根据当前交易的最后一笔成交价格计算, 这便是我们看到的股票实时价格的计算方法。<br/>
+所以我们看到的股价上升的原因是不断的有人出比最低卖出价格高的价格买入股票，导致最低卖出价格不断上升，所以买入成交价不断上升；而股价下跌则是因为有人不断的以越来越低的价格抛售股票，这时候买入价格也会跟着降低，最终成交价格降低，导致股价下跌。</p>
+
+<h2 id="toc_3">为什么会有人买卖股票呢？</h2>
+
+<p>我很多时候会想，股票不是一种债务，仅仅代表一种权益，在以前，股票是有分红的，这也是它的价值所在，但现在A股分红是要除权的，看上去不仅不会带来收益，反而会因为交税等费用是的总体的估值降低。那么为什么会有这么多人买卖股票呢？我有时候就会想为什么人会买卖这种虚无的东西，虽然我们买卖股票是看得见价格的，我们也可以随时卖出套现，但是股票这种东西它的价值根基在什么地方呢？ 如果连最基本的立足点都没有，那股票的存在有什么意义呢？后来我想到了几个关键词:<code>流动性</code>，<code>供求关系</code>, <code>买卖</code>， 对于我这种经济学小白这几个词其实冲击蛮大的，有时候并不需要实实在在的资产，有了流动性，就是产生溢价，就会存在供求关系，买卖就自然而然的发生了， 所以炒股，精髓还是在于<code>炒</code>上面，想想也是挺奇葩的，经济学确实牛逼啊。</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/4/20</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%93%8D%E7%9B%98%E6%89%8B.html'>操盘手</a></span>
+          				   
+                    
+
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="all_7.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			 <a href="all_9.html">&raquo; Next Page</a> 
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>西央</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="email" href="mailto:tianfengbo@jd.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html"><strong>内功心法</strong></a>
+        
+            <a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html"><strong>算法&数据结构</strong></a>
+        
+            <a href="distribute-system.html"><strong>分布式</strong></a>
+        
+            <a href="others.html"><strong>杂七杂八</strong></a>
+        
+            <a href="fresh.html"><strong>新鲜事物</strong></a>
+        
+            <a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html"><strong>小知识点</strong></a>
+        
+            <a href="Morning-Paper.html"><strong>Morning-Paper</strong></a>
+        
+            <a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html"><strong>大事件记录</strong></a>
+        
+            <a href="%E8%BD%AC%E8%BD%BD.html"><strong>转载</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html"><strong>数据仓库</strong></a>
+        
+            <a href="Exit%20Music.html"><strong>Exit Music</strong></a>
+        
+            <a href="Project.html"><strong>Project</strong></a>
+        
+            <a href="JDK.html"><strong>JDK</strong></a>
+        
+            <a href="%E6%93%8D%E7%9B%98%E6%89%8B.html"><strong>操盘手</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="ongl.html">OGNL</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="rw-splitting.html">Spring + Mybatis 读写分离</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="CompressedOops.html">JVM压缩指针(CompressedOops)</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="load-balancer-algorithm.html">负载均衡算法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

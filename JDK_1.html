@@ -1,0 +1,711 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  JDK - 西央
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="西央" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:fengbo.cool ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; 西央</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html">内功心法</a></li>
+        
+            <li><a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">算法&数据结构</a></li>
+        
+            <li><a href="distribute-system.html">分布式</a></li>
+        
+            <li><a href="others.html">杂七杂八</a></li>
+        
+            <li><a href="fresh.html">新鲜事物</a></li>
+        
+            <li><a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html">小知识点</a></li>
+        
+            <li><a href="Morning-Paper.html">Morning-Paper</a></li>
+        
+            <li><a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html">大事件记录</a></li>
+        
+            <li><a href="%E8%BD%AC%E8%BD%BD.html">转载</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html">数据仓库</a></li>
+        
+            <li><a href="Exit%20Music.html">Exit Music</a></li>
+        
+            <li><a href="Project.html">Project</a></li>
+        
+            <li><a href="JDK.html">JDK</a></li>
+        
+            <li><a href="%E6%93%8D%E7%9B%98%E6%89%8B.html">操盘手</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
+</script>
+<div class="row">
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="java-nmt.html">
+                
+                  <h1>一个JDK的Bug与NMT</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h1 id="toc_0">问题复现</h1>
+
+<pre><code class="language-text">import java.util.UUID;
+import java.util.concurrent.locks.LockSupport;
+
+public class StringInterner {
+    public static volatile String lastString;
+
+    public static void main(String[] args) {
+        for (int iterations = 0; iterations &lt; 40;) {
+            String baseName = UUID.randomUUID().toString();
+            for (int i = 0; i &lt; 1_000_000; i++) {
+                lastString = (baseName + i).intern();
+            }
+            if (++iterations % 10 == 0) {
+                System.gc();
+            }
+            LockSupport.parkNanos(500_000_000);
+        }
+    }
+}
+</code></pre>
+
+<p>将代码编译(javac)打包(jar)后分别使用G1和CMS运行:</p>
+
+<pre><code class="language-text">java -XX:NativeMemoryTracking=detail -XX:+UnlockDiagnosticVMOptions -XX:+PrintNMTStatistics -XX:+UseG1GC -XX:MetaspaceSize=100m -XX:MaxMetaspaceSize=100m -Xloggc:gc-jdk8-g1.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xms256m -Xmx256m -cp classes StringInterner
+--&gt;
+Symbol (reserved=360278KB, committed=360278KB)
+                            (malloc=359758KB #44949) 
+                            (arena=520KB #1)
+</code></pre>
+
+<pre><code class="language-text">java -XX:NativeMemoryTracking=detail -XX:+UnlockDiagnosticVMOptions -XX:+PrintNMTStatistics -XX:MetaspaceSize=100m -XX:MaxMetaspaceSize=100m -XX:+UseStringDeduplication -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -Xloggc:gc-jdk8-marksweep.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xms256m -Xmx256m -cp classes StringInterner
+--&gt;
+Symbol (reserved=20830KB, committed=20830KB)
+                            (malloc=20310KB #2518) 
+                            (arena=520KB #1)
+</code></pre>
+
+<p>上面的代码模拟了填充字符串缓存池的过程, 这里引出了java8(1.8.0_144-b01可复现,具体可见<a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8180048">Bug描述</a>和<a href="https://bugs.openjdk.java.net/browse/JDK-8180048">补丁进度</a>)中的一个G1垃圾收集器的bug:维护字符串缓冲区的数据结构内存泄漏(G1垃圾收集器)。</p>
+
+<h1 id="toc_1">问题解释</h1>
+
+<p>在java6时代，字符串缓存区是放在永久代也就是MetaSpace中的，并且是一个固定大小，因此在java6中应该谨慎使用<code>String.intern()</code>方法, 以免造成OOM;<br/>
+java7以后，字符串缓存区移到了堆内存中，同时可以进行垃圾回收。<a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8180048">原文见:</a></p>
+
+<blockquote>
+<p>the issue is that some C++ helper data structure for managing the interned string list leaks in G1; it is shown in the &quot;Symbol&quot; category in NMT output, but that has nothing to do with Metaspace.</p>
+</blockquote>
+
+<h1 id="toc_2">NMT</h1>
+
+<p>NMT = Native Memory Tracking 本地内存跟踪<br/>
+NMT是Java HotSpot VM提供的跟踪内部内存使用的工具，结合jcmd命令可以在不同级别上分析内存的使用, NMT的关键特性有:</p>
+
+<ul>
+<li>NMT默认在HotSpot上是关闭的，要打开需要使用<code>-XX:NativeMemoryTracking=summary</code> 或者<code>-XX:NativeMemoryTracking=detail</code></li>
+<li>内存跟踪数据可以使用jcmd命令查看，具体用法<code>jcmd &lt;pid&gt; VM.native_memory [summary | detail | baseline | summary.diff | detail.diff | shutdown] [scale= KB | MB | GB]</code></li>
+<li>NMT可以生成汇总和明细内存数据</li>
+<li>建立内存基线方便后面进行对比</li>
+<li>JVM退出时可以输出内存使用报告, 具体用法<code>-XX:+UnlockDiagnosticVMOptions -XX:+PrintNMTStatistics</code></li>
+<li>NMT可以使用jcmd工具关闭，但无法start或者restart</li>
+<li>NMT无法跟踪非java代码分配的内存，例如native方法</li>
+</ul>
+
+<h2 id="toc_3">使用NMT检测内存泄漏</h2>
+
+<ul>
+<li>开启NMT , <code>-XX:NativeMemoryTracking=summary</code> 或者<code>-XX:NativeMemoryTracking=detail</code></li>
+<li>使用<code>jcmd &lt;pid&gt; VM.native_memory baseline</code>建立内存基线</li>
+<li>使用<code>jcmd &lt;pid&gt; VM.native_memory detail.diff</code>检测内存变化</li>
+<li>如果内存泄漏比较缓慢，那么需要多等待一会儿</li>
+</ul>
+
+<h2 id="toc_4">读懂NMT输出的数据</h2>
+
+<p>下表展示了NMT的的内存分类</p>
+
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Java Heap</td>
+<td>堆</td>
+</tr>
+<tr>
+<td>Class</td>
+<td>类元数据</td>
+</tr>
+<tr>
+<td>Code</td>
+<td>代码</td>
+</tr>
+<tr>
+<td>GC</td>
+<td>GC使用的数据，例如卡表</td>
+</tr>
+<tr>
+<td>Compiler</td>
+<td>编译器生成代码使用的内存</td>
+</tr>
+<tr>
+<td>Symbol</td>
+<td>符号，例如变量名</td>
+</tr>
+<tr>
+<td>Memory Tracking</td>
+<td>NMT</td>
+</tr>
+<tr>
+<td>Pooled Free Chunks</td>
+<td>Arena内存块池使用</td>
+</tr>
+<tr>
+<td>Shared space for classes</td>
+<td>类共享存档映射的内存</td>
+</tr>
+<tr>
+<td>Thread</td>
+<td>线程使用，包括线程数据结构，资源区和句柄区</td>
+</tr>
+<tr>
+<td>Thread stack</td>
+<td>线程堆栈,被标记为已提交</td>
+</tr>
+<tr>
+<td>Internal</td>
+<td>不在以上类别，例如命令行解释器</td>
+</tr>
+<tr>
+<td>Unknown</td>
+<td>无法确定的内存</td>
+</tr>
+</tbody>
+</table>
+
+<hr/>
+
+<h3 id="toc_5">准备知识</h3>
+
+<p><code>committed</code>已提交内存是实际使用的,例如<code>-Xms100m -Xmx1000m</code>，那么jvm会<code>reserve 1000MB</code>，因为初始内存为<code>100MB</code>， 因此<code>committed 100MB</code><br/>
+<code>Arena</code>是一块使用<code>malloc</code>分配出来的内存。当退出范围或离开代码区域时，内存会从这些块中大量释放。这些块可以在其他子系统中重用，以保存临时内存，例如线程前分配。Arena malloc策略确保没有内存泄漏。因此Arena是作为一个整体而不是单个对象进行跟踪的。某些初始内存无法被跟踪。<br/>
+需要注意的是启用NMT会降低机器5%到10%的性能，并且会带来内存使用的提升，因为NMT会在每个<code>malloc</code>的内存头部添加<code>2 machine words</code>作为<code>malloc header</code>, NMT使用的内存也会被NMT追踪。<a href="https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/tooldescr007.html">文档</a>原话如下:</p>
+
+<blockquote>
+<p>Enabling NMT will result in a 5-10 percent JVM performance drop and memory usage for NMT adds 2 machine words to all malloc memory as malloc header. NMT memory usage is also tracked by NMT.</p>
+</blockquote>
+
+<hr/>
+
+<h3 id="toc_6">NMT汇总数据</h3>
+
+<p>使用NMT追踪内存分配汇总数据需要使用<code>-XX:NativeMemoryTracking=summary</code>开启<br/>
+然后使用<code>jcmd &lt;pid&gt; VM.native_memory summary</code>打印汇总数据，样例如下:</p>
+
+<pre><code class="language-text">Total:  reserved=664192KB,  committed=253120KB                                           &lt;--- NMT追踪的总内存
+ 
+-                 Java Heap (reserved=516096KB, committed=204800KB)                      &lt;--- 堆内存
+                            (mmap: reserved=516096KB, committed=204800KB)
+ 
+-                     Class (reserved=6568KB, committed=4140KB)                          &lt;--- 类的元数据
+                            (classes #665)                                               &lt;--- 类加载数 665
+                            (malloc=424KB, #1000)                                        &lt;--- malloc分配的内存大小，malloc数1000
+                            (mmap: reserved=6144KB, committed=3716KB)
+ 
+-                    Thread (reserved=6868KB, committed=6868KB)
+                            (thread #15)                                                 &lt;--- 线程数
+                            (stack: reserved=6780KB, committed=6780KB)                   &lt;--- 线程堆栈使用内存数
+                            (malloc=27KB, #66)
+                            (arena=61KB, #30)                                            &lt;--- 资源&amp;句柄
+ 
+-                      Code (reserved=102414KB, committed=6314KB)
+                            (malloc=2574KB, #74316)
+                            (mmap: reserved=99840KB, committed=3740KB)
+ 
+-                        GC (reserved=26154KB, committed=24938KB)
+                            (malloc=486KB, #110)
+                            (mmap: reserved=25668KB, committed=24452KB)
+ 
+-                  Compiler (reserved=106KB, committed=106KB)
+                            (malloc=7KB, #90)
+                            (arena=99KB, #3)
+ 
+-                  Internal (reserved=586KB, committed=554KB)
+                            (malloc=554KB, #1677)
+                            (mmap: reserved=32KB, committed=0KB)
+ 
+-                    Symbol (reserved=906KB, committed=906KB)
+                            (malloc=514KB, #2736)
+                            (arena=392KB, #1)
+ 
+-           Memory Tracking (reserved=3184KB, committed=3184KB)
+                            (malloc=3184KB, #300)
+ 
+-        Pooled Free Chunks (reserved=1276KB, committed=1276KB)
+                            (malloc=1276KB)
+ 
+-                   Unknown (reserved=33KB, committed=33KB)
+                            (arena=33KB, #1)
+</code></pre>
+
+<hr/>
+
+<h3 id="toc_7">NMT明细数据</h3>
+
+<p>使用<code>-XX:NativeMemoryTracking=detail</code>开启明细追踪，NMT会追踪分配内存最多的几个方法，然后使用<code>jcmd &lt;pid&gt; VM.native_memory detail</code>打印明细数据，样例如下:</p>
+
+<pre><code class="language-text">Virtual memory map:
+ 
+[0x8f1c1000 - 0x8f467000] reserved 2712KB for Thread Stack
+                from [Thread::record_stack_base_and_size()+0xca]
+        [0x8f1c1000 - 0x8f467000] committed 2712KB from [Thread::record_stack_base_and_size()+0xca]
+ 
+[0x8f585000 - 0x8f729000] reserved 1680KB for Thread Stack
+                from [Thread::record_stack_base_and_size()+0xca]
+        [0x8f585000 - 0x8f729000] committed 1680KB from [Thread::record_stack_base_and_size()+0xca]
+ 
+[0x8f930000 - 0x90100000] reserved 8000KB for GC
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x555]
+        [0x8f930000 - 0x90100000] committed 8000KB from [PSVirtualSpace::expand_by(unsigned int)+0x95]
+ 
+[0x902dd000 - 0x9127d000] reserved 16000KB for GC
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x555]
+        [0x902dd000 - 0x9127d000] committed 16000KB from [os::pd_commit_memory(char*, unsigned int, unsigned int, bool)+0x36]
+ 
+[0x9127d000 - 0x91400000] reserved 1548KB for Thread Stack
+                from [Thread::record_stack_base_and_size()+0xca]
+        [0x9127d000 - 0x91400000] committed 1548KB from [Thread::record_stack_base_and_size()+0xca]
+ 
+[0x91400000 - 0xb0c00000] reserved 516096KB for Java Heap                                                                            &lt;--- 保留的内存地址范围
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x190]                  &lt;--- 保留内存的方法调用(callsite)
+        [0x91400000 - 0x93400000] committed 32768KB from [VirtualSpace::initialize(ReservedSpace, unsigned int)+0x3e8]               &lt;--- 已提交的内存以及方法调用
+        [0xa6400000 - 0xb0c00000] committed 172032KB from [PSVirtualSpace::expand_by(unsigned int)+0x95]
+ 
+[0xb0c61000 - 0xb0ce2000] reserved 516KB for Thread Stack
+                from [Thread::record_stack_base_and_size()+0xca]
+        [0xb0c61000 - 0xb0ce2000] committed 516KB from [Thread::record_stack_base_and_size()+0xca]
+ 
+[0xb0ce2000 - 0xb0e83000] reserved 1668KB for GC
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x555]
+        [0xb0ce2000 - 0xb0cf0000] committed 56KB from [PSVirtualSpace::expand_by(unsigned int)+0x95]
+        [0xb0d88000 - 0xb0d96000] committed 56KB from [CardTableModRefBS::resize_covered_region(MemRegion)+0xebf]
+        [0xb0e2e000 - 0xb0e83000] committed 340KB from [CardTableModRefBS::resize_covered_region(MemRegion)+0xebf]
+ 
+[0xb0e83000 - 0xb7003000] reserved 99840KB for Code
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x555]
+        [0xb0e83000 - 0xb0e92000] committed 60KB from [VirtualSpace::initialize(ReservedSpace, unsigned int)+0x3e8]
+        [0xb1003000 - 0xb139b000] committed 3680KB from [VirtualSpace::initialize(ReservedSpace, unsigned int)+0x37a]
+ 
+[0xb7003000 - 0xb7603000] reserved 6144KB for Class
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x555]
+        [0xb7003000 - 0xb73a4000] committed 3716KB from [VirtualSpace::initialize(ReservedSpace, unsigned int)+0x37a]
+ 
+[0xb7603000 - 0xb760b000] reserved 32KB for Internal
+                from [PerfMemory::create_memory_region(unsigned int)+0x8ba]
+ 
+[0xb770b000 - 0xb775c000] reserved 324KB for Thread Stack
+                from [Thread::record_stack_base_and_size()+0xca]
+        [0xb770b000 - 0xb775c000] committed 324KB from [Thread::record_stack_base_and_size()+0xca]
+</code></pre>
+
+<hr/>
+
+<h3 id="toc_8">NMT内存基线以及对比</h3>
+
+<p>开启汇总或者明细追踪，然后使用<code>jcmd &lt;pid&gt; VM.native_memory baseline</code>建立内存基线，然后预热应用，然后使用<code>jcmd &lt;pid&gt; VM.native_memory summary.diff</code> 或者 <code>jcmd &lt;pid&gt; VM.native_memory detail.diff</code>打印内存变化的情况,<br/>
+汇总样例如下:</p>
+
+<pre><code class="language-text">Total:  reserved=664624KB  -20610KB, committed=254344KB -20610KB                         &lt;--- 总内存与基线对比. &#39;+&#39;=增加 &#39;-&#39;=减少
+ 
+-                 Java Heap (reserved=516096KB, committed=204800KB)
+                            (mmap: reserved=516096KB, committed=204800KB)
+ 
+-                     Class (reserved=6578KB +3KB, committed=4530KB +3KB)
+                            (classes #668 +3)                                            &lt;--- 新加载了3个类
+                            (malloc=434KB +3KB, #930 -7)                                 &lt;--- malloc的内存新增了3KB,但malloc数量减少了7次
+                            (mmap: reserved=6144KB, committed=4096KB)
+ 
+-                    Thread (reserved=60KB -1129KB, committed=60KB -1129KB)
+                            (thread #16 +1)                                              &lt;--- 新增了一个线程
+                            (stack: reserved=7104KB +324KB, committed=7104KB +324KB)
+                            (malloc=29KB +2KB, #70 +4)
+                            (arena=31KB -1131KB, #32 +2)                                 &lt;--- 新增2块arena(多了一个资源区和一个句柄区)
+ 
+-                      Code (reserved=102328KB +133KB, committed=6640KB +133KB)
+                            (malloc=2488KB +133KB, #72694 +4287)
+                            (mmap: reserved=99840KB, committed=4152KB)
+ 
+-                        GC (reserved=26154KB, committed=24938KB)
+                            (malloc=486KB, #110)
+                            (mmap: reserved=25668KB, committed=24452KB)
+ 
+-                  Compiler (reserved=106KB, committed=106KB)
+                            (malloc=7KB, #93)
+                            (arena=99KB, #3)
+ 
+-                  Internal (reserved=590KB +35KB, committed=558KB +35KB)
+                            (malloc=558KB +35KB, #1699 +20)
+                            (mmap: reserved=32KB, committed=0KB)
+ 
+-                    Symbol (reserved=911KB +5KB, committed=911KB +5KB)
+                            (malloc=519KB +5KB, #2921 +180)
+                            (arena=392KB, #1)
+ 
+-           Memory Tracking (reserved=2073KB -887KB, committed=2073KB -887KB)
+                            (malloc=2073KB -887KB, #84 -210)
+ 
+-        Pooled Free Chunks (reserved=2624KB -15876KB, committed=2624KB -15876KB)
+                            (malloc=2624KB -15876KB)
+</code></pre>
+
+<p>明细样例如下：</p>
+
+<pre><code class="language-text">Details:
+ 
+[0x01195652] ChunkPool::allocate(unsigned int)+0xe2
+                            (malloc=482KB -481KB, #8 -8)
+ 
+[0x01195652] ChunkPool::allocate(unsigned int)+0xe2
+                            (malloc=2786KB -19742KB, #134 -618)
+ 
+[0x013bd432] CodeBlob::set_oop_maps(OopMapSet*)+0xa2
+                            (malloc=591KB +6KB, #681 +37)
+ 
+[0x013c12b1] CodeBuffer::block_comment(int, char const*)+0x21                &lt;--- [方法调用地址] 方法名 + 偏移量
+                            (malloc=562KB +33KB, #35940 +2125)               &lt;--- malloc大小增加33KB #malloc数增加2125
+ 
+[0x0145f172] ConstantPool::ConstantPool(Array&lt;unsigned char&gt;*)+0x62
+                            (malloc=69KB +2KB, #610 +15)
+ 
+...
+ 
+[0x01aa3ee2] Thread::allocate(unsigned int, bool, unsigned short)+0x122
+                            (malloc=21KB +2KB, #13 +1)
+ 
+[0x01aa73ca] Thread::record_stack_base_and_size()+0xca
+                            (mmap: reserved=7104KB +324KB, committed=7104KB +324KB)
+</code></pre>
+
+<hr/>
+
+<h3 id="toc_9">关闭NMT</h3>
+
+<p><code>jcmd &lt;pid&gt; VM.native_memory shutdown</code></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/4/16</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='JDK.html'>JDK</a></span>
+          				   
+                    
+
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="JDK.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>西央</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="email" href="mailto:tianfengbo@jd.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html"><strong>内功心法</strong></a>
+        
+            <a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html"><strong>算法&数据结构</strong></a>
+        
+            <a href="distribute-system.html"><strong>分布式</strong></a>
+        
+            <a href="others.html"><strong>杂七杂八</strong></a>
+        
+            <a href="fresh.html"><strong>新鲜事物</strong></a>
+        
+            <a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html"><strong>小知识点</strong></a>
+        
+            <a href="Morning-Paper.html"><strong>Morning-Paper</strong></a>
+        
+            <a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html"><strong>大事件记录</strong></a>
+        
+            <a href="%E8%BD%AC%E8%BD%BD.html"><strong>转载</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html"><strong>数据仓库</strong></a>
+        
+            <a href="Exit%20Music.html"><strong>Exit Music</strong></a>
+        
+            <a href="Project.html"><strong>Project</strong></a>
+        
+            <a href="JDK.html"><strong>JDK</strong></a>
+        
+            <a href="%E6%93%8D%E7%9B%98%E6%89%8B.html"><strong>操盘手</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="ongl.html">OGNL</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="rw-splitting.html">Spring + Mybatis 读写分离</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="CompressedOops.html">JVM压缩指针(CompressedOops)</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="load-balancer-algorithm.html">负载均衡算法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

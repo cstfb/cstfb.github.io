@@ -1,0 +1,495 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  分布式 - 西央
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="西央" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:fengbo.cool ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; 西央</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html">内功心法</a></li>
+        
+            <li><a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">算法&数据结构</a></li>
+        
+            <li><a href="distribute-system.html">分布式</a></li>
+        
+            <li><a href="others.html">杂七杂八</a></li>
+        
+            <li><a href="fresh.html">新鲜事物</a></li>
+        
+            <li><a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html">小知识点</a></li>
+        
+            <li><a href="Morning-Paper.html">Morning-Paper</a></li>
+        
+            <li><a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html">大事件记录</a></li>
+        
+            <li><a href="%E8%BD%AC%E8%BD%BD.html">转载</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html">数据仓库</a></li>
+        
+            <li><a href="Exit%20Music.html">Exit Music</a></li>
+        
+            <li><a href="Project.html">Project</a></li>
+        
+            <li><a href="JDK.html">JDK</a></li>
+        
+            <li><a href="%E6%93%8D%E7%9B%98%E6%89%8B.html">操盘手</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
+</script>
+<div class="row">
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="RabbitMq-vs-Kafka.html">
+                
+                  <h1>RabbitMQ vs Kafka</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>RabbitMQ和Kafka是两种很经典的分布式消息中间件，这篇文章试着从设计理念，基础特性，适用场景几个方面来描述这两种中间件。</p>
+
+<h2 id="toc_0">关于RabbitMq</h2>
+
+<ul>
+<li>Consumer</li>
+<li>Publisher</li>
+<li>Exchange: 消息交换</li>
+<li>Route: 消息路由</li>
+</ul>
+
+<h2 id="toc_1">关于Kafka</h2>
+
+<ul>
+<li>Consumer,ConsumerGroup</li>
+<li>Producer</li>
+<li>Kafka source connect</li>
+<li>Kafka sink connect</li>
+<li>Topic and topic partition</li>
+<li>Kafka stream</li>
+<li>Broker</li>
+<li>Zookeeper</li>
+</ul>
+
+<h2 id="toc_2">设计理念</h2>
+
+<h2 id="toc_3">可扩展，分布式，可靠性是两个系统的共同特点。</h2>
+
+<p>RabbitMq是经典的面向消息队列而设计的，它实现了AMQP协议。RabbitMq强大的地方在于它实现了高度灵活的消息路由功能，非常便于使用和拓展。<br/>
+<img src="media/15550739440669/15558383060583.jpg" alt=""/></p>
+
+<hr/>
+
+<p>Kafka是一个分布式的提交日志，这个提交日志<code>(commit-log)</code>的概念上来说和数据库的没有区别：都能够记录数据的变化并且可以重放。但是和数据库不同的是数据库的日志用来做恢复用而在Kafka中日志是一等公民。Kafka中没有队列的概念，一开始可能会让人感觉到奇怪。但这也是它的优势所在。<br/>
+<img src="media/15550739440669/15558631089848.jpg" alt=""/></p>
+
+<hr/>
+
+<p>从设计上来说，两者比较明显的一个区别是rabbitmq的中的消息是不进行持久化的，Kafka则相反(有淘汰策略)。因此Kafka支持多个消费者同时消费一个topic而互不影响，RabbitMq则不能做到多个消费者消费同一个队列而画像不受到影响(消费后即删除)。但RabbitMq的灵活的消息路由机制可以达到相同的目的。<br/>
+另外RabbitMq是以队列(queue)为单位的。而Kafka是以分区(partition)为单位的。</p>
+
+<h2 id="toc_4">PUB and SUB</h2>
+
+<h2 id="toc_5">RabbitMq和Kafka都支持并发的消息生产和消费，但是两者各自的特性不同。</h2>
+
+<p>RabbitMq和Kafka都支持基础的消息的发布功能，RabbitMq为了支持丰富的路由策略，因此生产者不是直接将消息发送到队列而是发送到Exchange中<code>Channel.basicPublish(String exchange, String routingKey, boolean mandatory, boolean immediate, BasicProperties props, byte[] body)</code>,然后根据exchange type和routingKey还有其他属性决定将消息发送到什么队列:</p>
+
+<ul>
+<li>exchange type = fanout, 广播模式，exchange会将消息广播到所有绑定到这个exchange的其他exchange和queue</li>
+<li>exchange type = direct, 精确匹配, 根据消息的routingKey精确发送到和Exchange绑定的Queue(Queue申明绑定时同时指定routingkey)</li>
+<li>exchange type = Topic , 模糊匹配，Queue绑定时可以指定正则，*代表任意字符, #代表任意数字</li>
+<li>exchange type = Header, 消息头匹配，这种方式忽略routingKey，而是根据发送消息时指定的消息头匹配，同样队列绑定时也要指定消息头匹配规则</li>
+<li>exchange type = Consistent Hashing, 一致性哈希，exchange根据routingKey, header, message properties 的哈希值将消息分布到不同的队列中去，这个特性提供了类似于Kafka中分区的功能</li>
+<li>死信队列，队列可以配置条件(size,ttl等)将消息驱逐到指定的exchange中</li>
+<li>其他例如临时类型(Ephemeral Exchanges)和优先类型(Priority Exchanges)</li>
+</ul>
+
+<p>从性能上来说，fanout的性能时最高的，不用做任何判断，direct性能差一点，需要精确匹配，Header最强大也性能也最差。<br/>
+RabbitMq中一个队列可以有多个消费者，但一条消息只允许一个消费者消费，消费完之后会从队列中消除，提高吞吐量的方法是使用Push API;</p>
+
+<hr/>
+
+<p>Kafka的消息是持久化的，RabbitMq中的消息是会消亡的。因此类似于RabbitMq中的重新入队或者延迟对Kakfa来说没有意义，重新入队会造成消息顺序混乱和重复，Kafka也没有内置的延迟策略。<br/>
+Kafka通过类似于<code>KafkaProducer.send(new ProducerRecord(topic, key, data))</code>的API将消息发送到指定主题和分区，如果采用默认的分区器，那么Kafka会对key进行散列，同一个key被发送到同一个分区，如果没有指定key，那么分区器将随机分配到某一个分区，另外也可以指定自定义的分区器，这取决于你想要怎么样的分区策略。<br/>
+Kafka要对消息做持久化，那么是不是意味着Kafka消息生产的性能很低？并不是，Kafka使用操作系统缓冲区缓存消息，相当于每次都是操作内存，因此效率是非常高，另一方面Kafka在硬盘中的存储方式是顺序存储的，对于硬盘来说，数据寻址是性能消耗的主要原因之一，由于是顺序存储，Kafka在写入的时候顺序写入硬盘的效率比一般的写入效率高出很多。顺序存储的另一个好处是读取的效率很高，另外Kafka使用了零复制技术，意味着原本从文件系统-&gt;内核空间-&gt;用户空间-&gt;网卡通道要经过两次内存缓存区复制变成了直接从文件系统发送到网络通道，而不需要经过任何内存缓存区，避免了字节复制，从而提高了性能。<br/>
+Kafka中的消息持久化使得各个消费者可以同时消费而互不影响，Kafka中的消费群组保证了同一条消息只被其中一个消费者消费（再均衡的情况下可能发生重复消费）。</p>
+
+<h2 id="toc_6">PULL or PUSH</h2>
+
+<h2 id="toc_7">RabbitMq使用推模型，而Kafka使用拉模型。</h2>
+
+<p>RabbitMq使用的是推送模型（push)，同时通过设置<code>prefetch limit</code>预取值来防止生产速度大于消费速度，这样做的好处是消息延迟低并且也很适合基于队列的消息架构。<br/>
+但其实RabbitMq也支持拉API, 从Spring-AMQP的实现来讲，Push API使用Listner Container并且注册回调函数， 然后Pull API使用的是Channel.basicGet。</p>
+
+<hr/>
+
+<p>Kafka使用的拉模型（pull），消费者从给定的偏移量开始批量请求消息。为了防止无意义的请求轮询，Kakfa允许长轮询（long-polling）。<br/>
+由于分区的设计，Kafka使用拉模型是比较合理的，使用推模型的话就不灵活了。由于Kafka消息的消费没有竞争，所以通过批量获取消息可以达到很高的吞吐量。对于RabbitMq来说这么做没有太大的意义因为希望尽快的分配一个消息并且完成处理。</p>
+
+<h2 id="toc_8">消息投递保证</h2>
+
+<ul>
+<li><code>最多一次</code> :意味着消息不会重复投递但是可能丢失(RabbitMq &amp; Kafka)</li>
+<li><code>最少一次</code> :意味着消息不会丢失但可能重复投递，意味着消息可能被成功处理两次(RabbitMq &amp; Kafka)</li>
+<li><code>精确一次</code> :消息系统的皇冠，准确投递一次(Kafka在很有限的情况下满足)</li>
+</ul>
+
+<hr/>
+
+<p>消息系统可以简单的抽象化为两个组件:生产者和消费者, 不管是消息的生产还是消费都离不开这两种角色:<br/>
+<img src="media/15550739440669/15570192785099.jpg" alt="" style="width:362px;"/></p>
+
+<p>正常情况下，为了保证消息成功消费，生产者和消费者会进行两次通信：发送消息和确认消费，那么其中有四个地方可能会发生中断或者失败(网络原因/bug/故障等等)。<br/>
+在看相关的资料之前，我很疑惑这种投递保证要保证的究竟是什么？指的是消息发送还是处理成功的次数？如果四个步骤中发生了问题应该如何处理？ 在send和process阶段如果出错，那么重发消息是正确的， 如果是response和ack阶段出错那就不应该再重发，kafka保证的exactly once究竟是怎么做到的呢？看了资料之后才有了大概的理解。<br/>
+首先，消息投递的保证从结果来看比较好理解一点，最多一次(at-most-once), 最少一次(at-least-once)都不能保证除了问题之后消息处理的结果不会发生变化，精确一次(exactly-once)就可以做到正常情况下和出了问题的情况下消息的处理结果还是一样的，例如消息计数。</p>
+
+<blockquote>
+<p>the result of computaion -- including all state changes -- is the same if the error occurs during processing or not.</p>
+</blockquote>
+
+<p>那么其实不难看出，无论生产者和消费者的组件如何设计，一般情况下都存在某个阶段需要用户代码参与，此时exactly-once的保证是极难达成的，因为用户代码的幂等性无法保证，所以从结果来看，完成精确一次的保证是需要生产者和消费者之间步伐完全统一的，那么kafka是如何做到这一点的呢？其实kafka所说的exactly-once保证也只在它的stream api和producer中有，再producer中，kafka为每个消息附加一个唯一的id，这样保证消息不会被重复处理。stream api的场景是几个topic的结果处理后输出到另一个topic，在可以掌控输入和输出端的情况下做到了exactly-once的保证(<a href="https://www.youtube.com/watch?v=JPcT1GGzszA">Exactly-Once Semantics in Apache Kafka</a>)</p>
+
+<h2 id="toc_9">消息排序</h2>
+
+<h2 id="toc_10">Kafka和RabbitMq都能保证消息的顺序</h2>
+
+<p>具体情况是两者在单线程情况下都能保证在队列和分区中的消息的顺序是和发送顺序一样的。这很好理解，因为在多线程的情况下的顺序是很难定义的，而kafka中还有分区的概念。</p>
+
+<h2 id="toc_11">高可用&amp;容错</h2>
+
+<h2 id="toc_12">Kafka和RabbitMq都有良好的高可用机制。例如分区副本，镜像队列，消息和元数据持久化等等。</h2>
+
+<p>分布式系统总是离不开可用性和一致性的问题，CAP理论是其中的一个代表, <a href="https://www.infoq.cn/article/cap-twelve-years-later-how-the-rules-have-changed">CAP理论十二年回顾：&quot;规则&quot;变了</a><br/>
+正如前文提到的， Kafka是一个分布式的提交日志，所以是对消息做了持久化，另外Kafka会对Topic以及Partition做多副本。另外Kafka使用ZK保存集群的元数据信息和消费者的信息。<br/>
+RabbitMq中存在镜像队列的概念，即存在一主多从的队列，所有操作会在镜像队列中重放，保证队列的高可用，另外元数据信息使用的是内置的<a href="https://zh.wikipedia.org/wiki/Mnesia">Mnesia</a>数据库.</p>
+
+<h2 id="toc_13">使用场景</h2>
+
+<h2 id="toc_14">RabbitMq适用于低延迟的业务处理系统，Kafka使用与高吞吐的流处理系统。</h2>
+
+<p>RabbitMq的Push API的延迟较低，但相对于Kafka对于吞吐的优化而言，RabbitMq的吞吐没有那么高，并且由于低延迟所以适合于业务相关的消息处理，例如交易支付等。Kafka由于其Pull API和高吞吐设计，比较适用于数据仓库类的流计算处理，但若业务系统对于持久化的需求很强烈，那么采用Kafka也是很好的选择。</p>
+
+<h1 id="toc_15">总结</h1>
+
+<p>水平有限, 仅限参考。</p>
+
+<h1 id="toc_16">Refer</h1>
+
+<p><a href="https://jack-vanlightly.com/blog/2017/12/4/rabbitmq-vs-kafka-part-1-messaging-topologies">rabbitmq-vs-kafka-part-1-messaging-topologies</a><br/>
+<a href="https://jack-vanlightly.com/blog/2017/12/5/rabbitmq-vs-kafka-part-2-rabbitmq-messaging-patterns-and-topologies">rabbitmq-vs-kafka-part-2-rabbitmq-messaging-patterns-and-topologies</a><br/>
+<a href="https://jack-vanlightly.com/blog/2017/12/8/rabbitmq-vs-kafka-part-3-kafka-messaging-patterns">rabbitmq-vs-kafka-part-3-kafka-messaging-patterns</a><br/>
+<a href="https://jack-vanlightly.com/blog/2017/12/15/rabbitmq-vs-kafka-part-4-message-delivery-semantics-and-guarantees">rabbitmq-vs-kafka-part-4-message-delivery-semantics-and-guarantees</a><br/>
+<a href="https://jack-vanlightly.com/blog/2018/8/31/rabbitmq-vs-kafka-part-5-fault-tolerance-and-high-availability-with-rabbitmq">rabbitmq-vs-kafka-part-5-fault-tolerance-and-high-availability-with-rabbitmq</a><br/>
+<a href="https://jack-vanlightly.com/blog/2018/9/2/rabbitmq-vs-kafka-part-6-fault-tolerance-and-high-availability-with-kafka">rabbitmq-vs-kafka-part-6-fault-tolerance-and-high-availability-with-kafka</a></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/4/12</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='distribute-system.html'>分布式</a></span>
+          				   
+                    
+
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="distribute-system_2.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			 <a href="distribute-system_4.html">&raquo; Next Page</a> 
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>西央</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="email" href="mailto:tianfengbo@jd.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html"><strong>内功心法</strong></a>
+        
+            <a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html"><strong>算法&数据结构</strong></a>
+        
+            <a href="distribute-system.html"><strong>分布式</strong></a>
+        
+            <a href="others.html"><strong>杂七杂八</strong></a>
+        
+            <a href="fresh.html"><strong>新鲜事物</strong></a>
+        
+            <a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html"><strong>小知识点</strong></a>
+        
+            <a href="Morning-Paper.html"><strong>Morning-Paper</strong></a>
+        
+            <a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html"><strong>大事件记录</strong></a>
+        
+            <a href="%E8%BD%AC%E8%BD%BD.html"><strong>转载</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html"><strong>数据仓库</strong></a>
+        
+            <a href="Exit%20Music.html"><strong>Exit Music</strong></a>
+        
+            <a href="Project.html"><strong>Project</strong></a>
+        
+            <a href="JDK.html"><strong>JDK</strong></a>
+        
+            <a href="%E6%93%8D%E7%9B%98%E6%89%8B.html"><strong>操盘手</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="ongl.html">OGNL</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="rw-splitting.html">Spring + Mybatis 读写分离</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="CompressedOops.html">JVM压缩指针(CompressedOops)</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="load-balancer-algorithm.html">负载均衡算法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

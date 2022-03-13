@@ -1,0 +1,493 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  我对Paxos的一些理解 - 西央
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="西央" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:fengbo.cool ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; 西央</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html">内功心法</a></li>
+        
+            <li><a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">算法&数据结构</a></li>
+        
+            <li><a href="distribute-system.html">分布式</a></li>
+        
+            <li><a href="others.html">杂七杂八</a></li>
+        
+            <li><a href="fresh.html">新鲜事物</a></li>
+        
+            <li><a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html">小知识点</a></li>
+        
+            <li><a href="Morning-Paper.html">Morning-Paper</a></li>
+        
+            <li><a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html">大事件记录</a></li>
+        
+            <li><a href="%E8%BD%AC%E8%BD%BD.html">转载</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html">数据仓库</a></li>
+        
+            <li><a href="Exit%20Music.html">Exit Music</a></li>
+        
+            <li><a href="Project.html">Project</a></li>
+        
+            <li><a href="JDK.html">JDK</a></li>
+        
+            <li><a href="%E6%93%8D%E7%9B%98%E6%89%8B.html">操盘手</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>我对Paxos的一些理解</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2018/4/9</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='distribute-system.html'>分布式</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <blockquote>
+<p>看到了一些描述paxos协议的文章，但是始终都似懂非懂的样子，感觉是自己没有get到点, 可能大多数文章描述的都是理论上的一些过程，没有清楚的描述来龙去脉吧；另外号称是最难懂的一致性算法，可能也让我产生了理解障碍；；；在这篇博客中，我尝试着去梳理一下吧，能弄懂一点是一点;; 可能带着问题去理解会是一个比较好的方式吧</p>
+</blockquote>
+
+<ul>
+<li>
+<a href="#toc_0">我的误解</a>
+<ul>
+<li>
+<a href="#toc_1">分布式系统中的一致性问题</a>
+</li>
+<li>
+<a href="#toc_2">一致性问题与分布式事务</a>
+</li>
+<li>
+<a href="#toc_3">Paxos不是完美的</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_4">Paxos要解决的问题</a>
+</li>
+<li>
+<a href="#toc_5">Paxos在工程中的应用</a>
+</li>
+<li>
+<a href="#toc_6">业界实现</a>
+</li>
+<li>
+<a href="#toc_7">关于Paxos坊间的一些说法</a>
+</li>
+<li>
+<a href="#toc_8">参考资料</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">我的误解</h2>
+
+<h3 id="toc_1">分布式系统中的一致性问题</h3>
+
+<blockquote>
+<p>谈起分布式系统，基本上都会说起分布式事务的问题，分布式事务是在多台机器上实现一个原子操作，相比单个数据库事务，分布式事务要考虑更多的问题例如网络环境,目前听的比较多的分布式事务协议就是2PC了，这是一类一致性问题(这是强一致性的情况， 由于CAP定理的限制，要实现强一致性那么就要牺牲掉高可用，这对分布式系统是致命的，所以目前追求的比较多的是最终一致性的解决方案例如异步消息--这应该不再属于事务的范畴了),这是针对分布式事务而言的.<br/>
+    另一类一致性，我是这么理解的，在分布式系统中，为了解决单点故障，数据必须做冗余，比较典型的例如数据库复制，log复制，姑且称之为副本一致性，副本间的数据一致性也可以分为强一致性和最终一致性；当然除了强一致性和最终一致性中间还有其他级别的一致性，我没有详细的了解； <br/>
+    以上说了分布式系统中常见的两类关于一致性的实际问题;除了一致性问题，分布式系统中还存在例如选主问题，分布式锁等共识问题；<br/>
+    在英语中，consistency(transaction) 与 consensus(paxos) 都有一致性的意思，两者的区别可以理解为consensus主要在达成共识上，然后consistency可以理解为执行上；</p>
+</blockquote>
+
+<h3 id="toc_2">一致性问题与分布式事务</h3>
+
+<blockquote>
+<p>上一个问题已经说到，分布式事务可以理解为一类一致性问题，但是这个和paxos其实是两回事，我的理解是paxos要解决的是比分布式事务更一般的问题;在分布式系统中,为了应对可能出错的场景例如进程崩溃或者网络延迟等，从而使系统更加的可靠，需要进程间对某个值达成一致(我们称之为共识问题),例如&#39;多节点事务提交&#39;,&#39;选主问题&#39;,&#39;<a href="https://en.wikipedia.org/wiki/State_machine_replication">状态机复制</a>&#39;,<a href="https://en.wikipedia.org/wiki/Atomic_broadcast">原子广播</a>;<br/>
+    上面说到paxos要解决比分布式事务更一般的问题，那么分布式事务中是否有paxos的用武之地呢？ 答案是肯定的，上面说到目前的分布式事务的主流解决方案有2pc和3pc，2pc会有单点故障的问题，并且会造成数据的不一致(当commit消息发送一半失败),3pc解决了2pc的一部分问题，但还是会有不一致的情况;关于paxos与事务的讨论参见Gray和Lamport大神合著的&#39;Consensus on Transaction Commit&#39;一文;</p>
+</blockquote>
+
+<h3 id="toc_3">Paxos不是完美的</h3>
+
+<blockquote>
+<pre><code class="language-text">Paxos并不是一个完美的解决一致性问题的协议；FLP结果已经指出了这一点;
+</code></pre>
+</blockquote>
+
+<h2 id="toc_4">Paxos要解决的问题</h2>
+
+<blockquote>
+<p>简单说来，Paxos的目的是让整个集群的结点对某个值的变更达成一致。Paxos算法基本上来说是个民主选举的算法——大多数的决定会成个整个集群的统一决定。任何一个点都可以提出要修改某个数据的提案，是否通过这个提案取决于这个集群中是否有超过半数的结点同意（所以Paxos算法需要集群中的结点是单数）</p>
+</blockquote>
+
+<h2 id="toc_5">Paxos在工程中的应用</h2>
+
+<blockquote>
+<p>其实看到paxos的第一眼，我就在想这玩意儿到底能干嘛,能够用来解决哪一类问题？工程中如何使用?它能做分布式的事务吗？如果是保证多个集群中的节点一致的话又有什么用呢？ 它能被用于工程上的那些领域呢？它与现在的例如mysql主从同步又有什么关系呢？ 设计小于当前最大的proposal不被接受是为什么呢?问题太多，感觉自己还是太笨了...<br/><br/>
+    其实在弄清楚一些基本的概念性的东西之后，对paxos就会有基本的认识，例如paxos要解决的基本问题，结合分布式系统的中的一些问题以及目前的解决方案，对paxos就会有一个大致的轮廓；<br/>
+    具体来说Paxos在工程中的应用主要有:多节点复制（状态及复制问题,也是paxos最大的用途）-- 可以保证各个节点看到的消息顺序相同； 选主操作； naming service; config service;</p>
+</blockquote>
+
+<h2 id="toc_6">业界实现</h2>
+
+<p><code>比特币</code> <code>chubby</code> <code>zookeeper</code> <code>腾讯phxpaxos</code> <code>阿里X-Paxos</code> <code>raft</code> <code>2pc</code> </p>
+
+<blockquote>
+<p>比特币的共识算法比较奇特，它使用一个叫做PoW(proof of Work,工作量证明)的东西来提高节点提出提议的门槛(计算hash，目前靠电力去算)，据说这样可以有效减少恶意的参与；另外还有PoS/PBFT等共识协议；<br/>
+chubby是google的一个分布式锁服务，由于需要解决单点的问题引入了multi-paxos的实现；对于chubby来说，对应的锁服务的实现才是其重点，不过底层的一致性保障协议也是非常重要的；<br/>
+zookeeper采用了一个在Paxos上改进的ZAB(zookeeper atomic broadcast)协议,ZAB协议设计了支持崩溃恢复;需要提出的是chubby和zk使用的协议都是没有经过理论证明的，但是在工程中已经证明了没有什么太大的问题了;<br/>
+2pc全称两阶段提交协议，对应的还有3阶段提交协议；是分布式事务业界的主流实现，优点是简单明了，分为precommit和commit两个阶段，并且需要一个事务协调器，precommit对各个节点发送命令锁定相应的资源，全部成功之后发送commit命令，缺点是存在单点故障，并且会产生不一致的情况；<br/>
+raft协议可以理解为paxos的简化版本，没有详细了解；<br/>
+腾讯和阿里的paxos实现不了解；腾讯的开源了， 阿里的没有开源</p>
+</blockquote>
+
+<h2 id="toc_7">关于Paxos坊间的一些说法</h2>
+
+<ol>
+<li>要证明分布式容错算法的正确性通常比实现算法还困难</li>
+<li>paxos从理论到实际的巨大差距</li>
+<li>Google Chubby的作者Mike Burrows说过这个世界上只有一种一致性算法，那就是Paxos，其它的算法都是残次品。</li>
+</ol>
+
+<h2 id="toc_8">参考资料</h2>
+
+<p>[1]<a href="https://timyang.net/distributed/paxos-scenarios/">Paxos在大型系统中常见的应用场景</a><br/>
+[2]<a href="https://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2651001297&amp;idx=1&amp;sn=d4c3f1fc6264bc7f1857f6033eaf27f6&amp;chksm=bdbee9828ac960942247b4f8fe661f883a962187b4a2dce51c8394e8c962d0f3b3ac41d0a3c6&amp;scene=21#wechat_redirect">强烈推荐:分布式系统架构经典资料</a><br/>
+[3]<a href="https://en.wikipedia.org/wiki/Paxos_(computer_science)">wikipedia</a><br/>
+[4]<a href="https://zh.wikipedia.org/wiki/Paxos%E7%AE%97%E6%B3%95">中文维基</a><br/>
+[5]<a href="http://paxos.systems/index.html">paxos 英文解释</a><br/>
+[6]<a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/tr-2003-96.pdf">Consensus on Transaction Commit</a><br/>
+[7]<a href="https://groups.csail.mit.edu/tds/papers/Lynch/jacm85.pdf">FLP不可能结果</a><br/>
+[8]<a href="https://coolshell.cn/articles/10910.html">分布式系统的事务处理</a></p>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="tips.html" 
+          title="Previous Post: 小知识点">&laquo; 小知识点</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="anna.html" 
+          title="Next Post: 号称秒杀redis/cassandra的KV存储系统Anna">号称秒杀redis/cassandra的KV存储系统Anna &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <!-- 来必力City版安装代码 -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC80MTg4NS8xODQzMQ==">
+	<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+	</script>
+<noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+</div>
+<!-- City版安装代码已完成 -->
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>西央</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="email" href="mailto:tianfengbo@jd.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html"><strong>内功心法</strong></a>
+        
+            <a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html"><strong>算法&数据结构</strong></a>
+        
+            <a href="distribute-system.html"><strong>分布式</strong></a>
+        
+            <a href="others.html"><strong>杂七杂八</strong></a>
+        
+            <a href="fresh.html"><strong>新鲜事物</strong></a>
+        
+            <a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html"><strong>小知识点</strong></a>
+        
+            <a href="Morning-Paper.html"><strong>Morning-Paper</strong></a>
+        
+            <a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html"><strong>大事件记录</strong></a>
+        
+            <a href="%E8%BD%AC%E8%BD%BD.html"><strong>转载</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html"><strong>数据仓库</strong></a>
+        
+            <a href="Exit%20Music.html"><strong>Exit Music</strong></a>
+        
+            <a href="Project.html"><strong>Project</strong></a>
+        
+            <a href="JDK.html"><strong>JDK</strong></a>
+        
+            <a href="%E6%93%8D%E7%9B%98%E6%89%8B.html"><strong>操盘手</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="ongl.html">OGNL</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="rw-splitting.html">Spring + Mybatis 读写分离</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="CompressedOops.html">JVM压缩指针(CompressedOops)</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="load-balancer-algorithm.html">负载均衡算法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

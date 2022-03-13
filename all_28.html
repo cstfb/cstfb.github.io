@@ -1,0 +1,421 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  西央
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="西央" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:fengbo.cool ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; 西央</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html">内功心法</a></li>
+        
+            <li><a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">算法&数据结构</a></li>
+        
+            <li><a href="distribute-system.html">分布式</a></li>
+        
+            <li><a href="others.html">杂七杂八</a></li>
+        
+            <li><a href="fresh.html">新鲜事物</a></li>
+        
+            <li><a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html">小知识点</a></li>
+        
+            <li><a href="Morning-Paper.html">Morning-Paper</a></li>
+        
+            <li><a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html">大事件记录</a></li>
+        
+            <li><a href="%E8%BD%AC%E8%BD%BD.html">转载</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html">数据仓库</a></li>
+        
+            <li><a href="Exit%20Music.html">Exit Music</a></li>
+        
+            <li><a href="Project.html">Project</a></li>
+        
+            <li><a href="JDK.html">JDK</a></li>
+        
+            <li><a href="%E6%93%8D%E7%9B%98%E6%89%8B.html">操盘手</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
+</script>
+<div class="row">
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="MP-recoding-black-mirror-part4.html">
+                
+                  <h1>(译文)Re-coding Black Mirror -- part 4</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><mark>原文地址：<a href="http://blog.acolyer.org/2018/05/17/re-coding-black-mirror-part-iv">http://blog.acolyer.org/2018/05/17/re-coding-black-mirror-part-iv</a></mark><br/>
+这是一览来自Re-coding Black Mirror的论文的第四部分，探讨了未来的技术场景及其对社会和伦理的影响，今天要阅读的两篇论文如下：</p>
+
+<ul>
+<li>这是错误信息的年代吗？结合社交机器人和假新闻来蒙骗大众(<a href="https://dl.acm.org/citation.cfm?id=3191610">Is this the era of misinformation yet? Combining social bots and fake news to deceive the masses Wang et al.</a>)</li>
+<li>Gnirut:在一个AI统治的世界里出生的人类的问题(<a href="https://dl.acm.org/citation.cfm?id=3191612">Gnirut: the trouble with being born human in an autonomous world Viganò and Sempreboni</a>)<br/>
+(如果你没有ACM数字图书馆访问权限，上述的论文也可以从<a href="">Morning Paper</a>网站或者<a href="https://www2018.thewebconf.org/proceedings/">www 2018议程</a>获取)<br/>
+## 这是错误信息的年代吗？<br/>
+&gt; 2016年，全世界都目击了美国总统大选期间社交媒体上的机器人散播假新闻事件...研究人员在最终投票前四周收集了Twitter数据，以估计这一现象的严重程度。结果显示有15%的账号为机器人账号，并且制造了19%的推特...当假新闻如此常见以至于事实无法到达普通人的时候会发生什么事情呢？</li>
+</ul>
+
+<p>假新闻和恶作剧由来已久，但社交媒体的本质却火上浇油。任何用户都可以在基本不经过第三方过滤或事实检查的情况下来创建和转发内容;许多成年人通过社交媒体获取新闻;研究表明，那些接触假新闻的人倾向于相信其真实性。<br/>
+我们制造令人信服的假新闻的技术发展越来越快，特别是在社交媒体帖子的关注范围内。文字内容可以由人类,或自然语言生成（在小短文社交媒体上工作尤其出色），不仅能够使用表情，还可以根据个体的风格生成对应的内容，就像之前在<code>Be Right Back</code>中看到的那样。<br/>
+我们可以使用从零开始的语音生成来模仿给定的人的声音，也可以使用语音转换来改变源说话人的声音。在语音转换中，演员的声音被转换成像给定目标的声音。<br/>
+我们可以生成看上去<a href="https://blog.acolyer.org/2018/05/10/progressive-growing-of-gans-for-improved-quality-stability-and-variation/">很真实的图片甚至是一个完全不存在的人</a>。我们甚至可以伪造视频，例如<a href="http://grail.cs.washington.edu/projects/AudioToObama/siggraph17_obama.pdf">利用素材中唇同步</a>来实现我们想说的任何东西；<a href="https://youtu.be/ohmajJTcpNk">将演员的面部表情实时的转换视频中的面部上面</a>；甚至利用深度学习把视频中将面部替换掉(<a href="https://hackernoon.com/exploring-deepfakes-20c9947c22d9">这里有一篇关于这项技术的好文章</a>).<br/>
+所以我们可以制作内容。信息扩散分析告诉我们如何让它传播。信息扩散通常遵循以下步骤:</p>
+
+<ol>
+<li>当一个节点分享这个信息之后整个网络暴露于外部信息并被感染</li>
+<li>这种外部感染引起内部暴露</li>
+<li>内部暴露导致节点传递信息从而内部感染</li>
+<li>在最初的感染爆发后，外部和内部接触继续助长传染<br/>
+(简单来说就是某人发了一个推特，然后其他人看到并转发...:))<br/>
+最终，我们可以想象将这些功能结合在一个智能的社交机器人中，给定一些目标然后用来制造和传播内容(一些强化学习可能也会在这里派上用场，使用reach作为奖励功能的关键部分)。首先，机器人选择或创建一个外部信息，然后通过传递它来创建内部暴露的初始爆发。
+<img src="media/15280441233010/era-of-misinformation-fig-1.jpeg" alt="era-of-misinformation-fig-1"/>
+在第三步中，机器人的目标是让尽可能多的人接收到消息。<br/>
+&gt; 例如，社交机器人可以实现意见挖掘和情绪分析技术，以定位那些观点与散布的欺骗信息一致的用户。</li>
+</ol>
+
+<p>人工检查永远达不到机器人产生消息的速度，因此我们需要自动化的工具来检测，<a href="http://ranger.uta.edu/%7Ecli/pubs/2017/claimbuster-kdd17-hassan.pdf">ClaimBuster</a>是这方面的一个例子。</p>
+
+<h2 id="toc_0">Gnirut:在一个AI统治的世界里出生的人类的问题</h2>
+
+<p>一个小男孩长大后想要开飞机，然后父母不得不给他泼冷水 -- 现在只有AI才能开飞机了 -- 人类太容易犯错误了。<br/>
+很多安全相关的一些工作已经交给机器人处理了，通常再给每个机器人配置几个操作员(例如5:1的操作员-机器人的比例).例如在军事行动中，自动运输，水下作业，远程手术等等。我们正在迈向一个人可以操纵一堆机器人的世界。</p>
+
+<blockquote>
+<p>当然不止这些，人们正在寻找不使用人力而将原来的人工车间替换成的井然有序的机器人的全自动化系统，就像汽车流水线，甚至Amazon的仓库一样...</p>
+</blockquote>
+
+<p>由于许多任务不一定需要AI参与，我们也可以更一般地讨论人工智能的比例。如果我们更进一步，开始考虑由一个或多个人工智能监控的人类呢?我们可以通过观察儿童与Alexa(AI)的互动来了解这一点。Rachel Botsman观察到她三岁的女儿与Alexa的长时间互动:</p>
+
+<blockquote>
+<p>&quot;我有些担心，看着女儿将决定权高兴的交了出去，&#39;Alexa，我今天应该做什么&#39;, 没过多久，她就信任了AI的重大选择,第三天，Grace用唱歌的声音问道,&#39;Alexa,我今天应该穿什么?粉红色还是闪亮的裙子?&#39;&quot;</p>
+</blockquote>
+
+<p>为什么是多个AI为一个人类服务？而不是一个AI管理多个人类呢？ </p>
+
+<blockquote>
+<p>这正在慢慢发生，一开始的区别太小以至于没有人注意到，或者我们没有真正意识到，长时间的微小的变化已经引起了巨大的改变。</p>
+</blockquote>
+
+<p>例如，“在一项值得称赞的保护人类安全的努力中，我们可能很快就会通过立法，规定某些工作只能由智能机器来完成。”这将延伸到人性和主观性可能会减缓反应时间或对最终结果产生负面影响的场景。(举个小例子，当一辆汽车检测到迎面而来的碰撞时，可以考虑自动制动系统)。<br/>
+一种分析欧洲人权法院判决的智能算法发现，模式使它能够以79%的准确率预测案件的结果。这样的算法可以用来帮助人类决策者。</p>
+
+<blockquote>
+<p>当然不止这些， 为什么不把真正的立法权交给智能机器呢?毕竟，智能机器有能力做出更好、更一致的决定。“他们”可能会通过立法，将人类无法接触到的职业列表扩展到包括司机、飞行员、医生、外科医生、会计师、律师、法官、立法者、士兵……等所有职业.</p>
+</blockquote>
+
+<p>回到我们的孩子，她想成为一名飞行员，为了被允许训练和飞行，她会把自己伪装成一个人工智能吗?也许她将不得不通过Gnirut测试(想想!),其中包含了一个AI裁判和一个试图将自己伪装成人工智能的人…可悲的是,我发现相比于一个人类通过Gnirut测试，一个机器人通过图灵测试会更加简单。</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/6/4</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Morning-Paper.html'>Morning-Paper</a></span>
+          				   
+                    
+
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="all_27.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			 <a href="all_29.html">&raquo; Next Page</a> 
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>西央</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="email" href="mailto:tianfengbo@jd.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html"><strong>内功心法</strong></a>
+        
+            <a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html"><strong>算法&数据结构</strong></a>
+        
+            <a href="distribute-system.html"><strong>分布式</strong></a>
+        
+            <a href="others.html"><strong>杂七杂八</strong></a>
+        
+            <a href="fresh.html"><strong>新鲜事物</strong></a>
+        
+            <a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html"><strong>小知识点</strong></a>
+        
+            <a href="Morning-Paper.html"><strong>Morning-Paper</strong></a>
+        
+            <a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html"><strong>大事件记录</strong></a>
+        
+            <a href="%E8%BD%AC%E8%BD%BD.html"><strong>转载</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html"><strong>数据仓库</strong></a>
+        
+            <a href="Exit%20Music.html"><strong>Exit Music</strong></a>
+        
+            <a href="Project.html"><strong>Project</strong></a>
+        
+            <a href="JDK.html"><strong>JDK</strong></a>
+        
+            <a href="%E6%93%8D%E7%9B%98%E6%89%8B.html"><strong>操盘手</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="ongl.html">OGNL</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="rw-splitting.html">Spring + Mybatis 读写分离</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="CompressedOops.html">JVM压缩指针(CompressedOops)</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="load-balancer-algorithm.html">负载均衡算法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

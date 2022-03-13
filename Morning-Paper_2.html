@@ -1,0 +1,420 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  Morning-Paper - 西央
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="西央" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:fengbo.cool ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; 西央</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html">内功心法</a></li>
+        
+            <li><a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">算法&数据结构</a></li>
+        
+            <li><a href="distribute-system.html">分布式</a></li>
+        
+            <li><a href="others.html">杂七杂八</a></li>
+        
+            <li><a href="fresh.html">新鲜事物</a></li>
+        
+            <li><a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html">小知识点</a></li>
+        
+            <li><a href="Morning-Paper.html">Morning-Paper</a></li>
+        
+            <li><a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html">大事件记录</a></li>
+        
+            <li><a href="%E8%BD%AC%E8%BD%BD.html">转载</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html">数据仓库</a></li>
+        
+            <li><a href="Exit%20Music.html">Exit Music</a></li>
+        
+            <li><a href="Project.html">Project</a></li>
+        
+            <li><a href="JDK.html">JDK</a></li>
+        
+            <li><a href="%E6%93%8D%E7%9B%98%E6%89%8B.html">操盘手</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
+</script>
+<div class="row">
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="MP-recoding-black-mirror-part3.html">
+                
+                  <h1>(译文)Re-coding Black Mirror -- part 3</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><mark>原文地址：<a href="https://blog.acolyer.org/2018/05/16/re-coding-black-mirror-part-iii/">https://blog.acolyer.org/2018/05/16/re-coding-black-mirror-part-iii/</a></mark><br/>
+这是一览来自Re-coding Black Mirror的论文的第三部分，探讨了未来的技术场景及其对社会和伦理的影响，今天要阅读的两篇论文如下：</p>
+
+<ul>
+<li>闭嘴快跑:永不停歇的对社交健身的追求(<a href="https://dl.acm.org/citation.cfm?id=3191609">Shut up and run: the never-ending quest for social fitness Anticoli &amp; Basaldella</a>)</li>
+<li>我能引起你的注意吗？--建立<a href="https://zh.wikipedia.org/wiki/%E5%8F%8D%E4%B9%8C%E6%89%98%E9%82%A6">反乌托邦</a>式的<a href="https://zh.wikipedia.org/wiki/%E6%B3%A8%E6%84%8F%E5%8A%9B%E7%B6%93%E6%BF%9F">注意力经济</a>(<a href="https://dl.acm.org/citation.cfm?id=3191605">May I have your attention please? Building a dystopian attention economy Helmer</a>)<br/>
+(如果你没有ACM数字图书馆访问权限，上述的论文也可以从<a href="">Morning Paper</a>网站或者<a href="https://www2018.thewebconf.org/proceedings/">www 2018议程</a>获取)<br/>
+## 闭嘴快跑:永不停歇的对社交健身的追求<br/>
+&gt; 本文中讨论了利用可穿戴设备来检测人类活动例如心率，睡眠监控，卡路里消耗等可能会带来的负面影响或者缺点。</li>
+</ul>
+
+<p>这篇论文的核心由三种讨论过的场景组成:爱丽丝的保险、鲍勃的抵押贷款和查理的问题。<br/>
+<strong>Alice</strong>想要买一份健康保险，这需要对潜在的保险公司进行筛选。A公司扫描了爱丽丝的社交媒体，发现她的母亲患有糖尿病，因此调整了风险等级然后给出了一份超出了Alice所能负担的范围的昂贵的保单。B公司使用了类似的手段，通过一个地理区域模型发现Alice所在地区心脏病发病率比较高，因此也给出了一份昂贵的保单。C公司提供了一种更实惠的方案，但要求客户使用他们健身设备追踪他们，就像飞机的“黑匣子”(我们已经在汽车保险市场看到了类似的情况)。爱丽丝必须每天锻炼两次，且不少于30分钟，并提交一份饮食日记。C公司应对糖尿病风险的方法是给爱丽丝开了一个食谱。</p>
+
+<blockquote>
+<p>然而，公司并不是盲目地相信爱丽丝:事实上，他们会继续扫描她和她的朋友们的社交媒体，以找出爱丽丝所报告的饮食和她的实际行为之间的差异……</p>
+</blockquote>
+
+<p>在几乎没有选择的情况下，Alice将自己的隐私、空闲时间和自由意志拱手让给了C公司。<br/>
+<strong>Bob</strong>参加了一个试点项目，计划中的所有成年人都必须使用健身追踪器。他的许多朋友和同事也是计划的一部分。Bob是一个非常健康的人，他通常每晚只睡7个小时。健身追踪计划建议至少8小时，他的朋友们都很容易做到这一点。鲍勃咨询了一位临床医生，医生认为鲍勃没有任何睡眠问题。但是朋友的帖子让他有点担心。“鲍勃开始给自己施加压力，变得易怒、疲劳、注意力和记忆减退。”<br/>
+后来Bob想要搬家去异地上班，需要申请抵押贷款。他的财务顾问告诉他，由于他的健身跟踪器检测到潜在的健康问题，所以他目前没有资格申请。</p>
+
+<blockquote>
+<p>由Bob的健身追踪器提供的自愿(Bob在社交媒体分享的)的和非自愿(银行和NHS之间的协议的一部分)的信息显示，他的睡眠问题随着时间的推移已经恶化，而且他现在经常出现焦虑症状。</p>
+</blockquote>
+
+<p>随着压力水平的增加，鲍勃最终被诊断为<em>正畸</em>，这是一种最近发现的疾病，患者会出现压力和焦虑问题，试图达到追踪者的期望。鲍勃被迫退出试点项目，并接受强制性的心理支持。<br/>
+<strong>Charlie</strong>,一个8岁的孩子，父母都在全职工作。因此，他在一所提供下午课程的学校上学，所以他下午无法参加其他的活动，如体育或音乐，这使得他的健康水平低于他所在社区的预期。查理在学校吃了一顿营养均衡的午餐，与此同时，他的父母经常在办公室附近的快餐店打发午餐，然后晚上在家里吃一顿清淡、健康的晚餐。由于他们的工作压力和他们不健康的饮食(通过与他们的银行账户相关联的社会排名系统)，他们的健康等级也很低。</p>
+
+<blockquote>
+<p>Charlie成年后被发现肾功能缺失...由于他明显很不健康的生活方式导致他在手术名单上的位置很低。</p>
+</blockquote>
+
+<p>Charlie为父母和自己的生活方式付出了代价...</p>
+
+<blockquote>
+<p>为了防止上述的场景发生，政府应禁止利用人们的社会健康档案来区别对待病人。</p>
+</blockquote>
+
+<h2 id="toc_0">我能引起你的注意吗？--建立反乌托邦式的注意力经济</h2>
+
+<p>这篇短文探索了<code>Fifteen Million Merits</code>这一集的观点，里面将消费者的注意力当作一种商品。在这一集里面，看广告的人没有任何回报，甚至还要付费来关掉，而且很多广告常常是具有侵入性且令人厌恶的...</p>
+
+<blockquote>
+<p>...现实生活中已经有这种事情发生了，广告商正在不惜一切代价引起人们的注意：骚扰也好过没有人注意。Manson称&quot;广告的目的已经不再是传递信息而是单纯的引起注意&quot;</p>
+</blockquote>
+
+<p>计算显示这集里面的视频墙目前可以以400到1000美元每平方米建造出来。屋内广泛装饰小的视频墙的时代可能很快就会来临。未来付费关掉广告的支付可能会得到区块链的支持。假设广告每10分钟一个，没人平均每天看16个小时的视频， 那么一天就有96的广告，如果其中一般也就是48个被跳过，那么一个基于Hyperledger Fabric的支持10000tps的的区块链系统可以支撑1800万用户。智能合约可以使这些行为自动化。<br/>
+在这一集里面，广告会根据用户的视线自动调整显示位置，这种技术目前是有的。</p>
+
+<blockquote>
+<p>剧集里面的某些方面可以很好的融入到我们的社会和经济之中。For example, the reversal of the advertisement schemes, in which a consumer pays to skip an advertisement, could be implemented once micropayments become ubiquitous, fast, and reliable.虽然持续的对用户的监控和广告投放看起来比较极端，但智能扬声器系统和其他智能家庭设备的普及可能会导致更微妙而难以察觉的监视和试图吸引我们注意的广告商的尝试。</p>
+</blockquote>
+
+<p>也许我们会自愿放弃自己的隐私，让自己分心，以换取舒适和方便的生活方式。这篇论文的结尾引用了Josh·Kohan的一句话:</p>
+
+<blockquote>
+<p>隐私为自由、好奇心和自我反省提供了一个庇护所。所以保护隐私就是保护富有创造性的和有意义的生活的可能性.(“Privacy provides a shelter for imaginative freedom, curiosity, and self-reflection. So to defend the private self is to defend the very possibility of creative and meaningful life.”)</p>
+</blockquote>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/6/3</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Morning-Paper.html'>Morning-Paper</a></span>
+          				   
+                    
+
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="Morning-Paper_1.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			 <a href="Morning-Paper_3.html">&raquo; Next Page</a> 
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>西央</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="email" href="mailto:tianfengbo@jd.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html"><strong>内功心法</strong></a>
+        
+            <a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html"><strong>算法&数据结构</strong></a>
+        
+            <a href="distribute-system.html"><strong>分布式</strong></a>
+        
+            <a href="others.html"><strong>杂七杂八</strong></a>
+        
+            <a href="fresh.html"><strong>新鲜事物</strong></a>
+        
+            <a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html"><strong>小知识点</strong></a>
+        
+            <a href="Morning-Paper.html"><strong>Morning-Paper</strong></a>
+        
+            <a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html"><strong>大事件记录</strong></a>
+        
+            <a href="%E8%BD%AC%E8%BD%BD.html"><strong>转载</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html"><strong>数据仓库</strong></a>
+        
+            <a href="Exit%20Music.html"><strong>Exit Music</strong></a>
+        
+            <a href="Project.html"><strong>Project</strong></a>
+        
+            <a href="JDK.html"><strong>JDK</strong></a>
+        
+            <a href="%E6%93%8D%E7%9B%98%E6%89%8B.html"><strong>操盘手</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="ongl.html">OGNL</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="rw-splitting.html">Spring + Mybatis 读写分离</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="CompressedOops.html">JVM压缩指针(CompressedOops)</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="load-balancer-algorithm.html">负载均衡算法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

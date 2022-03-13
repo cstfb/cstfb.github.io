@@ -1,0 +1,532 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  卡尔曼滤波笔记 - 西央
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="西央" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:fengbo.cool ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; 西央</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html">内功心法</a></li>
+        
+            <li><a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">算法&数据结构</a></li>
+        
+            <li><a href="distribute-system.html">分布式</a></li>
+        
+            <li><a href="others.html">杂七杂八</a></li>
+        
+            <li><a href="fresh.html">新鲜事物</a></li>
+        
+            <li><a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html">小知识点</a></li>
+        
+            <li><a href="Morning-Paper.html">Morning-Paper</a></li>
+        
+            <li><a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html">大事件记录</a></li>
+        
+            <li><a href="%E8%BD%AC%E8%BD%BD.html">转载</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html">数据仓库</a></li>
+        
+            <li><a href="Exit%20Music.html">Exit Music</a></li>
+        
+            <li><a href="Project.html">Project</a></li>
+        
+            <li><a href="JDK.html">JDK</a></li>
+        
+            <li><a href="%E6%93%8D%E7%9B%98%E6%89%8B.html">操盘手</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>卡尔曼滤波笔记</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2017/12/24</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='others.html'>杂七杂八</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p><code>滤波器</code> <code>状态估计</code><br/>
+之前在看文章的时候偶然看到了这个东西，原文中使用了卡尔曼滤波器来估计系统目前的状态，所以就想了解一下这是个什么东西；然后又为什么叫卡尔曼滤波器，‘滤波器’这个词在其中的意义又是什么？</p>
+
+<ul>
+<li>
+<a href="#toc_0">What is Kalman Filter</a>
+</li>
+<li>
+<a href="#toc_1">How it works?</a>
+<ul>
+<li>
+<a href="#toc_2">整个过程</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_3">Why it works？</a>
+</li>
+<li>
+<a href="#toc_4">Problems i met before</a>
+</li>
+<li>
+<a href="#toc_5">参考资料</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">What is Kalman Filter</h2>
+
+<p><code>鲁道夫卡尔曼</code> <code>递归</code> <code>离散</code> <code>系统状态</code><br/>
+1960年，鲁道夫.卡尔曼发表了他著名的用递归方法解决离散数据线性滤波问题的论文。经过了几十年的发展，卡尔曼滤波器广泛的应用在了自主或者协助导航领域(大部分学习控制系统的人都知道卡尔曼滤波器吧)。<br/>
+卡尔曼滤波器能够仅根据上一次的系统状态估计将来的状态，并且提供一种高效的递归方法来不断的优化估计的准确性（通过使得估计均方差最小）,并且即使在不知道物体的实际状况并不确切符合模型的时候也能提供良好的估计结果。</p>
+
+<blockquote>
+<p>卡尔曼滤波器使用以下公式估计系统实际状态\(x_k, x\in{R^n}\)，以离散模型为例:<br/>
+\(x_k=Ax_{k-1}+Bu_{k-1}+w_{k-1}..........(1.1)\)<br/>
+\(z_k=Hx_k+v_k.........(1.2)\)<br/>
+\(A_{n*n}\)表示从第\(k-1\)步到第\(k\)步的状态转移矩阵,在这里\(A\)是可能随着时间变化的;\(B_{n*l}\)表示对于控制向量\(u\in{R^l}\)的增益矩阵;\(H_{m*n}\)表示测量时的转移矩阵;\(w_k v_k\)为过程和测量噪音，模型中假定它们相互独立且分别服从方差为\(Q\)和\(R\)的高斯分布,\(z_k\)即为测量状态;</p>
+</blockquote>
+
+<h2 id="toc_1">How it works?</h2>
+
+<p><code>模型系数</code> <code>预测</code> <code>预估过程(时间更新)</code> <code>校正过程(测量更新)</code><br/>
+作为一个数据其实不是很好的人，也可以理解上述的表达式，但是想要弄明白上述模型，还需要解决以下几个问题:</p>
+
+<ol>
+<li>系统的初始状态，即系数如何确定?</li>
+<li>模型如何预测</li>
+<li>如何进行递归优化，要知道现实中测量值往往是包含噪音的，例如雷达，那么如何根据测量值估计更加精确的值呢?</li>
+<li>模型的整个过程<br/>
+###初始状态与系统参数
+<code>系数</code>
+###如何预测
+<code>预测</code>
+预测值根据式1.1直接得到\(\hat{x}^{-}_{k}\),我们称之为先验估计;<br/>
+\(\hat{x}^{-}_{k}=A\hat{x}_{k-1}+Bu_{k-1}........(2.1)\),同时引入后验估计\(\hat{x}_{k}\)<br/>
+可以看出第\(k\)步的先验估计由第\(k-1\)步的后验估计得到,然后是整个模型的关键等式:<br/>
+\(\hat{x}_{k}=\hat{x}^{-}_{k} + K(z_k - H\hat{x}^{-}_{k}).........(2.2)\), 即把先验估计和观测值与估计观测值\(H\hat{x}^{-}_{k}\)的差的线性组合作为后验估计，那么\(K_{n*m}\)怎么来呢？这里引入<br/>
+\(e_k=\hat{x}_k - x_k.........(2.3)\) 为后验估计误差,同样有对应的先验估计误差\(e_k^-\)<br/>
+\(P_k=E[e_ke_k^T].........(2.4)\),后验估计误差的协方差(同样存在对应的\(P_k^-\)),然后\(K\)使得\(P_k\)最小 <br/>
+具体来说\(K\)的求法为将\(2.2\)式代入\(2.4\)然后对\(K\)求导，使一阶导数为\(0\),求得\(K\),在本例中<br/>
+\(K_k=P_k^-H^T(HP^-_kH^T+R)^{-1}.........(2.5)\)<br/>
+###更新过程
+<code>更新</code>
+为了使得模型可以继续递归的迭代下去, 我们需要知道几个值\(\hat{x}^{-}_{k-1}\)和\(P^-_{k}\),用于根据\(2.2\)求得\(\hat{x}_k\)和\(P_k\),具体的有:<br/>
+\(\hat{x}^{-}_{k}=A\hat{x}_{k-1}+Bu_{k-1}........(2.1)\)<br/>
+\(P_k^-=AP_{k-1}A^T+Q.........(2.6)\)</li>
+</ol>
+
+<hr/>
+
+<p>\(K_k=P_k^-H^T(HP^-_kH^T+R)^{-1}.........(2.5)\)<br/>
+\(\hat{x}_{k}=\hat{x}^{-}_{k} + K(z_k - H\hat{x}^{-}_{k}).........(2.2)\)<br/>
+\(P_k=(I-K_kH)P_k^-.........(2.7)\)</p>
+
+<p>第一部分称之为时间更新过程，即预测过程，第二部分称之为测量更新过程，即修正过程<br/>
+<strong>需要注意的是，\(\hat{x}_{k-1}^-\)和\(P_{k-2}\)需要设置初始值</strong></p>
+
+<h3 id="toc_2">整个过程</h3>
+
+<p>\(initial.\hat{x}_{k-1}^- , P_{k-2}\) \(\Rightarrow\) \(\hat{x}_{k-1}^- , P_{k-1}^-\) \(\Rightarrow\) \(K_{k-1},\hat{x}_{k-1},P_{k-1}\) \(\Rightarrow\) \(\hat{x}^{-}_{k},P_k^-\) \(\Rightarrow\) \(K_k,\hat{x}_{k},P_k\) \(\Rightarrow\) \(...\)</p>
+
+<h2 id="toc_3">Why it works？</h2>
+
+<p>解释为什么这有用，即需要解释等式\(2.2\)的合理性.<br/>
+解释来源于贝叶斯规则： \(x_k\) 的更新取决于在已知先前的测量变量\(z_k\)的情况下的先验估计\(\hat{x}^-_k\) 的概率分布.卡尔曼滤波器表达式中包含 了状态分布的前二阶矩.<br/>
+\(E[x_k]=\hat{x}_k\)<br/>
+\(E[(x_k-\hat{x}_k)(x_k-\hat{x}_k)^T]=P_k\)<br/>
+后验状态估计\(2.2\)式反应了状态分布的均值(一阶矩)――如果\(w_kv_k\)服从正态分布的条件成立，均值的估计便是正态分布的。后验估计误差协方差\(2.4\)式反映了状态分布的方差(二阶非中心矩)。在已知\(z_k\)的情况下,\(x_k\)的分布可写为:<br/>
+\(p(x_k|z_k) \sim N(E[x_k],E[(x_k-\hat{x}_k)(x_k-\hat{x}_k)^T])\)<br/>
+\(=N(\hat{x}_k,P_k)\)</p>
+
+<h2 id="toc_4">Problems i met before</h2>
+
+<p>1.为什么叫做滤波器</p>
+
+<blockquote>
+<p>滤波器特性体现在估计值要比观测值平滑的多</p>
+</blockquote>
+
+<p>2.等式2.5的推导</p>
+
+<blockquote>
+<p>unkown</p>
+</blockquote>
+
+<p>3.等式2.5的意义</p>
+
+<blockquote>
+<p>等式2.5也可以写成以下形式:<br/>
+\(K_k=\frac{P^-_kH^T}{HP^-_kH^T+R}\)<br/>
+可以看见当\(R\)趋于0的时候\(K\)接近于\(H^{-1}\)，此时后验估计更接近于观测值；反之当\(P_k^-\)接近于0时\(K\)也接近0，此时后验估计更接近于估计值</p>
+</blockquote>
+
+<p>4.等式2.6的推导</p>
+
+<blockquote>
+<p>\(P_k^- = E[(x_k-\hat{x}_k^-)(x_k-\hat{x}_k^-)^T]\)<br/>
+由于有:<br/>
+\(x_k=Ax_{k-1}+Bu_{k-1}+w_k\)<br/>
+\(\hat{x}_k^-=A\hat{x}_{k-1}+Bu_{k-1}\)<br/>
+因此<br/>
+\(x_k-\hat{x}_k^- = Ax_{k-1} - A\hat{x}_{k-1}+w_k\)<br/>
+那么<br/>
+\(P_k^- = E[(Ax_{k-1} - A\hat{x}_{k-1}+w_k)(Ax_{k-1} - A\hat{x}_{k-1}+w_k)^T]\)<br/>
+\(=Cov(Ax_{k-1} - A\hat{x}_{k-1}+w_k, Ax_{k-1} - A\hat{x}_{k-1}+w_k)\)<br/>
+\(=Var(Ax_{k-1} - A\hat{x}_{k-1}+w_k)\)<br/>
+\(=Var(Ax_{k-1} - A\hat{x}_{k-1}) + Var(w_k) + 2Cov(Ax_{k-1} - A\hat{x}_{k-1},w_k)\)<br/>
+\(=Var(Ax_{k-1} - A\hat{x}_{k-1}) + Var(w_k)\)<br/>
+\(=Var(Ax_{k-1} - A\hat{x}_{k-1}) + Q\)<br/>
+\(=Cov(Ax_{k-1} - A\hat{x}_{k-1},Ax_{k-1} - A\hat{x}_{k-1}) + Q\)<br/>
+\(=E[(Ax_{k-1} - A\hat{x}_{k-1})(Ax_{k-1} - A\hat{x}_{k-1})^T] + Q\)<br/>
+\(=AE[(x_{k-1} - \hat{x}_{k-1})(x_{k-1} - \hat{x}_{k-1})^T]A^T + Q\)<br/>
+\(=AP_{k-1}A^T + Q\)</p>
+</blockquote>
+
+<p>5.等式2.7的推导</p>
+
+<blockquote>
+<p>unkown</p>
+</blockquote>
+
+<h2 id="toc_5">参考资料</h2>
+
+<p><a href="http://www.cs.unc.edu/%7Ewelch/media/pdf/kalman_intro.pdf">kalman_introduction.pdf</a><br/>
+<a href="http://www.cs.unc.edu/%7Ewelch/kalman/media/misc/kalman_intro_chinese.zip">kalman_introduction_chinese.download</a><br/>
+<a href="https://zh.wikipedia.org/wiki/%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2">卡尔曼滤波.wiki</a><br/>
+<a href="https://github.com/scipy/scipy-cookbook/blob/master/ipython/KalmanFiltering.ipynb">simple_implementation.matlab</a><br/>
+<a href="http://www.cs.unc.edu/%7Ewelch/kalman/">other_resources.html</a></p>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="anna.html" 
+          title="Previous Post: 号称秒杀redis/cassandra的KV存储系统Anna">&laquo; 号称秒杀redis/cassandra的KV存储系统Anna</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <!-- 来必力City版安装代码 -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC80MTg4NS8xODQzMQ==">
+	<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+	</script>
+<noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+</div>
+<!-- City版安装代码已完成 -->
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>西央</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="email" href="mailto:tianfengbo@jd.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html"><strong>内功心法</strong></a>
+        
+            <a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html"><strong>算法&数据结构</strong></a>
+        
+            <a href="distribute-system.html"><strong>分布式</strong></a>
+        
+            <a href="others.html"><strong>杂七杂八</strong></a>
+        
+            <a href="fresh.html"><strong>新鲜事物</strong></a>
+        
+            <a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html"><strong>小知识点</strong></a>
+        
+            <a href="Morning-Paper.html"><strong>Morning-Paper</strong></a>
+        
+            <a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html"><strong>大事件记录</strong></a>
+        
+            <a href="%E8%BD%AC%E8%BD%BD.html"><strong>转载</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html"><strong>数据仓库</strong></a>
+        
+            <a href="Exit%20Music.html"><strong>Exit Music</strong></a>
+        
+            <a href="Project.html"><strong>Project</strong></a>
+        
+            <a href="JDK.html"><strong>JDK</strong></a>
+        
+            <a href="%E6%93%8D%E7%9B%98%E6%89%8B.html"><strong>操盘手</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="ongl.html">OGNL</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="rw-splitting.html">Spring + Mybatis 读写分离</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="CompressedOops.html">JVM压缩指针(CompressedOops)</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="load-balancer-algorithm.html">负载均衡算法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

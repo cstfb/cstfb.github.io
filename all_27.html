@@ -1,0 +1,411 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  西央
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="西央" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:fengbo.cool ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; 西央</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html">内功心法</a></li>
+        
+            <li><a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">算法&数据结构</a></li>
+        
+            <li><a href="distribute-system.html">分布式</a></li>
+        
+            <li><a href="others.html">杂七杂八</a></li>
+        
+            <li><a href="fresh.html">新鲜事物</a></li>
+        
+            <li><a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html">小知识点</a></li>
+        
+            <li><a href="Morning-Paper.html">Morning-Paper</a></li>
+        
+            <li><a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html">大事件记录</a></li>
+        
+            <li><a href="%E8%BD%AC%E8%BD%BD.html">转载</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html">数据仓库</a></li>
+        
+            <li><a href="Exit%20Music.html">Exit Music</a></li>
+        
+            <li><a href="Project.html">Project</a></li>
+        
+            <li><a href="JDK.html">JDK</a></li>
+        
+            <li><a href="%E6%93%8D%E7%9B%98%E6%89%8B.html">操盘手</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
+</script>
+<div class="row">
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="MP-recoding-black-mirror-part5.html">
+                
+                  <h1>(译文)Re-coding Black Mirror -- part 5</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><mark>原文地址：<a href="http://blog.acolyer.org/2018/05/18/re-coding-black-mirror-part-v">http://blog.acolyer.org/2018/05/18/re-coding-black-mirror-part-v</a></mark><br/>
+这是讨论Re-coding Black Mirror的论文的最后一部分，探讨了未来的技术场景及其对社会和伦理的影响，今天要阅读的两篇论文如下：</p>
+
+<ul>
+<li>组建基于信任的去中心化的对等社交网络<a href="https://dl.acm.org/citation.cfm?id=3191608">Towards trust-based decentralized ad-hoc social networks Koidl</a></li>
+<li>MMM:我能挖掘你的想法吗？<a href="https://dl.acm.org/citation.cfm?id=3191613">MMM: May I mine your mind? Sempreboni and Viganò</a><br/>
+(如果你没有ACM数字图书馆访问权限，上述的论文也可以从<a href="">Morning Paper</a>网站或者<a href="https://www2018.thewebconf.org/proceedings/">www 2018议程</a>获取)<br/>
+## 组建基于信任的去中心化的对等社交网络<br/>
+Koidl认为，社交媒体上的“信任危机”会在<a href="https://www.guokr.com/article/440260/">过滤泡沫</a>、假新闻和<a href="https://zh.wikipedia.org/wiki/%E8%BF%B4%E8%81%B2%E5%AE%A4%E6%95%88%E6%87%89">回音室现象</a>中表现出来。 </li>
+<li>过滤气泡是基于内容的内容过滤的结果。基本原则是显示与用户先前参与的内容相关的用户内容。其结果是内容流缺乏主题和观点的多样性。</li>
+<li>回音室效应是基于朋友和同龄人兴趣的内容推荐的结果。这导致内容提要强烈偏向于分组意见(例如，分组思考)。<br/>
+对于大多数社交媒体平台的商业模式来说，我认为意识到内容的客观质量是无关紧要的，这一点很有帮助。高质量的内容只有在吸引和保留用户时才有用。平台并不是在卖内容，而是在卖你的注意力。这种业务的价值与它能控制的注意力分钟数有关。通过将人们分组，你可以通过向广告商出售他们最想吸引的人的注意力来进一步增加这些关注时间的价值。因此基本上:(a)一种方式让你花尽可能多的时间在这个平台上,因此所有的系统调优都是为了增加参与度并且增加回头率(b)了解尽可能多的关于你的信息,这样你的注意力可以更有效的打包出售(c)拍卖或以其他方式向有意的人推销你的注意力.<br/>
+考虑到这台经济机器强大的激励机制，我们如何才能相信展示在我们面前的东西?<br/>
+&gt; 用户完全不知道是什么行为或参与导致了内容被显示在他们的内容流中。这种信任的移交是社交媒体应用的关键元素。</li>
+</ul>
+
+<p>Koidl给出了HELIOS的例子，它旨在通过创建基于近距离的、对等的、以信任为基础的社交网络，将控制权和责任转移给个人用户。当用户在时间和空间中移动时，HELIOS不断地动态地学习人群和设备的网络组。这是一个把用户放在中心的分散的点对点模型。</p>
+
+<blockquote>
+<p>建立起来的网络类型类似于<a href="https://greatpowerlaw.wordpress.com/2013/01/05/ego-network/">Ego Network</a>的概念，其中个人是社交网络的中心。这一概念符合这样一种理解，即每个人都自然地在其直接邻近范围内创建社交网络。</p>
+</blockquote>
+
+<p><img src="media/15282114166764/koidl-fig-2.jpeg" alt="koidl-fig-2"/></p>
+
+<p>近距离的设计是为了模拟我们在现实世界中的互动，基于对周围物体和人的评估。邻近源进入上下文(本地网络)检测。&quot;只有通过自动创建和自动配置网络，才有可能大规模采用和使用。&quot;上下文是隐式的，是基于用户在该上下文中的行为而获得的。重复的交互作用加强了链接，如果不使用，它们会衰减，最终节点会被移除。</p>
+
+<p><img src="media/15282114166764/koidl-fig-1.jpeg" alt="koidl-fig-1"/></p>
+
+<blockquote>
+<p>信任图的使用确保了每个社交网络遵循“基于信任”的原则。主要的方法是通过计算社交网络中每个新元素的信任值来建立。</p>
+</blockquote>
+
+<p>举个例子，一辆用了很多次的车，是一辆我们可以给予更高程度信任的车。</p>
+
+<h2 id="toc_0">MMM:我能挖掘你的想法吗？</h2>
+
+<p>这是研讨会的最后一篇论文，也是对未来情景的最极端的设想。这个想法的种子来自于cryptojacking(劫持别人的电脑进行挖矿)的兴起，在这个过程中，当用户访问他们的网站时，网站会使用嵌入的JavaScript来挖掘加密货币。加密可以秘密进行，但是您也可以想象这样的场景:明确的贡献自己的计算资源用于挖掘从而获得奖励.</p>
+
+<blockquote>
+<p>一些关于脑-机交互的研究已经发表，一些初创公司正在开发接口，将人类的大脑直接连接到计算机……我们的大脑将被连接起来。我们的大脑将源源不断的接收数据并处理它。这就意味着我们的大脑将会有一个直接通向互联网的通道，所以为什么不想象这种连接是双向的呢?</p>
+</blockquote>
+
+<p>现在考虑一下来自虚构公司MiningMind的以下广告:<br/>
+<img src="media/15282114166764/mmm-ad.jpeg" alt="mmm-ad"/></p>
+
+<blockquote>
+<p>这一阴谋的前提是，不久我们可能就有了一种技术，可以将奖励系统与使用人类大脑来挖掘密码的加密引擎合并在一起……或者进行其他一些挖掘活动。我们大脑的一部分将被用于密码计算，剩下的部分为了我们大脑的正常活动将不会被使用。</p>
+</blockquote>
+
+<p>暂且不谈千千万万的实现和可行性问题，如果这是可能的，你认为社会中有哪个脆弱的群体会受到这个提议的诱惑呢?</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/6/5</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Morning-Paper.html'>Morning-Paper</a></span>
+          				   
+                    
+
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="all_26.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			 <a href="all_28.html">&raquo; Next Page</a> 
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>西央</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="email" href="mailto:tianfengbo@jd.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html"><strong>内功心法</strong></a>
+        
+            <a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html"><strong>算法&数据结构</strong></a>
+        
+            <a href="distribute-system.html"><strong>分布式</strong></a>
+        
+            <a href="others.html"><strong>杂七杂八</strong></a>
+        
+            <a href="fresh.html"><strong>新鲜事物</strong></a>
+        
+            <a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html"><strong>小知识点</strong></a>
+        
+            <a href="Morning-Paper.html"><strong>Morning-Paper</strong></a>
+        
+            <a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html"><strong>大事件记录</strong></a>
+        
+            <a href="%E8%BD%AC%E8%BD%BD.html"><strong>转载</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html"><strong>数据仓库</strong></a>
+        
+            <a href="Exit%20Music.html"><strong>Exit Music</strong></a>
+        
+            <a href="Project.html"><strong>Project</strong></a>
+        
+            <a href="JDK.html"><strong>JDK</strong></a>
+        
+            <a href="%E6%93%8D%E7%9B%98%E6%89%8B.html"><strong>操盘手</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="ongl.html">OGNL</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="rw-splitting.html">Spring + Mybatis 读写分离</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="CompressedOops.html">JVM压缩指针(CompressedOops)</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="load-balancer-algorithm.html">负载均衡算法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

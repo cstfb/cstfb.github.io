@@ -1,0 +1,643 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  西央
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="西央" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:fengbo.cool ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; 西央</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html">内功心法</a></li>
+        
+            <li><a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">算法&数据结构</a></li>
+        
+            <li><a href="distribute-system.html">分布式</a></li>
+        
+            <li><a href="others.html">杂七杂八</a></li>
+        
+            <li><a href="fresh.html">新鲜事物</a></li>
+        
+            <li><a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html">小知识点</a></li>
+        
+            <li><a href="Morning-Paper.html">Morning-Paper</a></li>
+        
+            <li><a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html">大事件记录</a></li>
+        
+            <li><a href="%E8%BD%AC%E8%BD%BD.html">转载</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html">数据仓库</a></li>
+        
+            <li><a href="Exit%20Music.html">Exit Music</a></li>
+        
+            <li><a href="Project.html">Project</a></li>
+        
+            <li><a href="JDK.html">JDK</a></li>
+        
+            <li><a href="%E6%93%8D%E7%9B%98%E6%89%8B.html">操盘手</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
+</script>
+<div class="row">
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="load-balancer-algorithm.html">
+                
+                  <h1>负载均衡算法</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">Round-Robin(轮询)</h2>
+
+<pre><code class="language-text">public class RoundRobin {
+    private Object[] hosts; // hosts列表
+    private int len; // hosts数量
+    private AtomicInteger increr = new AtomicInteger(0); // 自增器
+    // constructor
+    public RoundRobin(Object... hosts) {
+        Preconditions.checkNotNull(hosts);
+        this.hosts = hosts;
+        len = hosts.length;
+    }
+    // get next hosts
+    public Object get() {
+        int cur = increr.incrementAndGet();
+        if (cur &gt; 0x70000000) {
+            increr.set(0);
+        }
+        return hosts[cur % len];
+    }
+    // get request cnt
+    public int getCnt() {
+        return increr.get();
+    }
+
+    public static void main(String[] args) throws Exception {
+        int i = 0;
+        RoundRobin rr = new RoundRobin(&quot;10.1.1.1&quot;, &quot;10.1.1.2&quot;, &quot;10.1.1.3&quot;);
+        AtomicLong totalTime = new AtomicLong(0L);
+
+        // 模拟多线程环境测试QPS
+        int maxThread = 1;
+        // 10线程
+        ExecutorService es = Executors.newFixedThreadPool(maxThread);
+        while (maxThread &gt; 0) {
+            es.execute(() -&gt; {
+                long t1 = System.currentTimeMillis();
+                try {
+                    while (!Thread.interrupted()) {
+                        rr.get();
+                    }
+                    long t2 = System.currentTimeMillis();
+                    totalTime.addAndGet(t2 - t1);
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+            });
+
+            maxThread --;
+        }
+
+        // 
+        Thread.sleep(1000);
+        
+        es.shutdownNow();
+        es.awaitTermination(1, TimeUnit.MINUTES);
+
+        System.out.println(&quot;total cpu time:&quot; + totalTime.get());
+        System.out.println(&quot;total request count:&quot; + rr.getCnt());
+    }
+}
+</code></pre>
+
+<p>使用juc提供的Atomic类来做自增操作。</p>
+
+<h2 id="toc_1">Weighted Round-Robin(加权轮询)</h2>
+
+<p>当需要为不同的节点分配不同的权重时，例如当各个节点的吞吐量不同，这时候可以使用加权轮询， 例如有A,B,C三个服务器，然后权重分别是4，3，2，那么一个典型的请求序列可以是AABCACABC;</p>
+
+<pre><code class="language-text">public class WeightedRoundRobin {
+    private List&lt;Server&gt; servers;
+    private int totalWeight;
+    // init
+    public WeightedRoundRobin() {
+        this.servers = new ArrayList();
+        this.totalWeight = 0;
+    }
+    // 添加hosts
+    public void addServer(String ip, int weight) {
+        this.servers.add(new Server(ip, weight));
+        this.totalWeight += weight;
+    }
+    // get
+    public Server getServer() {
+        Server best = null;
+
+        for (Server srv : servers) {
+            srv.effectiveWeight += srv.weight;
+
+            if (null == best || best.effectiveWeight &lt; srv.effectiveWeight) {
+                best = srv;
+            }
+        }
+        if (best != null) {
+            best.effectiveWeight -= totalWeight;
+        }
+        return best;
+    }
+
+    public static void main(String[] args) {
+        WeightedRoundRobin wrr = new WeightedRoundRobin();
+        wrr.addServer(&quot;10.1.1.1&quot;, 3);
+        wrr.addServer(&quot;10.1.1.2.&quot;, 2);
+        wrr.addServer(&quot;10.1.1.3&quot;, 1);
+
+        int cnt = 50;
+        while(cnt &gt; 0) {
+            System.out.println(wrr.getServer());
+            cnt -= 1;
+        }
+    }
+}
+
+class Server{
+    String ip;
+    int weight;
+    int effectiveWeight;
+
+    public Server(String ip, int weight) {
+        this.ip = ip;
+        this.weight = weight;
+        this.effectiveWeight = 0;
+    }
+
+    @Override
+    public String toString() {
+        return &quot;ip:&quot; + ip + &quot;, weight:&quot; + weight;
+    }
+}
+</code></pre>
+
+<p>上面的代码是<code>平滑加权平均算法</code>的一个实现, 这个算法实现比较巧妙， 对于一个<code>Server</code>对象，除了<code>weight权重</code>外， 还有一个<code>effectiveWeight有效权重</code>字段， 表示<code>server</code>当前的权重，每次轮询，<code>effectiveWeight</code>加一次的<code>weight</code>, 然后选取<code>effectiveWeight</code>最大的那个<code>server</code>, 然后<code>effectiveWeight</code>减去<code>totalWeight</code>, 循环这个过程, 算法描述如下:</p>
+
+<ol>
+<li>初始化每个<code>server</code>的权重<code>wi</code>, 设置当前有效权重<code>cwi</code>为<code>wi</code>, 并求得<code>totalWeight</code></li>
+<li>选取<code>cwi</code>最大的<code>server</code>, 并且将<code>cwi</code>减去<code>totalWeight</code>, <code>best</code>指向当前<code>server</code></li>
+<li>将每个<code>server</code>的<code>cwi</code>加上<code>wi</code></li>
+<li>返回<code>best</code></li>
+<li>每次调度重复2,3,4步</li>
+</ol>
+
+<h2 id="toc_2">Least-Connection Scheduling(最小连接)</h2>
+
+<p>最小连接调度把当前连接数最小的服务器分配给新的连接。</p>
+
+<pre><code class="language-text">public class LeastConnection {
+    private List&lt;LeastConnectionServer&gt; servers;
+    public LeastConnection(String... ips) {
+        servers = new ArrayList&lt;&gt;();
+        for(String ip : ips) {
+            servers.add(new LeastConnectionServer(ip));
+        }
+    }
+    public LeastConnectionServer getServer() {
+        LeastConnectionServer best = null;
+        for (LeastConnectionServer srv : servers) {
+            if(null ==  best || best.connCnt.get() &gt; srv.connCnt.get()) {
+                best = srv;
+            }
+        }
+        best.connCnt.incrementAndGet();
+        return best;
+    }
+    public void returnServer(LeastConnectionServer srv) {
+        if (null != srv) {
+            srv.connCnt.getAndAdd(-1);
+        }
+    }
+    public static void main(String[] args) {
+        LeastConnection wrr = new LeastConnection(&quot;10.1.1.1&quot;, &quot;10.1.1.2&quot;, &quot;10.1.1.3&quot;);
+
+        int cnt = 50;
+        while(cnt &gt; 0) {
+            System.out.println(wrr.getServer());
+            cnt -= 1;
+        }
+    }
+}
+
+class LeastConnectionServer{
+    String ip;
+    AtomicInteger connCnt;
+
+    public LeastConnectionServer(String ip) {
+        this.ip = ip;
+        this.connCnt = new AtomicInteger(0);
+    }
+
+    @Override
+    public String toString() {
+        return &quot;ip:&quot; + ip + &quot;, connection_cnt:&quot; + connCnt.get();
+    }
+}
+</code></pre>
+
+<h2 id="toc_3">Weighted Least-Connection Scheduling(加权最小连接)</h2>
+
+<p>加权最小连接工作方式如下:<br/>
+假如有n个服务器, 服务器i权重为\(W_i (i=1,..,n)\), 存活连接数为\(C_i (i=1,..,n)\), \(ALL\_CONNECTIONS = sum(C_i (i=1,..,n)\), 下面的连接会指向服务器\(j\)满足条件：<br/>
+\((C_j/ALL\_CONNECTIONS)/W_j = min { (C_i/ALL\_CONNECTIONS)/W_i } (i=1,..,n)\)<br/>
+\(ALL\_CONNECTIONS\)可以约掉:<br/>
+\(C_j/W_j = min { C_i/W_i } (i=1,..,n)\)</p>
+
+<pre><code class="language-text">public class WeightedLeastConnection {
+    private List&lt;WeightedLeastConnectionServer&gt; servers;
+    
+    public WeightedLeastConnection() {
+        this.servers = new ArrayList&lt;&gt;();
+    }
+    public void addServer(String ip, int weight) {
+        this.servers.add(new WeightedLeastConnectionServer(ip, weight));
+    }
+    public WeightedLeastConnectionServer getServer() {
+        WeightedLeastConnectionServer best = null;
+        for (WeightedLeastConnectionServer srv : servers) {
+            if(null ==  best || best.connCnt.get() / best.weight &gt; srv.connCnt.get() / srv.weight) {
+                best = srv;
+            }
+        }
+        best.connCnt.incrementAndGet();
+        return best;
+    }
+    public void returnServer(WeightedLeastConnectionServer srv) {
+        if (null != srv) {
+            srv.connCnt.getAndAdd(-1);
+        }
+    }
+    public static void main(String[] args) {
+        WeightedLeastConnection wrr = new WeightedLeastConnection();
+        wrr.addServer(&quot;10.1.1.1&quot;, 5);
+        wrr.addServer(&quot;10.1.1.2&quot;, 3);
+        wrr.addServer(&quot;10.1.1.3&quot;, 1);
+
+        int cnt = 50;
+        while(cnt &gt; 0) {
+            System.out.println(wrr.getServer());
+            cnt -= 1;
+        }
+    }
+}
+
+class WeightedLeastConnectionServer{
+    String ip;
+    int weight;
+    AtomicInteger connCnt;
+
+    public WeightedLeastConnectionServer(String ip, int weight) {
+        this.ip = ip;
+        this.weight = weight;
+        this.connCnt = new AtomicInteger(0);
+    }
+
+    @Override
+    public String toString() {
+        return &quot;ip:&quot; + ip + &quot;, connection_cnt:&quot; + connCnt.get();
+    }
+}
+</code></pre>
+
+<h2 id="toc_4">Locality-Based Least-Connection Scheduling(基于局部性的最少链接调度)</h2>
+
+<p>//todo</p>
+
+<h2 id="toc_5">Locality-Based Least-Connection with Replication Scheduling</h2>
+
+<p>(带复制的基于局部性最少链接调度)</p>
+
+<h2 id="toc_6">Destination Hashing Scheduling(目标地址散列调度)</h2>
+
+<p>//todo</p>
+
+<h2 id="toc_7">Source Hashing Scheduling(源地址散列调度)</h2>
+
+<p>//todo</p>
+
+<h2 id="toc_8">Shortest Expected Delay Scheduling(最短的期望延迟)</h2>
+
+<p>//todo</p>
+
+<h2 id="toc_9">Never Queue Scheduling(最少队列调度)</h2>
+
+<p>//todo</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/5/12</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html'>算法&数据结构</a></span>
+          				   
+                    
+
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="all_2.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			 <a href="all_4.html">&raquo; Next Page</a> 
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>西央</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="email" href="mailto:tianfengbo@jd.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95.html"><strong>内功心法</strong></a>
+        
+            <a href="%E7%AE%97%E6%B3%95&%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html"><strong>算法&数据结构</strong></a>
+        
+            <a href="distribute-system.html"><strong>分布式</strong></a>
+        
+            <a href="others.html"><strong>杂七杂八</strong></a>
+        
+            <a href="fresh.html"><strong>新鲜事物</strong></a>
+        
+            <a href="%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9.html"><strong>小知识点</strong></a>
+        
+            <a href="Morning-Paper.html"><strong>Morning-Paper</strong></a>
+        
+            <a href="%E5%A4%A7%E4%BA%8B%E4%BB%B6%E8%AE%B0%E5%BD%95.html"><strong>大事件记录</strong></a>
+        
+            <a href="%E8%BD%AC%E8%BD%BD.html"><strong>转载</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.html"><strong>数据仓库</strong></a>
+        
+            <a href="Exit%20Music.html"><strong>Exit Music</strong></a>
+        
+            <a href="Project.html"><strong>Project</strong></a>
+        
+            <a href="JDK.html"><strong>JDK</strong></a>
+        
+            <a href="%E6%93%8D%E7%9B%98%E6%89%8B.html"><strong>操盘手</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="ongl.html">OGNL</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="rw-splitting.html">Spring + Mybatis 读写分离</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="CompressedOops.html">JVM压缩指针(CompressedOops)</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="load-balancer-algorithm.html">负载均衡算法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="LVS-HAPROXY-NGINX.html">LVS & HAPROXY & NGINX</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>
