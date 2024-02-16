@@ -1,0 +1,1111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[认识自己 认识世界]]></title>
+  <link href="https://fengbo.cool/atom.xml" rel="self"/>
+  <link href="https://fengbo.cool/"/>
+  <updated>2024-02-16T13:58:20+08:00</updated>
+  <id>https://fengbo.cool/</id>
+  <author>
+    <name><![CDATA[]]></name>
+  </author>
+  <generator uri="http://www.coderforart.com/">CoderForArt</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[DDD小记]]></title>
+    <link href="https://fengbo.cool/17080590211242.html"/>
+    <updated>2024-02-16T12:50:21+08:00</updated>
+    <id>https://fengbo.cool/17080590211242.html</id>
+    <content type="html">
+<![CDATA[<h2 id="toc_0">什么是DDD</h2>
+
+<p>DDD（Domain Driven Design），定义了一系列的术语与规范，用于指导如何构建一个结构清晰、核心稳定、高可维护性、高代码复用性的工程实现；</p>
+
+<h2 id="toc_1">优缺点</h2>
+
+<p>优点：结构清晰，代码可复用性高（单一职责）、可维护性高（依赖路径清晰）<br/>
+缺点：代码量高、实现冗余</p>
+
+<h2 id="toc_2">核心概念</h2>
+
+<p>领域-&gt; 限界上下文 -&gt; 子域 -&gt; 实体、聚合<br/>
+领域（核心域、通用域、支撑域）<br/>
+限界上下文（业务流程划分）<br/>
+实体对象、值对象<br/>
+聚合、聚合根 （对外只操作聚合根）<br/>
+事件风暴</p>
+
+<h2 id="toc_3">核心方法</h2>
+
+<p>交互与业务原子语义分离：所见（交互）不等于所得（实现），这一点自己感觉还是至关重要的，即要把一个功能进行拆解和抽象，这是一个优秀的项目的核心要素；<br/>
+聚合：能力内聚</p>
+
+<h2 id="toc_4">分层方法</h2>
+
+<p>交互层（对外接口） -&gt; 服务层（尽量只处理逻辑编排） -&gt; 领域层（域服务、聚合(值对象、实体)） -&gt; 基础层<br/>
+可通过控制反转（依赖倒置）方法增强稳定性（防腐层）</p>
+
+<h2 id="toc_5">充血 or 贫血模型？</h2>
+
+<p>充血模型的实体包含业务逻辑，尽量会和业务形态（非交互形态）保持一致，但通常依赖较多的情况下会比较复杂，需要取舍；<br/>
+贫血模型更像数据库模型；<br/>
+可以相互结合，例如把对数据库外部中间件的依赖去掉，只做内存操作，但对于依赖较多的业务，比较难以达成。</p>
+
+<h2 id="toc_6">怎么防止扩散、边界扩展？</h2>
+
+<p>控制反转<br/>
+依赖DDD的核心概念指导隔离（对开发人员有要求）</p>
+
+<h2 id="toc_7">其他可用的工具？</h2>
+
+<p>code generator<br/>
+设计模式</p>
+
+<h2 id="toc_8">小结</h2>
+
+<p>DDD不是一套具体的设计准则，但通过一系列的术语，然后利用手上的一些工具，可以帮我们构建一个良好的(交互与业务原子语义分离的)工程实现；</p>
+]]>
+    </content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[记笔记 - 后疫情时代下的个人成长与职业发展]]></title>
+    <link href="https://fengbo.cool/16924954458559.html"/>
+    <updated>2023-08-20T09:37:25+08:00</updated>
+    <id>https://fengbo.cool/16924954458559.html</id>
+    <content type="html">
+<![CDATA[<h2 id="toc_0">而立之年与七年之痒</h2>
+
+<blockquote>
+<p>&emsp;&emsp;今年是我人生中的第三十个年头，古语有云”三十而立“：意味着三十岁的人，应该能够依靠自己的本领独立承担起自己应承担的责任，确定自己人生的目标和发展方向。到了我的三十岁算是稀松平常的，工作生活都算是美满，只是过了三十，我前三十年中所依仗的父母给我的支持、年轻给我的精力、学历文凭给我的机遇等等都将逐渐淡出。所以闲暇之余，还是得问自己一句：在去往四十不惑之年的旅途中，自己是否做好了准备去独当一面从而给家族更好的支撑，更往后的时光，又是否能接受一些可能发生的失去而产生的落差？<br/>
+<br/><br/>
+&emsp;&emsp;今年我也迈过了职业生涯的第一个七年，我的职业开局不算好，没有在校招阶段找一份好工作，后面自己在成都一家国企下面的小公司找了份工作，薪资很低，干了不到一年就来到了杭州，如果能闪回到以前的生活我想我依然会毅然离职，现在来看那段时光并没有给我的简历添金，不过却为我最近几年相对比较顺利的发展积累了良好的技术沉淀；来到杭州，借着杭州互联网的东风找了份当时还比较满意的工作，在创业公司过了四年两点一线的日子，慢慢的也开始焦虑了起来，因为公司以及个人的发展感觉都一般，还好中间结识了一些好朋友；后来就到了阿里，有了之前几年的沉淀，这几年发展的还算是不错，在同龄人中还过得去，算是不好不坏，不上不下的一个状态，大公司给了我大平台，也很幸运的搭上了互联网的最后一缕东风，但最近几年也一直有意识到平台并不代表个人的能力，如果踟蹰不前，对自己也许并不是一件好事。<br/>
+<br/><br/>
+&emsp;&emsp;随着疫情的到来然后过去，大家对于复苏的美好愿望并没有如愿以偿，整个世界在疫情的催化下正在发生着翻天覆地的变化，这些变化就发生在身边：人事和组织变动愈发剧烈，有的同事在裁员通知和大礼包的夹击下心态冷暖未知；失业率飙升加经济降温，大学生初临社会就会遇到前所未有的困难；楼市降温，购房者能顺利交付就不错了。总之当前的整个世界都在下行，地缘政治经济冲突加剧，贫富差距越来越大，世界在晃动的过程中让身边的每一个人都开始惊慌不安，在这个过程中，我也会受到影响，这种心态是面对意外情况的一种应激反应，但关键是我是如何理解当前的形势，我的第一反应是什么，这种反应是不是对的，有什么方法去面对这种情况，对未来是不是继续抱有期望？这些问题远远超过了我日常的思考范畴，所以需要对自己做相关的补充。<br/>
+<br/></p>
+</blockquote>
+
+<h2 id="toc_1">后疫情时代下的个人成长与职业发展</h2>
+
+<blockquote>
+<p>&emsp;&emsp;公司的高年级同学近期以这个题目做了一场分享，个人感觉对自己是有帮助的，先不论帮助有多大，至少提供了一条可以尝试的路径，我把相关的一些笔记做一下记录，希望自己后续能沿着这条路径走下去。</p>
+</blockquote>
+
+<h3 id="toc_2">看待未来的角度</h3>
+
+<p>&emsp;&emsp;马老师说过的三观：全球观、全局观、未来官；三度：深度、广度、角度。康波周期：你必须经过两次完整的周期，你才能知道是上升中的回调还是下降中的反弹。</p>
+
+<h4 id="toc_3">为什么会这样？</h4>
+
+<blockquote>
+<p>&emsp;&emsp;如何理解当前国家和公司的局势，应该从什么角度去思考，核心矛盾是什么</p>
+</blockquote>
+
+<p>&emsp;&emsp;一战和二战中的美国、布雷顿森林体系、石油危机\(_6\)、两伊战争\(_7\)、俄罗斯乌克兰战争、英国阿根廷马岛战争\(_8\)、委内瑞拉\(_9\)、IMF、亚洲金融危机\(_1\)、韩国八大银行\(_2\)、三星、日本广场协议\(_4\)、泰国\(_5\)、911之后中国发展的黄金10年\(_{10}\)、全球最低税率\(_{11}\)、碳排放：以利益作为最大的思考的视角的时候才会看的最清楚 -- 被晃动的原因。管控的原因：今天要让我们整个开放形成的财富是要留在这里的。东南亚疫情躺平：需要承接、需要提高它的出口份额，全球化-&gt;区域化。<br/>
+&emsp;&emsp;互联网的规模化是它的先天属性，规模化的形成与整个社会的稳定发生了关系。阿里云在数据计算底层建立了无与匹敌的能力，所以不管阿里怎么发展，这个有着巨大轰鸣的引擎产生的推力都是巨大的。所以在今天这样巨大的一种新型的生产力放在我们这个生产关系上，放在今天的治理结构上，它应该怎么样的发挥作用，创造更好的价值。我们要做的是基础设施还是商业上的扩张，这是一个主要的矛盾点，因为两者的评估体系是完全不一样的。生产制造 -&gt; 金融 -&gt; 科研 -&gt; 专利 -&gt; 专利保护。&quot;所以在今天的时候，我们到底是适应普遍的富裕的公平性，还是一种突破性。这就是我们今天碰到的巨大的挑战。&quot; &quot;如何重塑与政府和消费者之间的关系。&quot; &quot;对我们的晃动和为了晃动整个的治理结构的稳定和为了这个稳定在整个的衰退过程当中，我们要提升我们自己的效率。&quot; &quot;当所有的全球环境变得激烈的时候，你会发现它叫做保守主义开始抬升。什么叫保守主义？保守主义就是安于现状。保守主义是先我保护好自己。&quot; </p>
+
+<h4 id="toc_4">我应该咋样？</h4>
+
+<blockquote>
+<p>&emsp;&emsp;我们可能面临的情绪冲击</p>
+</blockquote>
+
+<p>&emsp;&emsp;&quot;因为你不安，所以你必须要有更强的正反馈，你要取得更好的成绩。不论这个成绩是不是喜欢，你就要有外界的刺激，外界的给你比别人更强的刺激，来让你建立安全感。&quot; &quot;强烈的孤独感和无意义感&quot; &quot;所以但在今天的时候，我想可能很多人碰到挑战的时候，第一你没有办法跟同学讲，好像也不太容易跟同事讲。如果去跟你的家庭讲，你的压力传导下去，你的父母不理解，你自己的家庭他们也有压力啊，小朋友他听不懂，对吧？所以在这个过程当中，好像是说这个工作还没有真正的联系。&quot; &quot;很多人会去觉得说在今天为什么他留下来，为什么我走了，是不是我没用，因为我没用，我能力不行，我能力不行，我这个是失败的。失败的时候生活都没有意义。我他妈活着干嘛？这种对心理产生的冲击跟撕裂感。在今天的时候，我们真的需要自我意识的构造、梳理和重构。&quot;</p>
+
+<blockquote>
+<p>&emsp;&emsp;培养自我意识、对当下做出正确的反应、可能的一些方法论包括佛法、毛选</p>
+</blockquote>
+
+<p>&emsp;&emsp;&quot;在哪跌倒了。就在哪儿躺下。&quot; PUA、抓手、满五年我们各不相欠、996、福报、知识密度、所有人都说你差的时候，你也未必有那么差。“当外界刺激发生的时候，你有了一个内在的反应，你能洞察这个反应是为什么发生的，且去把这种反应看向外界回应是不是合适。为什么会有这个刺激？对方的意图是什么？我为什么会有这个反应？我的心智模型是什么？这个反应是合适的回应吗？能不能调理好自己？” “缘起性空、大雄宝殿、自我认知” “人生的特点是必须连续可导 -- 因为我们必须把这个认知要能统合在一起。如果有一个突然的一个事件，它脱离了我们的认知体系，它让我会感到很痛苦。我们必须重新去构建一种东西，把它融入进来，纳入进来，它可被认知，可被理解，才会可才才能成为我们的体系。如果一直不可导，你可能就把它压在你的潜意识里面，那就还有很多内在的冲突。如果特别的撕裂就是人格的分裂，再有一种是陷到那个里边的时候，就是精神精神上就会出现问题。所以我们说人生必须要连续可导的意思是说，他应该是可被认知，可被理解的。但是生活真的不是这样子，老总是有不断的事情的出现。”</p>
+
+<blockquote>
+<p>&emsp;&emsp;当下与未来，合适的心理建设、在对的时间做对的事</p>
+</blockquote>
+
+<p>&emsp;&emsp;“当小朋友在七岁之前叫做爱和自由。第二个七年叫平等和秩序。然后再往下是个人技能的构建，就是我们的学习阶段。然后是我们离开家庭，将我们个人身份的构建，然后是我们职业技能的构建，就开始到社会上打拼。然后再往后是我们的职业价值的实现，这个时候基本上三十五岁左右，三十五到四十二岁左右。当人在更年纪更大一点的时候，开始周围的人又开始就失去了--朋友、工作、亲人” “经济运行的规律，社会运行的规律，产业的规律，把这个东西全融在一起，你才会更好的理解今天。”<br/>
+&emsp;&emsp;“（离开的）你在未来可能会发展的更好，那也可能留下的同学在未来的挑战的压力是非常巨大的。因为每个人是不一样的，对吧？每个人的阶段也是不一样的，每个人的所诉求的也是不一样的。” “所以今天如果你到这儿的时候，你非要认为我已经在云霄上了，还要再抖个跟头，我觉得恐怕很难很难很难很难。但我认为如果你能看到那种小确幸，看到那种小美好，看那种小的机会。所以今天看到的时候，整个经济的转型是巨大的。难道我们还是要跟二十年辉煌的东西，还是看要一个能够在接下来三五年有好的发展的东西。”</p>
+
+<h4 id="toc_5">未来会怎么样？</h4>
+
+<blockquote>
+<p>&emsp;&emsp;未来可能的国家的局面和公司的发展轨迹、同时也孕育新的机会，包括数字化的机会，也包括小而美的机会</p>
+</blockquote>
+
+<p>&emsp;&emsp;“这一次的卡顿让一切皆有可能。接下来三年是未来，决定了未来十年的重构。所有的升级换代的时候是在卡顿的时候才出现了新的机会。整个接下来的三到十年，我们会经历整个的管控更加的严格。因为晃动也是更加的猛烈，晃动有多猛烈，管控就有多严格，但管控从来都不是我们的目的。当我们完成这种对抗，我们自身能力变得更强，我们又会回到开放。所以在接下来的过程当中，你们会碰到宏观环境越来越紧缩。当你碰到这件事的时候，就想一想，那一定是外面的冲击更加的强烈。如果没有这次对抗，如果没有互联网，如果我们没有加强互联网的篱笆，颜色革命就真的有可能发生。如果我们没有加强金融的篱笆，大量的资金的外逃，就一定会发生。如果我们不是主动的刺破泡沫，那日本的那种房地产的崩塌也一定会发生。所以管控有多严格，就意味着冲击有多猛烈，请相信更上层的不是傻子。” “整个集团的变化会经历阿里会越来越美好。因为我们终于经过了这么多年的高速发展之后，会回归到自身去，看到我们自己结构如何升起，会回归到良性发展。” <br/>
+&emsp;&emsp;“生活很幸福，因为物质条件会有的东西会越来越好。内心很痛苦，内心痛苦的原因是未来的结构是一个图钉型的真正的高机会的点是越来越少的。今年的毕业人数是一千零九十万，对吧？所以整个的这个形式上的时候其实更加的激烈。如果你没有一个很好的心理建设，仍然像在过去走在高速公路上，把高速的发展才认为自己的成功。那在接下来的时候，你一定会很痛苦。但如果你把多元化的生活自我的完善作为自己的一个辅助的目标，那你可能会活的会更加的精彩。也就是说今天可能未来的这几年对年轻人最大的挑战是，如果你一味的定的是纵向目标，而缺少了横向目标的时候会变得很压抑，因为机会会越来越少。这个不是我的意愿，但他可能我看到的规律，所以在这个时候呢，建议大家的时候呢，在个体发展上，第一要有清晰的认知。从你的心态和技能上要做到这一点。”</p>
+
+<blockquote>
+<p>&emsp;&emsp;多元的价值观的培养</p>
+</blockquote>
+
+<p>&emsp;&emsp;“我建议构建一个多元的价值观，因为抱着过去的什么是对，什么是错。在未来的时候冲突会更大。就像我刚才举了一个笑话，外边的人可能不理解互联网的人。但是今天很多的时候，我们和很多的人的沟通，在思想意识上会有巨大的差距。我们的经历和很多东西是不同的。如果在这个里面不能构建起一个多元的价值观，那就会变成你有一个很stable 的自我意识，甚至都不叫自我意识，那只是一个固执的理念。在在接下来这种多变复杂的冲突的环境下，你会变得越来越痛苦。而一个能够很很很flexible、很灵活的多个层面的东西，会让你在这个里面有各种各样的灵活的取舍。所以可能要在这个过程要构建一个多元的价值观。”</p>
+
+<blockquote>
+<p>&emsp;&emsp;未来的教育的方向</p>
+</blockquote>
+
+<p>&emsp;&emsp;“教育有两种理念，一种理念是当年苏联式的教育，就是我大量的产出符合这个要求的人是吧？也就是等于大量的生产资料。第二种是美国式的教育，就是一个就是就是人是先天分是不一样的。如果你是精英就有精英的教育。如果你是普通的话，那你就那样吧。那么在这个双减的一个过程来讲的时候呢，未来社会的竞争会空前激烈。所以呢会导致一个问题，就是今天我们再加大教育成本产出的人作为生产资料，也不满足社会竞争的要求。意味着在过去把教育作为量产生产资料的阶段结束了。教育对人人的本质教育出来是什么？它是社会经济中的生产资料。但是我们目前对生产资料的要求已经越来越高了。很多的这个过程当中，个人的教育这种大众式的普遍式的教育，未必能够产生出我们需要的这样的人。所以双减，再盲目的量产没有意义了，但背后的意味着精英化的教育的要求会更高。”</p>
+
+<blockquote>
+<p>&emsp;&emsp;可能的机会点、房产、元宇宙</p>
+</blockquote>
+
+<p>&emsp;&emsp;“如果经济下行的差距变大，会导致服务业的机会变大，服务业机会里边有没有效率问题和竞争问题？”<br/>
+&emsp;&emsp;“今天一个核心点叫做先考虑好自己的状况。没买房的可以选个地儿，买个房，想用房产牟利的，千万别上杠杆再买房了，那不见得是件好事儿。然后现在在康波周期的里边，我没说，但你想一想，他究竟是有人要上升中的抖动下降还是下降中的调整。好好想一想，有人说买豪宅，富人买豪宅是保值保值什么？因为他不住什么叫保值，保值，就是那个钱摆在那儿，就算是跌成狗屎，我也不卖。因为未来的火起来的时候还值钱，是这逻辑吧。那好，你请你看一下你到底有多少的实力。如果没有，还想在这个机会去做一些收益和这个这个有更多的收益的时候，时代过去了，所以保证好流动性。因为什么叫流动性？就是这个房子再好没人买，就一定会经过往下往下再往下这个阶段的。如果你足够厚没问题，你还能回来。但是因为跨越周期那个康波周期大概是六十年啊，你有信心跨越六十年不要紧的。”<br/>
+&emsp;&emsp;“最后我讲了服务业最后这个虚幻与效率的双轮驱动是什么？这个跟咱们的团队和咱们的能力相关。虚幻意味着大多数人需要更多的奶头乐。所以什么原宇宙啊，什么体验型的，什么这种视觉设计啊，渲染啊，跟人的体感相关的会有更大的需求。第二个效率就是机器智能制造等等会有更大的需求在各个领域之内的效率的仍然是生产力和效率仍然是核心。”</p>
+<br/>
+<h3 id="toc_6">年轻人应该怎么做</h3>
+
+<blockquote>
+<p>&emsp;&emsp;投入的做一件事儿、开拓视野并建立高质量的对话、家庭与工作的平衡</p>
+</blockquote>
+
+<p>&emsp;&emsp;“在这一个阶段很核心的就是你要有强健的体魄，就是大家千万要锻炼身体。一个人的身体状态绝对会影响你的思维状态。不要以透支身体为代价这件事情，而且要有意识的去做件事儿”<br/>
+&emsp;&emsp;“第二件事情呢，我还是觉得要去有更好的去打开视野。因为在今天对于你们今天这个来讲的时候，嗯，第一件就是你首先要投入的做一件事情。就像我们在一个隧道里面去穿行的时候，前面一定有光亮。如果你坚持到，你就会发现、你才能感受到那件事情对你的这个回馈，就像我自己，在你们这个阶段的时候，疯狂的看各种体系的书，什么看零售啊、商学院呀。有很多的东西可能看完了之后就使得我在后面碰到一些困难跟问题的时候，我大致知道我应该去看个什么啊。那么对于你们这个阶段的这个来讲的话呢，最怕的事情是该你深入投入其中去做的时候，你有想的各种可能性，该让你去打开视野的时候，你又觉得你又想把每件事都搞清楚，让自己疲惫不堪。”<br/>
+&emsp;&emsp;“建立自己的credit，要养成良好的职业习惯，对于年轻人来讲，还是要找到机会去给自己构建一些能够进行高质量对话。”<br/>
+&emsp;&emsp;“一个充满爱心良好关系的家庭对一个人的滋养是非常非常重要的，工作可能并不是全部。当你放到人生视角的时候，选择一个人，选择一个城去组建一个温馨的家庭。他在你遭受到挫折人生低谷的时候，给予你的回馈是不可想象的。所以在今天的时候，情感也是需要经营的，不是一味的去在工作上投注。所以我们讲到工作生活要balance。”</p>
+
+<blockquote>
+<p>&emsp;&emsp;带着认知的目的去进行实践</p>
+</blockquote>
+
+<p>&emsp;&emsp;“如果你的思维没有经过training，你的strategy 是错误的。仅仅靠盲动的尝试，一定不会有好的结果的。你是不是特别想要后边的那个回报，如果想要的话，中间所有的危险信号你是怎么处理的，你是如何识别它，辨别它，去确认它的，你是如何让你的strategy 跟现实拟合的。”</p>
+
+<h2 id="toc_7">认知之路</h2>
+
+<ul>
+<li>与原生家庭的和解</li>
+<li>对社会运行规律的理解</li>
+<li>对生命哲学原则的认知</li>
+<li>心理学：爱与自由、平等与秩序、自我认知、职业技能、社会价值、社会关系、生命意义</li>
+<li>认知模型：经典物理、佛法、哲学、知行合一、毛选</li>
+</ul>
+
+<h2 id="toc_8">成长之路</h2>
+
+<ul>
+<li>自我意识的发展：接纳自我、构建自我、发展自我</li>
+<li>职业技能的发展：归纳法、思维架构、演绎法</li>
+<li>生命意义的确立：权力与金钱、社会意义、面对困难的态度</li>
+<li>调和本我、自我和超我之间欲望的冲突或适应社会与环境；知道为什么而活，便能生存～尼采</li>
+<li>打开视野，建立高质量的对话，mentor</li>
+</ul>
+
+<h2 id="toc_9">疗愈自己</h2>
+
+<ul>
+<li>经历复盘</li>
+<li>心理测评：MBTi</li>
+<li>视角重构：人生七年</li>
+<li>动力重构：活出生命的意义</li>
+<li>技能重构：学徒</li>
+<li>信息重构：隐姓亿万富翁（american dream）</li>
+</ul>
+
+<h2 id="toc_10">趋势变化</h2>
+
+<ul>
+<li>宏观环境的变化：内部体系的自洽是开放的基础</li>
+<li>阿里集团的变化：治理结构升级、回归良序发展</li>
+<li>个体心态的变化：生活很幸福、内心很痛苦</li>
+</ul>
+
+<h2 id="toc_11">金句</h2>
+
+<ul>
+<li>认知的进阶：<mark>带着认知的目的去实践</mark></li>
+<li>认知的进阶：<mark>生活只是它应有的样子，不是你期待的样子</mark></li>
+<li>认知的进阶：<mark>不要相信你怀疑的，但一定要怀疑你相信的</mark></li>
+<li>正确的自我意识：<mark>从哪里跌倒，就在哪里躺下</mark></li>
+</ul>
+
+<h2 id="toc_12">附录</h2>
+
+<ul>
+<li>[1] <a href="https://www.sinoss.net/uploadfile/2010/1130/582.pdf">亚洲金融危机后的韩国经济</a></li>
+<li>[2] <a href="https://www.sohu.com/a/518098829_120082100">八大银行全被美国控制，30家财阀倒闭一半</a></li>
+<li>[3] <a href="http://pdf.dfcfw.com/pdf/H3_AP201811131244167208_1.PDF">八大银行全被美国控制，30家财阀倒闭一半</a></li>
+<li>[4] <a href="https://www.afdi.org.cn/afdc/cn/UploadFile/200972236378517.pdf">广场协议</a></li>
+<li>[5] <a href="https://zhuanlan.zhihu.com/p/79183681">血腥的金融一：97年亚洲金融危机中的泰国</a></li>
+<li>[6] <a href="https://m.jrj.com.cn/rss/sohu/2022/3/1/34503402.shtml">三次石油危机对各产业链影响回顾分析</a></li>
+<li>[7] <a href="https://www.marxists.org/chinese/reference-books/octoberreview/iran/13.htm">美国在两伊战争中是否保持中立？</a></li>
+<li>[8] <a href="http://old.lifeweek.com.cn//2002/1101/2601.shtml">马岛战争身后的世界</a></li>
+<li>[9] <a href="https://www.controlrisks.com/zh/our-thinking/chinese/venezuela-article?utm_referrer=https://www.google.com.hk">解读委内瑞拉危机的台前幕后</a></li>
+<li>[10] <a href="https://www.controlrisks.com/zh/our-thinking/chinese/venezuela-article?utm_referrer=https://www.google.com.hk">911事件后国际格局与中美战略</a></li>
+<li>[11] <a href="https://www.jsthinktank.com/zhihuijiangsu/jingji/202202/t20220217_7424008.shtml">全球最低企业税率对我国的影响</a></li>
+</ul>
+]]>
+    </content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[HELLO]]></title>
+    <link href="https://fengbo.cool/icon.html"/>
+    <updated>2022-03-15T09:47:52+08:00</updated>
+    <id>https://fengbo.cool/icon.html</id>
+    <content type="html">
+<![CDATA[<p><figure><img src="media/16473088725151/icon.jpg" alt="icon"/><figcaption>icon</figcaption></figure></p>
+
+<p><figure><img src="media/16473088725151/icon.png" alt="icon"/><figcaption>icon</figcaption></figure></p>
+]]>
+    </content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[RabbitMQ vs Kafka]]></title>
+    <link href="https://fengbo.cool/RabbitMq-vs-Kafka.html"/>
+    <updated>2019-04-12T20:59:04+08:00</updated>
+    <id>https://fengbo.cool/RabbitMq-vs-Kafka.html</id>
+    <content type="html">
+<![CDATA[<p>RabbitMQ和Kafka是两种很经典的分布式消息中间件，这篇文章试着从设计理念，基础特性，适用场景几个方面来描述这两种中间件。</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">关于RabbitMq</h2>
+
+<ul>
+<li>Consumer</li>
+<li>Publisher</li>
+<li>Exchange: 消息交换</li>
+<li>Route: 消息路由</li>
+</ul>
+
+<h2 id="toc_1">关于Kafka</h2>
+
+<ul>
+<li>Consumer,ConsumerGroup</li>
+<li>Producer</li>
+<li>Kafka source connect</li>
+<li>Kafka sink connect</li>
+<li>Topic and topic partition</li>
+<li>Kafka stream</li>
+<li>Broker</li>
+<li>Zookeeper</li>
+</ul>
+
+<h2 id="toc_2">设计理念</h2>
+
+<h2 id="toc_3">可扩展，分布式，可靠性是两个系统的共同特点。</h2>
+
+<p>RabbitMq是经典的面向消息队列而设计的，它实现了AMQP协议。RabbitMq强大的地方在于它实现了高度灵活的消息路由功能，非常便于使用和拓展。<br/>
+<figure><img src="media/15550739440669/15558383060583.jpg" alt=""/></figure></p>
+
+<hr/>
+
+<p>Kafka是一个分布式的提交日志，这个提交日志<code>(commit-log)</code>的概念上来说和数据库的没有区别：都能够记录数据的变化并且可以重放。但是和数据库不同的是数据库的日志用来做恢复用而在Kafka中日志是一等公民。Kafka中没有队列的概念，一开始可能会让人感觉到奇怪。但这也是它的优势所在。<br/>
+<figure><img src="media/15550739440669/15558631089848.jpg" alt=""/></figure></p>
+
+<hr/>
+
+<p>从设计上来说，两者比较明显的一个区别是rabbitmq的中的消息是不进行持久化的，Kafka则相反(有淘汰策略)。因此Kafka支持多个消费者同时消费一个topic而互不影响，RabbitMq则不能做到多个消费者消费同一个队列而画像不受到影响(消费后即删除)。但RabbitMq的灵活的消息路由机制可以达到相同的目的。<br/>
+另外RabbitMq是以队列(queue)为单位的。而Kafka是以分区(partition)为单位的。</p>
+
+<h2 id="toc_4">PUB and SUB</h2>
+
+<h2 id="toc_5">RabbitMq和Kafka都支持并发的消息生产和消费，但是两者各自的特性不同。</h2>
+
+<p>RabbitMq和Kafka都支持基础的消息的发布功能，RabbitMq为了支持丰富的路由策略，因此生产者不是直接将消息发送到队列而是发送到Exchange中<code>Channel.basicPublish(String exchange, String routingKey, boolean mandatory, boolean immediate, BasicProperties props, byte[] body)</code>,然后根据exchange type和routingKey还有其他属性决定将消息发送到什么队列:</p>
+
+<ul>
+<li>exchange type = fanout, 广播模式，exchange会将消息广播到所有绑定到这个exchange的其他exchange和queue</li>
+<li>exchange type = direct, 精确匹配, 根据消息的routingKey精确发送到和Exchange绑定的Queue(Queue申明绑定时同时指定routingkey)</li>
+<li>exchange type = Topic , 模糊匹配，Queue绑定时可以指定正则，*代表任意字符, #代表任意数字</li>
+<li>exchange type = Header, 消息头匹配，这种方式忽略routingKey，而是根据发送消息时指定的消息头匹配，同样队列绑定时也要指定消息头匹配规则</li>
+<li>exchange type = Consistent Hashing, 一致性哈希，exchange根据routingKey, header, message properties 的哈希值将消息分布到不同的队列中去，这个特性提供了类似于Kafka中分区的功能</li>
+<li>死信队列，队列可以配置条件(size,ttl等)将消息驱逐到指定的exchange中</li>
+<li>其他例如临时类型(Ephemeral Exchanges)和优先类型(Priority Exchanges)</li>
+</ul>
+
+<p>从性能上来说，fanout的性能时最高的，不用做任何判断，direct性能差一点，需要精确匹配，Header最强大也性能也最差。<br/>
+RabbitMq中一个队列可以有多个消费者，但一条消息只允许一个消费者消费，消费完之后会从队列中消除，提高吞吐量的方法是使用Push API;</p>
+
+<hr/>
+
+<p>Kafka的消息是持久化的，RabbitMq中的消息是会消亡的。因此类似于RabbitMq中的重新入队或者延迟对Kakfa来说没有意义，重新入队会造成消息顺序混乱和重复，Kafka也没有内置的延迟策略。<br/>
+Kafka通过类似于<code>KafkaProducer.send(new ProducerRecord(topic, key, data))</code>的API将消息发送到指定主题和分区，如果采用默认的分区器，那么Kafka会对key进行散列，同一个key被发送到同一个分区，如果没有指定key，那么分区器将随机分配到某一个分区，另外也可以指定自定义的分区器，这取决于你想要怎么样的分区策略。<br/>
+Kafka要对消息做持久化，那么是不是意味着Kafka消息生产的性能很低？并不是，Kafka使用操作系统缓冲区缓存消息，相当于每次都是操作内存，因此效率是非常高，另一方面Kafka在硬盘中的存储方式是顺序存储的，对于硬盘来说，数据寻址是性能消耗的主要原因之一，由于是顺序存储，Kafka在写入的时候顺序写入硬盘的效率比一般的写入效率高出很多。顺序存储的另一个好处是读取的效率很高，另外Kafka使用了零复制技术，意味着原本从文件系统-&gt;内核空间-&gt;用户空间-&gt;网卡通道要经过两次内存缓存区复制变成了直接从文件系统发送到网络通道，而不需要经过任何内存缓存区，避免了字节复制，从而提高了性能。<br/>
+Kafka中的消息持久化使得各个消费者可以同时消费而互不影响，Kafka中的消费群组保证了同一条消息只被其中一个消费者消费（再均衡的情况下可能发生重复消费）。</p>
+
+<h2 id="toc_6">PULL or PUSH</h2>
+
+<h2 id="toc_7">RabbitMq使用推模型，而Kafka使用拉模型。</h2>
+
+<p>RabbitMq使用的是推送模型（push)，同时通过设置<code>prefetch limit</code>预取值来防止生产速度大于消费速度，这样做的好处是消息延迟低并且也很适合基于队列的消息架构。<br/>
+但其实RabbitMq也支持拉API, 从Spring-AMQP的实现来讲，Push API使用Listner Container并且注册回调函数， 然后Pull API使用的是Channel.basicGet。</p>
+
+<hr/>
+
+<p>Kafka使用的拉模型（pull），消费者从给定的偏移量开始批量请求消息。为了防止无意义的请求轮询，Kakfa允许长轮询（long-polling）。<br/>
+由于分区的设计，Kafka使用拉模型是比较合理的，使用推模型的话就不灵活了。由于Kafka消息的消费没有竞争，所以通过批量获取消息可以达到很高的吞吐量。对于RabbitMq来说这么做没有太大的意义因为希望尽快的分配一个消息并且完成处理。</p>
+
+<h2 id="toc_8">消息投递保证</h2>
+
+<ul>
+<li><code>最多一次</code> :意味着消息不会重复投递但是可能丢失(RabbitMq &amp; Kafka)</li>
+<li><code>最少一次</code> :意味着消息不会丢失但可能重复投递，意味着消息可能被成功处理两次(RabbitMq &amp; Kafka)</li>
+<li><code>精确一次</code> :消息系统的皇冠，准确投递一次(Kafka在很有限的情况下满足)</li>
+</ul>
+
+<hr/>
+
+<p>消息系统可以简单的抽象化为两个组件:生产者和消费者, 不管是消息的生产还是消费都离不开这两种角色:<br/>
+<figure><img src="media/15550739440669/15570192785099.jpg" alt="" style="width:362px;"/></figure></p>
+
+<p>正常情况下，为了保证消息成功消费，生产者和消费者会进行两次通信：发送消息和确认消费，那么其中有四个地方可能会发生中断或者失败(网络原因/bug/故障等等)。<br/>
+在看相关的资料之前，我很疑惑这种投递保证要保证的究竟是什么？指的是消息发送还是处理成功的次数？如果四个步骤中发生了问题应该如何处理？ 在send和process阶段如果出错，那么重发消息是正确的， 如果是response和ack阶段出错那就不应该再重发，kafka保证的exactly once究竟是怎么做到的呢？看了资料之后才有了大概的理解。<br/>
+首先，消息投递的保证从结果来看比较好理解一点，最多一次(at-most-once), 最少一次(at-least-once)都不能保证除了问题之后消息处理的结果不会发生变化，精确一次(exactly-once)就可以做到正常情况下和出了问题的情况下消息的处理结果还是一样的，例如消息计数。</p>
+
+<blockquote>
+<p>the result of computaion -- including all state changes -- is the same if the error occurs during processing or not.</p>
+</blockquote>
+
+<p>那么其实不难看出，无论生产者和消费者的组件如何设计，一般情况下都存在某个阶段需要用户代码参与，此时exactly-once的保证是极难达成的，因为用户代码的幂等性无法保证，所以从结果来看，完成精确一次的保证是需要生产者和消费者之间步伐完全统一的，那么kafka是如何做到这一点的呢？其实kafka所说的exactly-once保证也只在它的stream api和producer中有，再producer中，kafka为每个消息附加一个唯一的id，这样保证消息不会被重复处理。stream api的场景是几个topic的结果处理后输出到另一个topic，在可以掌控输入和输出端的情况下做到了exactly-once的保证(<a href="https://www.youtube.com/watch?v=JPcT1GGzszA">Exactly-Once Semantics in Apache Kafka</a>)</p>
+
+<h2 id="toc_9">消息排序</h2>
+
+<h2 id="toc_10">Kafka和RabbitMq都能保证消息的顺序</h2>
+
+<p>具体情况是两者在单线程情况下都能保证在队列和分区中的消息的顺序是和发送顺序一样的。这很好理解，因为在多线程的情况下的顺序是很难定义的，而kafka中还有分区的概念。</p>
+
+<h2 id="toc_11">高可用&amp;容错</h2>
+
+<h2 id="toc_12">Kafka和RabbitMq都有良好的高可用机制。例如分区副本，镜像队列，消息和元数据持久化等等。</h2>
+
+<p>分布式系统总是离不开可用性和一致性的问题，CAP理论是其中的一个代表, <a href="https://www.infoq.cn/article/cap-twelve-years-later-how-the-rules-have-changed">CAP理论十二年回顾：&quot;规则&quot;变了</a><br/>
+正如前文提到的， Kafka是一个分布式的提交日志，所以是对消息做了持久化，另外Kafka会对Topic以及Partition做多副本。另外Kafka使用ZK保存集群的元数据信息和消费者的信息。<br/>
+RabbitMq中存在镜像队列的概念，即存在一主多从的队列，所有操作会在镜像队列中重放，保证队列的高可用，另外元数据信息使用的是内置的<a href="https://zh.wikipedia.org/wiki/Mnesia">Mnesia</a>数据库.</p>
+
+<h2 id="toc_13">使用场景</h2>
+
+<h2 id="toc_14">RabbitMq适用于低延迟的业务处理系统，Kafka使用与高吞吐的流处理系统。</h2>
+
+<p>RabbitMq的Push API的延迟较低，但相对于Kafka对于吞吐的优化而言，RabbitMq的吞吐没有那么高，并且由于低延迟所以适合于业务相关的消息处理，例如交易支付等。Kafka由于其Pull API和高吞吐设计，比较适用于数据仓库类的流计算处理，但若业务系统对于持久化的需求很强烈，那么采用Kafka也是很好的选择。</p>
+
+<h1 id="toc_15">Refer</h1>
+
+<p><a href="https://jack-vanlightly.com/blog/2017/12/4/rabbitmq-vs-kafka-part-1-messaging-topologies">rabbitmq-vs-kafka-part-1-messaging-topologies</a><br/>
+<a href="https://jack-vanlightly.com/blog/2017/12/5/rabbitmq-vs-kafka-part-2-rabbitmq-messaging-patterns-and-topologies">rabbitmq-vs-kafka-part-2-rabbitmq-messaging-patterns-and-topologies</a><br/>
+<a href="https://jack-vanlightly.com/blog/2017/12/8/rabbitmq-vs-kafka-part-3-kafka-messaging-patterns">rabbitmq-vs-kafka-part-3-kafka-messaging-patterns</a><br/>
+<a href="https://jack-vanlightly.com/blog/2017/12/15/rabbitmq-vs-kafka-part-4-message-delivery-semantics-and-guarantees">rabbitmq-vs-kafka-part-4-message-delivery-semantics-and-guarantees</a><br/>
+<a href="https://jack-vanlightly.com/blog/2018/8/31/rabbitmq-vs-kafka-part-5-fault-tolerance-and-high-availability-with-rabbitmq">rabbitmq-vs-kafka-part-5-fault-tolerance-and-high-availability-with-rabbitmq</a><br/>
+<a href="https://jack-vanlightly.com/blog/2018/9/2/rabbitmq-vs-kafka-part-6-fault-tolerance-and-high-availability-with-kafka">rabbitmq-vs-kafka-part-6-fault-tolerance-and-high-availability-with-kafka</a></p>
+]]>
+    </content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[我对Paxos的一些理解]]></title>
+    <link href="https://fengbo.cool/paxos.html"/>
+    <updated>2018-04-09T00:13:42+08:00</updated>
+    <id>https://fengbo.cool/paxos.html</id>
+    <content type="html">
+<![CDATA[<blockquote>
+<p>看到了一些描述paxos协议的文章，但是始终都似懂非懂的样子，感觉是自己没有get到点, 可能大多数文章描述的都是理论上的一些过程，没有清楚的描述来龙去脉吧；另外号称是最难懂的一致性算法，可能也让我产生了理解障碍；；；在这篇博客中，我尝试着去梳理一下吧，能弄懂一点是一点;; 可能带着问题去理解会是一个比较好的方式吧</p>
+</blockquote>
+
+<span id="more"></span><!-- more -->
+
+<ul>
+<li>
+<a href="#toc_0">我的误解</a>
+<ul>
+<li>
+<a href="#toc_1">分布式系统中的一致性问题</a>
+</li>
+<li>
+<a href="#toc_2">一致性问题与分布式事务</a>
+</li>
+<li>
+<a href="#toc_3">Paxos不是完美的</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_4">Paxos要解决的问题</a>
+</li>
+<li>
+<a href="#toc_5">Paxos在工程中的应用</a>
+</li>
+<li>
+<a href="#toc_6">业界实现</a>
+</li>
+<li>
+<a href="#toc_7">关于Paxos坊间的一些说法</a>
+</li>
+<li>
+<a href="#toc_8">参考资料</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">我的误解</h2>
+
+<h3 id="toc_1">分布式系统中的一致性问题</h3>
+
+<blockquote>
+<p>谈起分布式系统，基本上都会说起分布式事务的问题，分布式事务是在多台机器上实现一个原子操作，相比单个数据库事务，分布式事务要考虑更多的问题例如网络环境,目前听的比较多的分布式事务协议就是2PC了，这是一类一致性问题(这是强一致性的情况， 由于CAP定理的限制，要实现强一致性那么就要牺牲掉高可用，这对分布式系统是致命的，所以目前追求的比较多的是最终一致性的解决方案例如异步消息--这应该不再属于事务的范畴了),这是针对分布式事务而言的.<br/>
+    另一类一致性，我是这么理解的，在分布式系统中，为了解决单点故障，数据必须做冗余，比较典型的例如数据库复制，log复制，姑且称之为副本一致性，副本间的数据一致性也可以分为强一致性和最终一致性；当然除了强一致性和最终一致性中间还有其他级别的一致性，我没有详细的了解； <br/>
+    以上说了分布式系统中常见的两类关于一致性的实际问题;除了一致性问题，分布式系统中还存在例如选主问题，分布式锁等共识问题；<br/>
+    在英语中，consistency(transaction) 与 consensus(paxos) 都有一致性的意思，两者的区别可以理解为consensus主要在达成共识上，然后consistency可以理解为执行上；</p>
+</blockquote>
+
+<h3 id="toc_2">一致性问题与分布式事务</h3>
+
+<blockquote>
+<p>上一个问题已经说到，分布式事务可以理解为一类一致性问题，但是这个和paxos其实是两回事，我的理解是paxos要解决的是比分布式事务更一般的问题;在分布式系统中,为了应对可能出错的场景例如进程崩溃或者网络延迟等，从而使系统更加的可靠，需要进程间对某个值达成一致(我们称之为共识问题),例如&#39;多节点事务提交&#39;,&#39;选主问题&#39;,&#39;<a href="https://en.wikipedia.org/wiki/State_machine_replication">状态机复制</a>&#39;,<a href="https://en.wikipedia.org/wiki/Atomic_broadcast">原子广播</a>;<br/>
+    上面说到paxos要解决比分布式事务更一般的问题，那么分布式事务中是否有paxos的用武之地呢？ 答案是肯定的，上面说到目前的分布式事务的主流解决方案有2pc和3pc，2pc会有单点故障的问题，并且会造成数据的不一致(当commit消息发送一半失败),3pc解决了2pc的一部分问题，但还是会有不一致的情况;关于paxos与事务的讨论参见Gray和Lamport大神合著的&#39;Consensus on Transaction Commit&#39;一文;</p>
+</blockquote>
+
+<h3 id="toc_3">Paxos不是完美的</h3>
+
+<blockquote>
+<pre class="line-numbers"><code class="language-text">Paxos并不是一个完美的解决一致性问题的协议；FLP结果已经指出了这一点;
+</code></pre>
+</blockquote>
+
+<h2 id="toc_4">Paxos要解决的问题</h2>
+
+<blockquote>
+<p>简单说来，Paxos的目的是让整个集群的结点对某个值的变更达成一致。Paxos算法基本上来说是个民主选举的算法——大多数的决定会成个整个集群的统一决定。任何一个点都可以提出要修改某个数据的提案，是否通过这个提案取决于这个集群中是否有超过半数的结点同意（所以Paxos算法需要集群中的结点是单数）</p>
+</blockquote>
+
+<h2 id="toc_5">Paxos在工程中的应用</h2>
+
+<blockquote>
+<p>其实看到paxos的第一眼，我就在想这玩意儿到底能干嘛,能够用来解决哪一类问题？工程中如何使用?它能做分布式的事务吗？如果是保证多个集群中的节点一致的话又有什么用呢？ 它能被用于工程上的那些领域呢？它与现在的例如mysql主从同步又有什么关系呢？ 设计小于当前最大的proposal不被接受是为什么呢?问题太多，感觉自己还是太笨了...<br/><br/>
+    其实在弄清楚一些基本的概念性的东西之后，对paxos就会有基本的认识，例如paxos要解决的基本问题，结合分布式系统的中的一些问题以及目前的解决方案，对paxos就会有一个大致的轮廓；<br/>
+    具体来说Paxos在工程中的应用主要有:多节点复制（状态及复制问题,也是paxos最大的用途）-- 可以保证各个节点看到的消息顺序相同； 选主操作； naming service; config service;</p>
+</blockquote>
+
+<h2 id="toc_6">业界实现</h2>
+
+<p><code>比特币</code> <code>chubby</code> <code>zookeeper</code> <code>腾讯phxpaxos</code> <code>阿里X-Paxos</code> <code>raft</code> <code>2pc</code> </p>
+
+<blockquote>
+<p>比特币的共识算法比较奇特，它使用一个叫做PoW(proof of Work,工作量证明)的东西来提高节点提出提议的门槛(计算hash，目前靠电力去算)，据说这样可以有效减少恶意的参与；另外还有PoS/PBFT等共识协议；<br/>
+chubby是google的一个分布式锁服务，由于需要解决单点的问题引入了multi-paxos的实现；对于chubby来说，对应的锁服务的实现才是其重点，不过底层的一致性保障协议也是非常重要的；<br/>
+zookeeper采用了一个在Paxos上改进的ZAB(zookeeper atomic broadcast)协议,ZAB协议设计了支持崩溃恢复;需要提出的是chubby和zk使用的协议都是没有经过理论证明的，但是在工程中已经证明了没有什么太大的问题了;<br/>
+2pc全称两阶段提交协议，对应的还有3阶段提交协议；是分布式事务业界的主流实现，优点是简单明了，分为precommit和commit两个阶段，并且需要一个事务协调器，precommit对各个节点发送命令锁定相应的资源，全部成功之后发送commit命令，缺点是存在单点故障，并且会产生不一致的情况；<br/>
+raft协议可以理解为paxos的简化版本，没有详细了解；<br/>
+腾讯和阿里的paxos实现不了解；腾讯的开源了， 阿里的没有开源</p>
+</blockquote>
+
+<h2 id="toc_7">关于Paxos坊间的一些说法</h2>
+
+<ol>
+<li>要证明分布式容错算法的正确性通常比实现算法还困难</li>
+<li>paxos从理论到实际的巨大差距</li>
+<li>Google Chubby的作者Mike Burrows说过这个世界上只有一种一致性算法，那就是Paxos，其它的算法都是残次品。</li>
+</ol>
+
+<h2 id="toc_8">参考资料</h2>
+
+<p>[1]<a href="https://timyang.net/distributed/paxos-scenarios/">Paxos在大型系统中常见的应用场景</a><br/>
+[2]<a href="https://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2651001297&amp;idx=1&amp;sn=d4c3f1fc6264bc7f1857f6033eaf27f6&amp;chksm=bdbee9828ac960942247b4f8fe661f883a962187b4a2dce51c8394e8c962d0f3b3ac41d0a3c6&amp;scene=21#wechat_redirect">强烈推荐:分布式系统架构经典资料</a><br/>
+[3]<a href="https://en.wikipedia.org/wiki/Paxos_(computer_science)">wikipedia</a><br/>
+[4]<a href="https://zh.wikipedia.org/wiki/Paxos%E7%AE%97%E6%B3%95">中文维基</a><br/>
+[5]<a href="http://paxos.systems/index.html">paxos 英文解释</a><br/>
+[6]<a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/tr-2003-96.pdf">Consensus on Transaction Commit</a><br/>
+[7]<a href="https://groups.csail.mit.edu/tds/papers/Lynch/jacm85.pdf">FLP不可能结果</a><br/>
+[8]<a href="https://coolshell.cn/articles/10910.html">分布式系统的事务处理</a></p>
+]]>
+    </content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[数据分析中的DDPP]]></title>
+    <link href="https://fengbo.cool/16477467988516.html"/>
+    <updated>2022-03-20T11:26:38+08:00</updated>
+    <id>https://fengbo.cool/16477467988516.html</id>
+    <content type="html">
+<![CDATA[<h2 id="toc_0">介绍DDPP</h2>
+
+<p><figure><img src="media/16477467988516/16477478307964.jpg" alt=""/></figure></p>
+
+<span id="more"></span><!-- more -->
+
+<blockquote>
+<p>随着横轴分析复杂度的升高，分析结论带来的附加值或者对业务的贡献也会越高</p>
+</blockquote>
+
+<ul>
+<li>descriptive analytics：描述性分析，例如客观反映业务情况的指标，例如UV、PV、GMV、转化率等等</li>
+<li>diagnostic analytics：诊断性分析，这一阶段通常是通过历史数据的积累来判断是导致业务指标波动的原因，例如通过分析发现每到节假日UV都会升高</li>
+<li>predictive analytics：预测性分析，结合描述性分析和诊断性分析，我们发现了其中的共性，因此可以对于未来的趋势进行预测</li>
+<li>prescriptive analytics：规范性分析，这一阶段会综合前几阶段的结论，提供可供执行的商业建议，来规避未来的风险或者利用未来的趋势达成商业目标</li>
+</ul>
+
+<p><figure><img src="media/16477467988516/16477488685313.jpg" alt="" style="width:1224px;"/></figure></p>
+
+<blockquote>
+<p>目前大多数的机构停留在descriptive以及diagnostic的阶段，越往上能够挖的东西越多，也越具有商业价值。</p>
+</blockquote>
+
+<h2 id="toc_1">DDPP怎么样指导我们?</h2>
+
+<p>DDPP只是一个模型，告诉我们商业分析的几个阶段长什么样子，是一个远景图，拉近来看的话是一个抽象的概况，不是一个方法论，形成一个方法论非常困难，因为如果是方法论，那么它至少具备几个要素：理论支撑、执行过程定义、判定的规则、表示法、工具；以描述性分析为例，电商大盘分析是描述性分析的一个实例，那么电商大盘分析有一套方法论；DDPP无法提供给我们这些要素，所以不要期待有有什么大一统的理论可以解决某一领域中的所有问题。</p>
+]]>
+    </content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[学习Antlr之二：实现一个简单的Java Bean表达式解析器并运行]]></title>
+    <link href="https://fengbo.cool/16514643482196.html"/>
+    <updated>2022-05-02T12:05:48+08:00</updated>
+    <id>https://fengbo.cool/16514643482196.html</id>
+    <content type="html">
+<![CDATA[<p>理解工具的最好的方法就是动手实践</p>
+
+<h3 id="toc_0">Lexer文件</h3>
+
+<pre class="line-numbers"><code class="language-text">lexer grammar MethodTaskLexer;
+
+OPEN : &#39;(&#39; -&gt; pushMode(INSIDE)
+;
+
+// bean.method
+BEAN_DOT_METHOD
+    : [a-zA-Z]+[0-9a-zA-Z_]*&#39;.&#39;[a-zA-Z]+[0-9a-zA-Z_]*
+    ;
+
+mode INSIDE;
+
+CLOSE : &#39;)&#39; -&gt; popMode
+;
+
+// 参数值
+// 允许两种参数类型 - 一种是占位符；另一种是指定的JDK原生类型
+PARAM_VALUE
+    : STRING    // 字符串
+    | DIGIT+    // 数字
+    | DIGIT+ &#39;.&#39; DIGIT*     // 浮点
+    | &#39;.&#39; DIGIT+    // 浮点
+    | &#39;true&#39;|&#39;false&#39;   // bool
+//    | &#39;\&#39;&#39;
+    ;
+
+// 占位符 -- 例如 ${instance} 表示instance参数
+PARAM_PLACEHOLDER
+    : &#39;${&#39;[_0-9a-zA-Z]+&#39;}&#39;
+    ;
+
+PRIMITIVE_TYPE_EXT
+    : &#39;decimal&#39;     // for BigDecimal
+    ;
+
+// jdk原生类型 以及 classpath一般正则匹配
+PRIMITIVE_TYPE
+    : &#39;boolean&#39;
+    | &#39;int&#39;
+    | &#39;String&#39;
+    | &#39;float&#39;
+    | &#39;long&#39;
+    | &#39;double&#39;
+    | &#39;short&#39;
+    | &#39;byte&#39;
+    | &#39;char&#39;
+    | &#39;Boolean&#39;
+    | &#39;Integer&#39;
+    | &#39;Float&#39;
+    | &#39;Long&#39;
+    | &#39;Double&#39;
+    | &#39;Short&#39;
+    | &#39;Byte&#39;
+    | &#39;Character&#39;
+    ;
+
+CLASS_PATH
+    : [0-9a-zA-Z_]+(.[0-9a-zA-Z_]+)*&#39;.&#39;[a-zA-Z]+[0-9a-zA-Z_]*
+    ;
+
+STRING
+//    : &#39;&quot;&#39; (ESC|.)*? &#39;&quot;&#39;    // 匹配在双引号中的任意字符
+    : &#39;&quot;&#39; .*? &#39;&quot;&#39;    // 匹配在双引号中的任意字符
+    ;
+
+COMMA: &#39;,&#39; ;
+
+WS : [ \n\t\r]+ -&gt; skip;
+
+fragment
+DIGIT: [0-9] ;
+ESC : &#39;\\&quot;&#39; | &#39;\\\\&#39; ;    // 匹配字符\&quot;和\\
+</code></pre>
+
+<h3 id="toc_1">Parser文件</h3>
+
+<pre class="line-numbers"><code class="language-text">parser grammar MethodTaskParser;
+options { tokenVocab=MethodTaskLexer; }
+
+//prog
+//    : expr +
+//    ;
+
+expr
+    : BEAN_DOT_METHOD OPEN CLOSE
+    | BEAN_DOT_METHOD OPEN paramDefGroup CLOSE
+    ;
+
+paramDefGroup
+    : paramDef (COMMA paramDef)*
+    ;
+
+paramDef
+    : CLASS_PATH PARAM_VALUE
+    | CLASS_PATH PARAM_PLACEHOLDER
+    | PRIMITIVE_TYPE PARAM_VALUE
+    | PRIMITIVE_TYPE PARAM_PLACEHOLDER
+    | PRIMITIVE_TYPE_EXT PARAM_VALUE
+    | PRIMITIVE_TYPE_EXT PARAM_PLACEHOLDER
+    ;
+
+</code></pre>
+
+<p><code>lexer</code>和<code>parser</code>也可以写在一个文件里面，不过antlr存在一些限制，如果写在一个文件中就不能在定义<code>token</code>的时候使用<code>词法模型</code>特性了；</p>
+
+<h3 id="toc_2">模版代码生成 &amp; 填充业务逻辑</h3>
+
+<p>本文中，我们使用<code>listener</code>模式计算结果，<code>antlr</code>除了支持<code>listener</code>模式之外也支持<code>visitor</code>模式， 第一步是先使用antlr生成相关的基础设施，我使用了<code>intellij idea</code>的<code>antlr</code>的插件（也可以命令行，这里需要注意的是antlr版本需要和插件版本保持一致，否则会失败）：</p>
+
+<p><figure><img src="media/16514643482196/16514993710686.jpg" alt="" style="width:604px;"/></figure></p>
+
+<p><figure><img src="media/16514643482196/16514993883314.jpg" alt="" style="width:699px;"/></figure></p>
+
+<p>然后就可以看到相关的文件：<br/>
+<figure><img src="media/16514643482196/16514994563072.jpg" alt="" style="width:409px;"/></figure></p>
+
+<p>把相关的java class拷贝到项目目录下， 继承 <code>MethodTaskParserBaseListener</code>，在基础设施的实现中会对生成的<code>AST</code>语法树进行深度优先遍历，因此我们就可以针对相关的语法做出对应的响应从而实现DSL的逻辑。</p>
+
+<pre class="line-numbers"><code class="language-text">class Runner extends MethodTaskParserBaseListener {
+        // 任务上下文
+        private final JobContext jobContext;
+        // 表达式原文
+        private final String expression;
+
+        private String beanName;
+        private String methodName;
+        private final List&lt;Class&gt; paramTypes = new ArrayList&lt;&gt;();
+        private final List&lt;Object&gt; paramValues = new ArrayList&lt;&gt;();
+
+        private boolean isWalkingPlaceHolder = false;
+
+        private Object result;
+
+        public Runner(JobContext jobContext, String expression) {
+            super();
+            this.jobContext = jobContext;
+            this.expression = expression;
+        }
+
+        @Override
+        public void enterExpr(ExprContext ctx) {
+            //System.out.println(&quot;enterExpr&quot;);
+            log.info(&quot;开始解析任务表达式, expr：{}, parsed_expr: {}&quot;, expression, ctx.toStringTree());
+
+            String beanDotMethod = ctx.BEAN_DOT_METHOD().getText();
+            String[] a = beanDotMethod.split(&quot;\\.&quot;);
+            setBeanName(a[0]);
+            setMethodName(a[1]);
+        }
+
+        @Override
+        public void exitExpr(ExprContext ctx) {
+            //System.out.println(&quot;exitExpr&quot;);
+            //运行脚本
+            try {
+                // find bean
+                Object obj = SpringContext.getBeanByName(beanName);
+                if (null != obj) {
+                    // find method
+                    Method method;
+                    try {
+                        method = obj.getClass().getMethod(methodName, paramTypes.toArray(new Class[0]));
+                    } catch (Exception e) {
+                        throw new RuntimeException(&quot;找不到对应的方法&quot;, e);
+                    }
+                    // invoke method
+                    result = method.invoke(obj, paramValues.toArray());
+                } else {
+                    // bean不存在
+                    throw new RuntimeException(&quot;bean:&quot; + beanName + &quot;不存在&quot;);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void enterParamDef(ParamDefContext ctx) {
+            //System.out.println(&quot;enterParamDef: &quot; + ctx.toStringTree());
+
+            Function&lt;String, Object&gt; converter = null;
+            try {
+                // 先解析类型
+                if (ctx.CLASS_PATH() != null) {
+                    Class&lt;?&gt; clazz = Class.forName(ctx.CLASS_PATH().getText());
+                    paramTypes.add(clazz);
+                    converter = (s) -&gt; GsonUtil.fromJson(s, clazz);
+                } else if (ctx.PRIMITIVE_TYPE() != null) {
+                    String primitiveType = ctx.PRIMITIVE_TYPE().getText();
+                    switch (primitiveType) {
+                        case &quot;boolean&quot;:
+                            paramTypes.add(boolean.class);
+                            converter = Boolean::parseBoolean;
+                            break;
+                        case &quot;int&quot;:
+                            paramTypes.add(int.class);
+                            converter = Integer::parseInt;
+                            break;
+                        case &quot;String&quot;:
+                            paramTypes.add(String.class);
+                            converter = (s) -&gt; {
+                                return isWalkingPlaceHolder ? s : s.substring(1, s.length() - 1);
+                            };
+                            break;
+                        case &quot;float&quot;:
+                            paramTypes.add(float.class);
+                            converter = Float::parseFloat;
+                            break;
+                        case &quot;long&quot;:
+                            paramTypes.add(long.class);
+                            converter = Long::parseLong;
+                            break;
+                        case &quot;double&quot;:
+                            paramTypes.add(double.class);
+                            converter = Double::parseDouble;
+                            break;
+                        case &quot;short&quot;:
+                            paramTypes.add(short.class);
+                            converter = Short::parseShort;
+                            break;
+                        case &quot;byte&quot;:
+                            paramTypes.add(byte.class);
+                            converter = Byte::parseByte;
+                            break;
+                        case &quot;char&quot;:
+                            paramTypes.add(char.class);
+                            converter = (s) -&gt; s.charAt(0);
+                            break;
+                        case &quot;Boolean&quot;:
+                            paramTypes.add(Boolean.class);
+                            converter = Boolean::valueOf;
+                            break;
+                        case &quot;Integer&quot;:
+                            paramTypes.add(Integer.class);
+                            converter = Integer::valueOf;
+                            break;
+                        case &quot;Float&quot;:
+                            paramTypes.add(Float.class);
+                            converter = Float::valueOf;
+                            break;
+                        case &quot;Long&quot;:
+                            paramTypes.add(Long.class);
+                            converter = Long::valueOf;
+                            break;
+                        case &quot;Double&quot;:
+                            paramTypes.add(Double.class);
+                            converter = Double::valueOf;
+                            break;
+                        case &quot;Short&quot;:
+                            paramTypes.add(Short.class);
+                            converter = Short::valueOf;
+                            break;
+                        case &quot;Byte&quot;:
+                            paramTypes.add(Byte.class);
+                            converter = Byte::valueOf;
+                            break;
+                        case &quot;Character&quot;:
+                            paramTypes.add(Character.class);
+                            converter = (s) -&gt; Character.valueOf(s.charAt(0));
+                            break;
+                        default:
+                            throw new RuntimeException(&quot;error, primitiveType:&quot; + primitiveType + &quot; not supported&quot;);
+                    }
+                } else if (ctx.PRIMITIVE_TYPE_EXT() != null) {
+                    String primitiveTypeExt = ctx.PRIMITIVE_TYPE_EXT().getText();
+                    if (&quot;decimal&quot;.equals(primitiveTypeExt)) {
+                        paramTypes.add(BigDecimal.class);
+                        converter = BigDecimal::new;
+                    } else {
+                        throw new RuntimeException(&quot;error, primitiveTypeExt:&quot; + primitiveTypeExt + &quot; not supported&quot;);
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            // 再解析参数值
+            if (ctx.PARAM_VALUE() != null) {
+                String paramValue = ctx.PARAM_VALUE().getText();
+                try {
+                    paramValues.add(converter.apply(paramValue));
+                } catch (Exception e) {
+                    throw new RuntimeException(&quot;参数值解析异常&quot;, e);
+                }
+            } else if (ctx.PARAM_PLACEHOLDER() != null) {
+                try {
+                    isWalkingPlaceHolder = true;
+                    String placeHolder = ctx.PARAM_PLACEHOLDER().getText();
+                    if (&quot;${instanceParam}&quot;.equalsIgnoreCase(placeHolder)) {
+                        paramValues.add(converter.apply(jobContext.getInstanceParam()));
+                    } else if (&quot;${taskParam}&quot;.equalsIgnoreCase(placeHolder)) {
+                        paramValues.add(converter.apply(jobContext.getTaskParam()));
+                    } else {
+                        throw new RuntimeException(&quot;error, placeholder &quot; + placeHolder + &quot; not supported&quot;);
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(&quot;参数值解析异常&quot;, e);
+                } finally {
+                    isWalkingPlaceHolder = false;
+                }
+            }
+        }
+
+        @Override
+        public void exitParamDef(ParamDefContext ctx) {
+            //System.out.println(&quot;exitParamDef: &quot; + ctx.toStringTree());
+        }
+
+        @Override
+        public void visitErrorNode(org.antlr.v4.runtime.tree.ErrorNode node) {
+            log.error(&quot;解析任务表达式失败，msg:{}&quot;, node.toString());
+            throw new RuntimeException(&quot;解析任务表达式失败，msg:&quot; + node.toString());
+        }
+
+        public Object getResult() {
+            return result;
+        }
+
+        void setBeanName(String beanName) {
+            this.beanName = beanName;
+        }
+
+        void setMethodName(String methodName) {
+            this.methodName = methodName;
+        }
+    }
+</code></pre>
+
+<p>这样表达式解析的雏形就基本上完成了。<br/>
+antlr真是一件非常棒的工具，通过它的帮助你甚至不需要从0开始编写词法&amp;语法解析就可以实现自己的语言！实现一个解析器简直是太大材小用了！从业务编程的视角来看，它可以成为一件强大的武器，例如帮助我们在配置化驱动和硬编码之间找到第三种解决方案，在不失扩展性的同时也不需要很高的系统复杂性！</p>
+]]>
+    </content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[学习Antlr之一：名词小记&实现思路]]></title>
+    <link href="https://fengbo.cool/16508136326779.html"/>
+    <updated>2022-04-24T23:20:32+08:00</updated>
+    <id>https://fengbo.cool/16508136326779.html</id>
+    <content type="html">
+<![CDATA[<p>Antlr是一个可以帮助我们构建定制化DSL的非常好用的工具，无论是构建一个什么样的DSL，我们通常需要定制词法以及语法规则，这两件事情Antlr都可以帮助我们解决。</p>
+
+<h2 id="toc_0">词法(Lexer)</h2>
+
+<p>词法（Lexer）分析是对语言进行Tokenize的过程，例如一句话是由多个子句组成，每个子句有一个个的单词组成，解析单词的过程就可以理解为是词法解析的过程。<br/>
+在Antlr中，词法解析规则按照约定使用大写的名称进行标记，例如：</p>
+
+<pre class="line-numbers"><code class="language-text">CLASS_PATH
+    : [0-9a-zA-Z_]+(.[0-9a-zA-Z_]+)*&#39;.&#39;[a-zA-Z]+[0-9a-zA-Z_]*
+    ;
+</code></pre>
+
+<p>表示匹配java中的CLASS_PATH，那么在进行词法解析的过程中，程序会把符合规则的字符当作一个整体来处理</p>
+
+<h2 id="toc_1">语法(Parser)</h2>
+
+<p>语法（Parser）分析是对词法分析所产生的Token序列进行结构识别的过程，例如在 <code>a + b</code> 背后是一个加法，并且由<code>a</code>、<code>b</code>、<code>+</code> 三个Token解析而来。<br/>
+在Antlr中，语法规则的名称按照约定使用小写字母开头，例如：</p>
+
+<pre class="line-numbers"><code class="language-text">paramDef
+    : CLASS_PATH PARAM_VALUE
+    | PRIMITIVE_TYPE PARAM_VALUE
+    ;
+</code></pre>
+
+<p>表示例如<code>int a</code>这样的参数定义的两种组成方式：class_path类名 + 参数值 或者 原始类型 + 参数值</p>
+
+<h2 id="toc_2">词法和语法的界限</h2>
+
+<p>当然，上面的<code>paramDef</code>也可以使用词法规则（大写）表示，这个可以视自己的情况而定，根据处理的方便程度和可读性进行选择即可。<br/>
+定义好规则之后，Antlr程序（或者生成的Lexer/Parser）会帮助我们将输入的业务代码解析成一颗语法树（AST），形成语法树之后我们就可以根据业务定义的语法规则在遍历树的过程中完成程序所需要执行的逻辑。</p>
+
+<h2 id="toc_3">优先级</h2>
+
+<p>Antlr默认按照词法/语法的定义的顺序定义优先级。<br/>
+另外，语法规则在词法规则之上。</p>
+
+<h2 id="toc_4">实现思路</h2>
+
+<p>实现一个Java Bean表达式的解析器有时候很有用，因为不需要硬编码就能进行逻辑表达，现在我们可能需要考察如下表达式：</p>
+
+<pre class="line-numbers"><code class="language-text">beanName.methodName(int 1, com.a.b.ParamType true)
+</code></pre>
+
+<p>表示调用<code>beanName</code>的<code>methodName</code>方法，有两个参数，类型分别是<code>int</code>和<code>com.a.b.ParamType</code>，值分别是<code>1</code>和<code>true</code><br/>
+思路如下：</p>
+
+<ul>
+<li>词法解析包括：
+<ul>
+<li>beanName.methodName</li>
+<li>两个括号</li>
+<li>参数类型：包括原始类型以及class_path两种类型</li>
+<li>参数值：boolean、string、int等类型</li>
+</ul></li>
+<li>语法解析包括：
+<ul>
+<li>beanName.methodName() -- 没有参数的case</li>
+<li>beanName.methodName(&lt;参数类型，参数值&gt;) -- 有一个或者多个参数的case</li>
+</ul></li>
+</ul>
+]]>
+    </content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[发布脚本]]></title>
+    <link href="https://fengbo.cool/mweb_publish.html"/>
+    <updated>2022-03-19T10:17:21+08:00</updated>
+    <id>https://fengbo.cool/mweb_publish.html</id>
+    <content type="html">
+<![CDATA[<ul>
+<li>
+<a href="#toc_0">mweb 发布脚本设置</a>
+<ul>
+<li>
+<a href="#toc_1">发布脚本扩展 - 同时上传mweb源码</a>
+</li>
+<li>
+<a href="#toc_2">发布脚本扩展 - 同时上传mweb主题源码</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_3">mweb 设置 - 网站其他代码</a>
+</li>
+<li>
+<a href="#toc_4">bash_profile 发布脚本设置</a>
+</li>
+<li>
+<a href="#toc_5">修改博客首页index.html的方法</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">mweb 发布脚本设置</h2>
+
+<pre class="line-numbers"><code class="language-text">echo &quot;======&gt; 上传pages代码开始&quot;
+touch CNAME
+echo fengbo.cool &gt; CNAME
+echo &quot;google-site-verification: google2ac6f2ac5c6f12c9.html&quot; &gt; google2ac6f2ac5c6f12c9.html
+echo &quot;f6fdd197249a95db0d788d9c3fc4144d&quot; &gt; baidu_verify_code-Nhc99SD0vc.html
+git add .
+git commit -m &quot;{{year}}-{{month}}-{{day}} {{time}}&quot;
+git push origin master --force
+echo &quot;======&gt; 上传pages代码完成&quot;
+</code></pre>
+
+<h3 id="toc_1">发布脚本扩展 - 同时上传mweb源码</h3>
+
+<pre class="line-numbers"><code class="language-text">echo &quot;======&gt; 上传pages source代码开始&quot;
+cd /Users/xiyang/TeamFile/Seafile/Seafile/Documents/mweb
+git add .
+git commit -m &quot;update&quot;
+git push origin master
+echo &quot;======&gt; 上传pages source代码完成&quot;
+</code></pre>
+
+<h3 id="toc_2">发布脚本扩展 - 同时上传mweb主题源码</h3>
+
+<pre class="line-numbers"><code class="language-text">echo &quot;======&gt; 上传pages theme代码开始&quot;
+cd /Users/xiyang/Documents/themes/SiteThemes
+git add .
+git commit -m &quot;update&quot;
+git push origin master
+echo &quot;======&gt; 上传pages theme代码完成&quot;
+</code></pre>
+
+<h2 id="toc_3">mweb 设置 - 网站其他代码</h2>
+
+<pre class="line-numbers"><code class="language-text">&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css&quot;&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+const gitalk = new Gitalk({
+  clientID: &#39;061e9dae39dfcc210c6d&#39;,
+  clientSecret: &#39;fdef1405042524ea432ef6413a7da43828188e5d&#39;,
+  repo: &#39;gitalk_store&#39;,      // The repository of store comments,
+  owner: &#39;cstfb&#39;,
+  admin: [&#39;cstfb&#39;],
+  id: location.pathname,      // Ensure uniqueness and length less than 50
+  distractionFreeMode: false  // Facebook-like distraction free mode
+})
+
+gitalk.render(&#39;gitalk-container&#39;)
+&lt;/script&gt;
+</code></pre>
+
+<h2 id="toc_4">bash_profile 发布脚本设置</h2>
+
+<p><a href="https://zh.mweb.im/how_to_use_shell_script.html">自动化发布脚本</a></p>
+
+<pre class="line-numbers"><code class="language-text">## below is for mweb::auto publish code
+if (pbpaste  | grep -Eq  &#39;^cd &quot;[^&quot;]*&quot; &amp;&amp; sh &quot;[^&quot;]*/site_publish_logs/sh_\d*\.sh&quot; &amp;&amp; open &quot;[^&quot;]*&quot;&#39;) 
+then
+    echo &quot;========== MWEB AUTO PUBLISH START ==========&quot; 
+    echo &quot;Runing command:&quot;
+    pbpaste
+
+    if pbpaste | sh
+    then
+
+        echo &quot;Success!&quot;
+        echo &quot;Clean pasteboard...&quot;
+        echo -n &quot;&quot; | pbcopy
+        echo &quot;==========  MWEB AUTO PUBLISH END  ==========&quot;
+        echo &quot;Close terminal 5s later...&quot;
+        sleep 5
+        exit
+
+    else
+
+        echo &quot;Failed!&quot;
+        echo &quot;Clean pasteboard...&quot;
+        echo -n &quot;&quot; | pbcopy
+        echo &quot;==========  MWEB AUTO PUBLISH END  ==========&quot;
+
+    fi
+
+fi
+</code></pre>
+
+<h2 id="toc_5">修改博客首页index.html的方法</h2>
+
+<p>文档Html名称设置为index的是首页，修改对应的文档即可</p>
+]]>
+    </content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[SEO]]></title>
+    <link href="https://fengbo.cool/seo.html"/>
+    <updated>2022-03-19T12:17:05+08:00</updated>
+    <id>https://fengbo.cool/seo.html</id>
+    <content type="html">
+<![CDATA[<p>SEO技术可以帮助站点进行推广，通过针对性的进行SEO优化，例如站点地图，关键词等，可以提升站点在搜索引擎的曝光等效率指标</p>
+
+<h2 id="toc_0">友盟</h2>
+
+<p><a href="https://web.umeng.com/main.php?c=site&amp;a=show">友盟后台</a></p>
+
+<h2 id="toc_1">GOOGLE</h2>
+
+<p><a href="https://search.google.com/search-console?resource_id=https%3A%2F%2Fwww.fengbo.cool%2F">google后台</a></p>
+
+<h2 id="toc_2">BAIDU</h2>
+
+<p><a href="https://ziyuan.baidu.com/property/index">百度后台</a></p>
+]]>
+    </content>
+  </entry>
+  
+</feed>
