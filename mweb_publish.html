@@ -66,30 +66,22 @@
                 <ul>
 <li>
 <a href="#toc_0">mweb 发布脚本设置</a>
-<ul>
-<li>
-<a href="#toc_1">发布脚本扩展 - 同时上传mweb源码</a>
 </li>
 <li>
-<a href="#toc_2">发布脚本扩展 - 同时上传mweb主题源码</a>
-</li>
-</ul>
+<a href="#toc_1">mweb 设置 - 网站其他代码</a>
 </li>
 <li>
-<a href="#toc_3">mweb 设置 - 网站其他代码</a>
+<a href="#toc_2">bash_profile 发布脚本设置</a>
 </li>
 <li>
-<a href="#toc_4">bash_profile 发布脚本设置</a>
-</li>
-<li>
-<a href="#toc_5">修改博客首页index.html的方法</a>
+<a href="#toc_3">修改博客首页index.html的方法</a>
 </li>
 </ul>
 
 
 <h2 id="toc_0">mweb 发布脚本设置</h2>
 
-<pre class="line-numbers"><code class="language-text">echo &quot;======&gt; 上传pages代码开始&quot;
+<pre class="line-numbers"><code class="language-text">echo &quot;===step1===&gt; 上传pages代码开始&quot;
 touch CNAME
 echo fengbo.cool &gt; CNAME
 echo &quot;google-site-verification: google2ac6f2ac5c6f12c9.html&quot; &gt; google2ac6f2ac5c6f12c9.html
@@ -97,30 +89,34 @@ echo &quot;f6fdd197249a95db0d788d9c3fc4144d&quot; &gt; baidu_verify_code-Nhc99SD
 git add .
 git commit -m &quot;{{year}}-{{month}}-{{day}} {{time}}&quot;
 git push origin master --force
-echo &quot;======&gt; 上传pages代码完成&quot;
-</code></pre>
+echo &quot;&lt;===step1=== 上传pages代码完成&quot;
 
-<h3 id="toc_1">发布脚本扩展 - 同时上传mweb源码</h3>
+echo &quot;&quot;
+echo &quot;—————————————————————分割线—————————————————————————————————&quot;
+echo &quot;&quot;
 
-<pre class="line-numbers"><code class="language-text">echo &quot;======&gt; 上传pages source代码开始&quot;
+echo &quot;===step2===&gt; 上传pages source代码开始&quot;
 cd /Users/xiyang/TeamFile/Seafile/Seafile/Documents/mweb
 git add .
 git commit -m &quot;update&quot;
 git push origin master
-echo &quot;======&gt; 上传pages source代码完成&quot;
-</code></pre>
+echo &quot;&lt;===step2=== 上传pages source代码完成&quot;
 
-<h3 id="toc_2">发布脚本扩展 - 同时上传mweb主题源码</h3>
+echo &quot;&quot;
+echo &quot;—————————————————————分割线—————————————————————————————————&quot;
+echo &quot;&quot;
 
-<pre class="line-numbers"><code class="language-text">echo &quot;======&gt; 上传pages theme代码开始&quot;
+
+echo &quot;===step3===&gt; 上传pages theme代码开始&quot;
 cd /Users/xiyang/Documents/themes/SiteThemes
 git add .
 git commit -m &quot;update&quot;
 git push origin master
-echo &quot;======&gt; 上传pages theme代码完成&quot;
+echo &quot;&lt;===step3=== 上传pages theme代码完成&quot;
+
 </code></pre>
 
-<h2 id="toc_3">mweb 设置 - 网站其他代码</h2>
+<h2 id="toc_1">mweb 设置 - 网站其他代码</h2>
 
 <pre class="line-numbers"><code class="language-text">&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css&quot;&gt;
 &lt;script src=&quot;https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js&quot;&gt;&lt;/script&gt;
@@ -139,7 +135,7 @@ gitalk.render(&#39;gitalk-container&#39;)
 &lt;/script&gt;
 </code></pre>
 
-<h2 id="toc_4">bash_profile 发布脚本设置</h2>
+<h2 id="toc_2">bash_profile 发布脚本设置</h2>
 
 <p><a href="https://zh.mweb.im/how_to_use_shell_script.html">自动化发布脚本</a></p>
 
@@ -173,7 +169,7 @@ then
 fi
 </code></pre>
 
-<h2 id="toc_5">修改博客首页index.html的方法</h2>
+<h2 id="toc_3">修改博客首页index.html的方法</h2>
 
 <p>文档Html名称设置为index的是首页，修改对应的文档即可</p>
 
