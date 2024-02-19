@@ -137,7 +137,9 @@ gitalk.render(&#39;gitalk-container&#39;)
 
 <h2 id="toc_2">bash_profile 发布脚本设置</h2>
 
-<p><a href="https://zh.mweb.im/how_to_use_shell_script.html">自动化发布脚本</a></p>
+<p><a href="https://zh.mweb.im/how_to_use_shell_script.html">自动化发布脚本</a><br/>
+当点击“复制发布脚本并打开终端时，会自动执行脚本，不需要手动操作，很方便”<br/>
+<figure><img src="media/16476562410444/17083187589607.jpg" alt=""/></figure></p>
 
 <pre class="line-numbers"><code class="language-text">## below is for mweb::auto publish code
 if (pbpaste  | grep -Eq  &#39;^cd &quot;[^&quot;]*&quot; &amp;&amp; sh &quot;[^&quot;]*/site_publish_logs/sh_\d*\.sh&quot; &amp;&amp; open &quot;[^&quot;]*&quot;&#39;) 
