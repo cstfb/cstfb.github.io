@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+         记一次线上数据库问题的排查过程 - 认识自己 认识世界 
+    </title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="埋下一颗种子">
+
+    <link rel="stylesheet" type="text/css" href="asset/cuckoo.css">
+    <link rel="stylesheet" type="text/css" href="asset/main.css">
+    <link rel="stylesheet" type="text/css" href="asset/atom-one-light.css">
+
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="认识自己 认识世界">
+
+    <script src="asset/highlight.pack.js"></script>
+<!--    <script>hljs.initHighlightingOnLoad();</script>-->
+</head>
+
+<body>
+    <header class="site-header cuckoo">
+        <div class="wrapper">
+            <a class="site-title" href="index.html">认识自己 认识世界</a>
+            <nav class="site-nav">
+                <a href="#" class="menu-icon">
+                    <svg viewBox="0 0 18 15">
+                        <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+                        <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+                        <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+                    </svg>
+                </a>
+                <div class="trigger">
+                    
+                        <a class="page-link" href="index.html">目录</a>
+                    
+                        <a class="page-link" href="reading.html">阅读</a>
+                    
+                        <a class="page-link" href="bikes.html">骑行</a>
+                    
+                        <a class="page-link" href="sumup.html">灌水</a>
+                    
+                        <a class="page-link" href="fav.html">收藏</a>
+                    
+                        <a class="page-link" href="z7z8.html">z7z8</a>
+                    
+                </div>
+            </nav>
+        </div>
+    </header>
+</body>
+
+</html>
+ <div class="page-content cuckoo">
+    <div class="wrapper">
+        <article class="post">
+            <header class="post-header">
+                <h1 class="post-title">记一次线上数据库问题的排查过程</h1>
+            </header>
+            <div class="post-content">
+                <h2><a id="%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>问题描述</h2>
+<p>在使用activiti做工作流的过程中，偶尔出现有长时间运行的任务出现数据库异常，主要片段如下：<br />
+<img src="media/15478265383881/15478268239152.jpg" alt="" style="width:1166px;" /><br />
+<img src="media/15478265383881/15478268356391.jpg" alt="" style="width:674px;" /><br />
+<img src="media/15478265383881/15478268443485.jpg" alt="" style="width:1144px;" /><br />
+<img src="media/15478265383881/15478268573604.jpg" alt="" style="width:581px;" /></p>
+<ul>
+<li>Could not retrieve transation read-only status server</li>
+<li>The last packet successfully received from the server was 4,555,119 milliseconds ago.</li>
+<li>Caused by: java.net.SocketException: Connection reset</li>
+</ul>
+<h2><a id="%E6%8E%92%E6%9F%A5%E8%A7%A3%E5%86%B3" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>排查&amp;解决</h2>
+<p>跟踪到数据库驱动里面查看发现这段代码：<br />
+<img src="media/15478265383881/15478270089767.jpg" alt="" style="width:818px;" /><br />
+大意是通过语句<code>select @@session.tx_read_only</code>来探测连接是否只读，然后发生了异常，异常的原因是距离上一个包接收的时间太长了，连接被重置了；<br />
+到这里的话基本上可以确定是服务器将长时间未使用的连接给回收掉了，服务器经过多长时间回收是由配置项<code>wait_timeout</code>来设置的， 可以通过<code>show global variables like 'wait_timeout'</code>来查看，单位是s；然后我们服务器配置的时间是3600s, 一个小时，所以有两个办法去解决问题:</p>
+<ul>
+<li>每隔一段时间去访问一次数据库，主动保持连接是活的</li>
+<li>延长<code>wait_timeout</code></li>
+</ul>
+<p>最终是通过延长<code>wait_timeout</code>来解决的，但是不是调整服务器的全局配置，而是在连接参数里面设置session的<code>wait_timeout</code>参数，例如<code>jdbc:mysql://localhost:3306/db?sessionVariables=wait_timeout=10800</code></p>
+<h2><a id="%E6%8F%92%E6%9B%B2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>插曲</h2>
+<p>一开始我想通过第一种方法解决， 我觉得驱动参数是可以有对应的配置的(结果证明是没有的)， 让我产生误解的参数有几个(dbcp连接池):</p>
+<ul>
+<li>testWhileIdle [true/false]：对空闲连接进行测试，如果失败，直接从线程池中移除</li>
+<li>validationQuery：进行以上测试的sql语句</li>
+<li>timeBetweenEvictionRunsMillis：每隔多久运行一次清理线程</li>
+<li>minEvictableIdleTimeMillis：发现空闲线程后最小多长时间回收</li>
+</ul>
+<p>以上参数都是针对连接池中未分配的连接而定的， 对于已分配的连接是无效的，我纯粹是被它们的名称给欺骗了:((</p>
+
+            </div>
+        </article>
+    </div>
+</div>
+
+<script src="asset/jquery-3.3.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#footer').show()
+    })
+</script>
+ <footer id="footer" class="cuckoo page-footer" style="display: none">
+    <div class="wrapper">
+        <p>Designed by <a href="mailto:forrestchang7@gmail.com">Jiayuan Zhang</a></p>
+    </div>
+</footer>
+
+

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+         ETL增量清洗 - 认识自己 认识世界 
+    </title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="埋下一颗种子">
+
+    <link rel="stylesheet" type="text/css" href="asset/cuckoo.css">
+    <link rel="stylesheet" type="text/css" href="asset/main.css">
+    <link rel="stylesheet" type="text/css" href="asset/atom-one-light.css">
+
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="认识自己 认识世界">
+
+    <script src="asset/highlight.pack.js"></script>
+<!--    <script>hljs.initHighlightingOnLoad();</script>-->
+</head>
+
+<body>
+    <header class="site-header cuckoo">
+        <div class="wrapper">
+            <a class="site-title" href="index.html">认识自己 认识世界</a>
+            <nav class="site-nav">
+                <a href="#" class="menu-icon">
+                    <svg viewBox="0 0 18 15">
+                        <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+                        <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+                        <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+                    </svg>
+                </a>
+                <div class="trigger">
+                    
+                        <a class="page-link" href="index.html">目录</a>
+                    
+                        <a class="page-link" href="reading.html">阅读</a>
+                    
+                        <a class="page-link" href="bikes.html">骑行</a>
+                    
+                        <a class="page-link" href="sumup.html">灌水</a>
+                    
+                        <a class="page-link" href="fav.html">收藏</a>
+                    
+                        <a class="page-link" href="z7z8.html">z7z8</a>
+                    
+                </div>
+            </nav>
+        </div>
+    </header>
+</body>
+
+</html>
+ <div class="page-content cuckoo">
+    <div class="wrapper">
+        <article class="post">
+            <header class="post-header">
+                <h1 class="post-title">ETL增量清洗</h1>
+            </header>
+            <div class="post-content">
+                <p>ETL中常常面临增量清洗的问题， 因为每次都全量清洗数据往往是不必要且浪费资源浪费时间的。<br />
+增量清洗往往需要依赖于某个字段用于标识数据是否为增量数据(更新或者插入), 例如时间modified_time, 如果modified_time大于上次清洗的时间，那么说明数据经过了更新或者是新数据； 又例如id，这种用的比较少，id只能标识数据是新增的，但一般情况下， 使用id获取数据(从数据库)会有更好的性能.<br />
+这篇文章讨论了使用modified_time作为增量标识字段的情况下如何获取增量数据.<br />
+以上情况皆为离线计算的情况。</p>
+<h2><a id="%E6%83%85%E5%86%B5%E4%B8%80%E4%BB%8E%E4%B8%9A%E5%8A%A1%E8%A1%A8%E6%B8%85%E6%B4%97%E6%95%B0%E6%8D%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>情况一 : 从业务表清洗数据</h2>
+<p><img src="media/15317073017554/15321608030918.jpg" alt="" /><br />
+业务表可能是准实时更新(例如mysql从库)或者定时更新的，<br />
+1.在业务表准实时更新的情况下， 情况是这样的<br />
+<img src="media/15317073017554/15321629185260.jpg" alt="" /><br />
+max(modified_time)指中间表的最大更新时间；<br />
+因为中间表在更新的时候业务表也会更新， 所以会出现max(modified_time)之前的一部分数据没有处理到， 因此在下一次增量的时候，需要在max(modified_time)的基础之上， 减去一段时间t,t &gt;= 任务运行的时间, 这样的话基本上可以保证能够捕获到所有的增量了。<br />
+实时更新也可能会有一些异常情况，例如同步延迟很高，又或者两个主库从库的时间不一致，这样还会出现一些时间差，这种情况下加大t是一种缓解问题的办法.<br />
+如果每次都是全量的清洗， 那么没有这个问题.</p>
+<h2><a id="%E6%83%85%E5%86%B5%E4%BA%8C%E4%BB%8E%E4%B8%AD%E9%97%B4%E8%A1%A8%E6%B8%85%E6%B4%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>情况二: 从中间表清洗</h2>
+<p>这种情况发生在数据仓库存在分层的情况下， 上层的中间表依赖于下层的中间表,示意图如下：<br />
+<img src="media/15317073017554/15321634115394.jpg" alt="" /><br />
+由于可能存在多个任务都依赖于中间表1 ， 所以的话 表1到表2并不总是顺序的， 示意图如下：<br />
+<img src="media/15317073017554/15321643662345.jpg" alt="" /><br />
+其实仔细观察之后可以发现，这个模型和从实时业务表中清洗的模型差别不大，只不过是中间表1的更新时间拉长了， 这种情况下如何获取中间表1的增量呢?<br />
+稳妥一点的办法是和上面的一样， 减去一段时间，但是究竟这个时间段取多大呢？<br />
+保险的话取t1 + t2, 一般的话 t2应该就可以了， 为什么取t1 + t2呢？ 理论上来说 t2 之前的更新上一次已经处理了， 但是这不一定，取决于表1的处理逻辑。所以的话要看具体情况.</p>
+<h1><a id="%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>总结</h1>
+<p>虽然是做数据仓库这一块， 平时总结的还是有点少了</p>
+
+            </div>
+        </article>
+    </div>
+</div>
+
+<script src="asset/jquery-3.3.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#footer').show()
+    })
+</script>
+ <footer id="footer" class="cuckoo page-footer" style="display: none">
+    <div class="wrapper">
+        <p>Designed by <a href="mailto:forrestchang7@gmail.com">Jiayuan Zhang</a></p>
+    </div>
+</footer>
+
+

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+         记一次java版本问题的排查过程 - 认识自己 认识世界 
+    </title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="埋下一颗种子">
+
+    <link rel="stylesheet" type="text/css" href="asset/cuckoo.css">
+    <link rel="stylesheet" type="text/css" href="asset/main.css">
+    <link rel="stylesheet" type="text/css" href="asset/atom-one-light.css">
+
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="认识自己 认识世界">
+
+    <script src="asset/highlight.pack.js"></script>
+<!--    <script>hljs.initHighlightingOnLoad();</script>-->
+</head>
+
+<body>
+    <header class="site-header cuckoo">
+        <div class="wrapper">
+            <a class="site-title" href="index.html">认识自己 认识世界</a>
+            <nav class="site-nav">
+                <a href="#" class="menu-icon">
+                    <svg viewBox="0 0 18 15">
+                        <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+                        <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+                        <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+                    </svg>
+                </a>
+                <div class="trigger">
+                    
+                        <a class="page-link" href="index.html">目录</a>
+                    
+                        <a class="page-link" href="reading.html">阅读</a>
+                    
+                        <a class="page-link" href="bikes.html">骑行</a>
+                    
+                        <a class="page-link" href="sumup.html">灌水</a>
+                    
+                        <a class="page-link" href="fav.html">收藏</a>
+                    
+                        <a class="page-link" href="z7z8.html">z7z8</a>
+                    
+                </div>
+            </nav>
+        </div>
+    </header>
+</body>
+
+</html>
+ <div class="page-content cuckoo">
+    <div class="wrapper">
+        <article class="post">
+            <header class="post-header">
+                <h1 class="post-title">记一次java版本问题的排查过程</h1>
+            </header>
+            <div class="post-content">
+                <h2><a id="%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>问题描述</h2>
+<p>我们会提供一些jar包出去给业务同学，然后发现报错:<br />
+<code>com.**.**, unsupported major.minor version 52.0</code><br />
+52表示的是java8<br />
+这明显是我们提供的jar包的版本太高了，好吧，还好我们的客户端刚切换java8没多久，没有用到java8的特性，所以改一下目标版本到1.7重新打一个吧，打完之后发现还是不行，这就尴尬了</p>
+<h2><a id="%E6%8E%92%E6%9F%A5%E8%A7%A3%E5%86%B3" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>排查&amp;解决</h2>
+<p>查来查去很蛋疼，尽管降低了版本，业务方还是报一样的问题，然后业务方如果升级到java8的话是OK的， 说明还是我们提供的包有问题；<br />
+既然还是报这个问题的话，只能到环境里面看一下服务器里面的代码的版本了，跑到对应的资源目录下面查看原始代码:</p>
+<ol>
+<li><code>jav -xvf **.jar</code> 解压缩</li>
+<li>找到对应的类， <code>javap -verbose ***.class</code>, 反编译看一下代码的版本，发现<code>major:52</code><br />
+这就奇怪了，我明明改了版本了再打包的:<br />
+<img src="media/15478289621564/15478295213415.jpg" alt="" style="width:399px;" /><br />
+在本地进行模拟，先打成1.8的包，然后再打1.7的包，发现1.7出来的包，竟然还是52的：<br />
+<img src="media/15478289621564/15478297070941.jpg" alt="" style="width:788px;" /><br />
+难道是缓存? 先进行<code>mvn clean</code>之后再打包，发现正常了<br />
+:(<br />
+使用idea的菜单进行的操作，以后还是命令行吧..</li>
+</ol>
+
+            </div>
+        </article>
+    </div>
+</div>
+
+<script src="asset/jquery-3.3.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#footer').show()
+    })
+</script>
+ <footer id="footer" class="cuckoo page-footer" style="display: none">
+    <div class="wrapper">
+        <p>Designed by <a href="mailto:forrestchang7@gmail.com">Jiayuan Zhang</a></p>
+    </div>
+</footer>
+
+

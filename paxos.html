@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+         我对Paxos的一些理解 - 认识自己 认识世界 
+    </title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="埋下一颗种子">
+
+    <link rel="stylesheet" type="text/css" href="asset/cuckoo.css">
+    <link rel="stylesheet" type="text/css" href="asset/main.css">
+    <link rel="stylesheet" type="text/css" href="asset/atom-one-light.css">
+
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="认识自己 认识世界">
+
+    <script src="asset/highlight.pack.js"></script>
+<!--    <script>hljs.initHighlightingOnLoad();</script>-->
+</head>
+
+<body>
+    <header class="site-header cuckoo">
+        <div class="wrapper">
+            <a class="site-title" href="index.html">认识自己 认识世界</a>
+            <nav class="site-nav">
+                <a href="#" class="menu-icon">
+                    <svg viewBox="0 0 18 15">
+                        <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+                        <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+                        <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+                    </svg>
+                </a>
+                <div class="trigger">
+                    
+                        <a class="page-link" href="index.html">目录</a>
+                    
+                        <a class="page-link" href="reading.html">阅读</a>
+                    
+                        <a class="page-link" href="bikes.html">骑行</a>
+                    
+                        <a class="page-link" href="sumup.html">灌水</a>
+                    
+                        <a class="page-link" href="fav.html">收藏</a>
+                    
+                        <a class="page-link" href="z7z8.html">z7z8</a>
+                    
+                </div>
+            </nav>
+        </div>
+    </header>
+</body>
+
+</html>
+ <div class="page-content cuckoo">
+    <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+            <header class="post-header">
+                <h1 class="post-title" itemprop="name headline">我对Paxos的一些理解</h1>
+                <div class="post-description">
+                    
+                </div>
+            </header>
+            <div class="post-content" itemprop="articleBody">
+                <p>  看到了一些描述paxos协议的文章，但是始终都似懂非懂的样子，感觉是自己没有get到点，可能大多数文章描述的都是理论上的一些过程，没有清楚的描述来龙去脉吧；另外号称是最难懂的一致性算法，可能也让我产生了理解障碍；；；在这篇博客中，我尝试着去梳理一下吧，能弄懂一点是一点；；可能带着问题去理解会是一个比较好的方式吧</p>
+<span id="more"></span><!-- more -->
+<h2><a id="%E6%88%91%E7%9A%84%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>我的问题</h2>
+<h3><a id="%E4%BB%80%E4%B9%88%E6%98%AF%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E4%B8%AD%E7%9A%84%E4%B8%80%E8%87%B4%E6%80%A7%E5%9C%BA%E6%99%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>什么是分布式系统中的一致性场景</h3>
+<p>  谈起分布式系统中有一个分布式事务的场景，分布式事务是在多台机器上实现一个原子操作，相比单个数据库事务，分布式事务要考虑更多的问题例如网络环境，目前听的比较多的分布式事务协议就是2PC了，这是一类一致性问题（这是强一致性的情况，由于CAP定理的限制，要实现强一致性那么就要牺牲掉高可用，这对分布式系统是致命的，所以目前追求的比较多的是最终一致性的解决方案例如异步消息--这应该不再属于事务的范畴了），这是针对分布式事务而言的。<br />
+  另一类一致性场景，我是这么理解的，在分布式系统中，为了解决单点故障，数据必须做冗余，比较典型的例如数据库复制，log复制，姑且称之为副本一致性，副本间的数据一致性也可以分为强一致性和最终一致性；当然除了强一致性和最终一致性中间还有其他级别的一致性，我没有详细的了解。<br />
+  以上是分布式系统中常见的两类关于一致性的实际场景；除了事务和一致性场景，分布式系统中还存在例如选主、分布式锁等共识场景；说白了，只要是涉及到多节点协作，就需要一致性协议的参与；<br />
+  基于一致性协议，我们就能够保障集群中多个节点的数据或状态一致性，这一点对于分布式系统至关重要，因为分布式系统中的节点可能随时会发生任意故障，有了一致性集群之后就意味着我们有了一个可用性极高的系统。<br />
+  在英语中，consistency(transaction) 与 consensus(paxos) 都有一致性的意思，两者的区别可以理解为consensus主要在达成共识上，然后consistency可以理解为执行上；</p>
+<h3><a id="%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>一致性问题与分布式事务</h3>
+<p>  上一个问题已经说到，分布式事务可以理解为一类一致性场景，但是这个和paxos其实是两回事，我的理解是paxos要解决的是比分布式事务更一般的问题；在分布式系统中，为了应对可能出错的场景例如进程崩溃或者网络延迟等，从而使系统更加的可靠，需要进程间对某个值达成一致(我们称之为共识问题)，例如'多节点事务提交'，'选主问题'，'<a href="https://en.wikipedia.org/wiki/State_machine_replication">状态机复制</a>'，<a href="https://en.wikipedia.org/wiki/Atomic_broadcast">原子广播</a>；<br />
+  上面说到paxos要解决比分布式事务更一般的问题，那么分布式事务中是否有paxos的用武之地呢？ 答案是肯定的，上面说到目前的分布式事务的主流解决方案有2pc和3pc，2pc会有单点故障的问题，并且会造成数据的不一致(当commit消息发送一半失败)，3pc解决了2pc的一部分问题，但还是会有不一致的情况；关于paxos与事务的讨论参见Gray和Lamport大神合著的'Consensus on Transaction Commit'一文；<br />
+  想象一个场景，在一次分布式事务中，我们需要保证的是所有的子事务要么都成功，要么都不成功，假设我们有一个paxos集群，这个集群保证其中的数据是强一致的（客户端调用put(x) = y, 一旦写入成功，则x的值在集群存在且能提供服务的情况下，一定会返回get(x) = y），那么每个子事务之需要上报paxos集群所有子事务的状态，那么所有的子事务节点就可以根据其他子事务的状态来决定自己是否需要回滚。</p>
+<h3><a id="paxos%E4%B8%8D%E6%98%AF%E5%AE%8C%E7%BE%8E%E7%9A%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Paxos不是完美的</h3>
+<p>  Paxos并不是一个完美的解决一致性问题的协议；FLP结果已经指出了这一点（即使系统中只有一个进程失败，也不存在一个可以使其他的进程达成一致的协议或者算法）；</p>
+<h2><a id="paxos%E8%A6%81%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Paxos要解决的问题</h2>
+<p>  简单说来，Paxos的目的是让整个集群的结点对某个值的变更达成一致。Paxos算法基本上来说是个民主选举的算法——大多数的决定会成个整个集群的统一决定。任何一个点都可以提出要修改某个数据的提案，是否通过这个提案取决于这个集群中是否有超过半数的结点同意（所以Paxos算法需要集群中的结点是单数）</p>
+<h2><a id="paxos%E5%9C%A8%E5%B7%A5%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Paxos在工程中的应用</h2>
+<p>  其实看到paxos的第一眼，我就在想这玩意儿到底能干嘛，能够用来解决哪一类问题？工程中如何使用?它能做分布式的事务吗？如果是保证多个集群中的节点一致的话又有什么用呢？ 它能被用于工程上的那些领域呢？它与现在的例如mysql主从同步又有什么关系呢？<br />
+  其实在弄清楚一些基本的概念性的东西之后，对paxos就会有基本的认识，例如paxos要解决的基本问题，结合分布式系统的中的一些问题以及目前的解决方案，对paxos就会有一个大致的轮廓；<br />
+  具体来说Paxos在工程中的应用主要有：多节点复制（状态及复制问题，也是paxos最大的用途）-- 可以保证各个节点看到的消息顺序相同；选主操作；naming service； config service；</p>
+<h2><a id="%E4%B8%9A%E7%95%8C%E5%AE%9E%E7%8E%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>业界实现</h2>
+<p><code>比特币</code> <code>chubby</code> <code>zookeeper</code> <code>腾讯phxpaxos</code> <code>阿里X-Paxos</code> <code>raft</code> <code>2pc</code> <code>etcd</code><br />
+  比特币的共识算法比较奇特，它使用一个叫做PoW(proof of Work，工作量证明)的东西来提高节点提出提议的门槛(计算hash，目前靠电力去算)，据说这样可以有效减少恶意的参与；另外还有PoS/PBFT等共识协议；<br />
+chubby是google的一个分布式锁服务，由于需要解决单点的问题引入了multi-paxos的实现；对于chubby来说，对应的锁服务的实现才是其重点，不过底层的一致性保障协议也是非常重要的；<br />
+  zookeeper采用了一个在Paxos上改进的ZAB(zookeeper atomic broadcast)协议，ZAB协议设计了支持崩溃恢复；需要提出的是chubby和zk使用的协议都是没有经过理论证明的，但是在工程中已经证明了没有什么太大的问题了；<br />
+  2pc全称两阶段提交协议，对应的还有3阶段提交协议；是分布式事务业界的主流实现，优点是简单明了，分为precommit和commit两个阶段，并且需要一个事务协调器，precommit对各个节点发送命令锁定相应的资源，全部成功之后发送commit命令，缺点是存在单点故障，并且会产生不一致的情况；<br />
+  raft协议可以理解为paxos的简化版本，没有详细了解；<br />
+  其他协议还有比如PoS、PoH、PoA、PBFT等等</p>
+<h2><a id="%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7%E5%8D%8F%E8%AE%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>实现分布式一致性协议</h2>
+<p>  大部分人基本上都不会有参与一致性协议工程实现的经历，不过了解工程实现中的技术要点有助于我们在自己的头脑中构建关于一致性协议更完整的知识网络。<br />
+  leader/follower/candidate<br />
+  时钟/逻辑时钟<br />
+  成员变更<br />
+  脑裂</p>
+<h2><a id="%E5%85%B3%E4%BA%8Epaxos%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AF%B4%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>关于Paxos的一些说法</h2>
+<ol>
+<li>要证明分布式容错算法的正确性通常比实现算法还困难</li>
+<li>paxos从理论到实际的巨大差距</li>
+<li>Google Chubby的作者Mike Burrows说过这个世界上只有一种一致性算法，那就是Paxos，其它的算法都是残次品。</li>
+</ol>
+<h2><a id="%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考资料</h2>
+<p>[1]<a href="https://timyang.net/distributed/paxos-scenarios/">Paxos在大型系统中常见的应用场景</a><br />
+[2]<a href="https://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2651001297&amp;idx=1&amp;sn=d4c3f1fc6264bc7f1857f6033eaf27f6&amp;chksm=bdbee9828ac960942247b4f8fe661f883a962187b4a2dce51c8394e8c962d0f3b3ac41d0a3c6&amp;scene=21#wechat_redirect">强烈推荐:分布式系统架构经典资料</a><br />
+[3]<a href="https://en.wikipedia.org/wiki/Paxos_(computer_science)">wikipedia</a><br />
+[4]<a href="https://zh.wikipedia.org/wiki/Paxos%E7%AE%97%E6%B3%95">中文维基</a><br />
+[5]<a href="http://paxos.systems/index.html">paxos 英文解释</a><br />
+[6]<a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/tr-2003-96.pdf">Consensus on Transaction Commit</a><br />
+[7]<a href="https://groups.csail.mit.edu/tds/papers/Lynch/jacm85.pdf">FLP不可能结果</a><br />
+[8]<a href="https://coolshell.cn/articles/10910.html">分布式系统的事务处理</a></p>
+
+            </div>
+            <div>
+                
+                
+                
+            </div>
+        </article>
+    </div>
+</div>
+
+<script src="asset/jquery-3.3.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#footer').show()
+    })
+</script>
+  <footer id="footer" class="cuckoo page-footer" style="display: none">
+    <div class="wrapper">
+        <p>Designed by <a href="mailto:forrestchang7@gmail.com">Jiayuan Zhang</a></p>
+    </div>
+</footer>
+
+

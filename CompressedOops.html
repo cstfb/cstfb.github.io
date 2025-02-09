@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+         JVM压缩指针(CompressedOops) - 认识自己 认识世界 
+    </title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="埋下一颗种子">
+
+    <link rel="stylesheet" type="text/css" href="asset/cuckoo.css">
+    <link rel="stylesheet" type="text/css" href="asset/main.css">
+    <link rel="stylesheet" type="text/css" href="asset/atom-one-light.css">
+
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="认识自己 认识世界">
+
+    <script src="asset/highlight.pack.js"></script>
+<!--    <script>hljs.initHighlightingOnLoad();</script>-->
+</head>
+
+<body>
+    <header class="site-header cuckoo">
+        <div class="wrapper">
+            <a class="site-title" href="index.html">认识自己 认识世界</a>
+            <nav class="site-nav">
+                <a href="#" class="menu-icon">
+                    <svg viewBox="0 0 18 15">
+                        <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+                        <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+                        <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+                    </svg>
+                </a>
+                <div class="trigger">
+                    
+                        <a class="page-link" href="index.html">目录</a>
+                    
+                        <a class="page-link" href="reading.html">阅读</a>
+                    
+                        <a class="page-link" href="bikes.html">骑行</a>
+                    
+                        <a class="page-link" href="sumup.html">灌水</a>
+                    
+                        <a class="page-link" href="fav.html">收藏</a>
+                    
+                        <a class="page-link" href="z7z8.html">z7z8</a>
+                    
+                </div>
+            </nav>
+        </div>
+    </header>
+</body>
+
+</html>
+ <div class="page-content cuckoo">
+    <div class="wrapper">
+        <article class="post">
+            <header class="post-header">
+                <h1 class="post-title">JVM压缩指针(CompressedOops)</h1>
+            </header>
+            <div class="post-content">
+                <h2><a id="%E9%97%AE%E9%A2%98%E8%83%8C%E6%99%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>问题背景</h2>
+<p>之前看到一篇文章说到<a href="https://www.elastic.co/cn/blog/a-heap-of-trouble?nsukey=ycffxylI5WOlirpUecMZ0%2Bh6dId%2F6txxdsCpmHZgpChzNei9bZBIb5k0f9y5MKNNnkdZW7301ucVHpE0ODBPYdqnmTUToaWRoRTXDaylGHoP%2BFuwyBHyl6E18mobs1pLswxMBan5gDjYNs74O9RcV7kMcjgr3HZ2jyStMP9hbxU9i88t%2FFDGLn36j3jcOq5lh81YNxpf37kwDWQX5v4qNQ%3D%3D">es的内存调优</a>, 文章说到现在的服务器越来越大， 那么给JVM设置多大的内存比较合适呢？太大的话虽然内存充足，但是会带来gc停顿时间的增大，对于es这一类需要快速响应的应用来说是不可接受的，太小则会有OOM的风险。因此内存需要设置的刚刚好。</p>
+<h2><a id="what-is-compressedoops" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is CompressedOops</h2>
+<p>压缩指针(compressed oop, or compressed ordinary object pointer)则提供了一种既可以享受到大内存的好处，同时可以节约内存空间并且提高性能的方法。在某些情况下，它可以达到性能与停顿时间的平衡。</p>
+<blockquote>
+<p><a href="https://docs.oracle.com/javase/7/docs/technotes/guides/vm/performance-enhancements-7.html#zeroBasedCompressedOop">ref</a> On an LP64 system, the heap used by a given program might have to be around 1.5 times larger than when it is run on an ILP32 system.</p>
+</blockquote>
+<p>在64位系统中，对象指针也是64位，因此可以使用更大的内存，而在32位系统中是32位，最多只能使用4G的内存。对象指针长度的增大也会带来内存开销，而这种开销的差距在64位和32位系统之间可能是1.5倍，也就是说在如果32位系统使用4G内存达到的效果可能64位系统使用6G内存才能达到。<br />
+在很多情况下，这种开销是不必要的，并且会提高系统停顿时间，因为很多时候应用只需要32位指针就够了。<br />
+压缩指针提供了一种折中的选择，在JDK7中(64位)，如果堆小于4G，JVM会默认使用32位对象指针。<br />
+那显然这种优化只能覆盖一部分的情况，为了享受大内存，很多应用会开比4G大得多的堆，这时候是不是就必须用64位指针了呢？ 答案是不是，在堆小于32G(不精确)的情况下，此时对象地址只需要使用35位地址(32位=4G, 4G * 2^3 = 32G)即可, 此时如果操作系统允许，JVM会将对象指针右移3位进行存储，也就是说还是只需要32位地址就行了，此时会有两个问题:</p>
+<ul>
+<li>那么这时候会出现的问题就是右边3位丢失了怎么办？</li>
+<li>存储的地址和实际的地址相差八倍，即每两个指针之间有8个字节的空档，这其中存在内存的‘空隙’如何处理?</li>
+</ul>
+<p>第一个问题最简单的情况下就是右边3位全是0，那么在转换过程中只需要右移三位(压缩过程)和左移三位(解压缩过程)即可(也即是zero-based compressed oops)，非常方便；那在这个过程中，我们实际上也只有32位的有效bit去定位内存地址，那何以我们就能使用最高32G的内存呢？这其中可能是有一个trade-off，例如某些大对象我们就能充分利用空出来的8个字节，对于小对象则只能浪费掉了（这一块我目前也没有找到相应的文档，所以也只是猜测）。</p>
+<blockquote>
+<p>When using compressed oops in a 64-bit Java Virtual Machine process, the JVM software asks the operating system to reserve memory for the Java heap starting at virtual address zero. If the operating system supports such a request and can reserve memory for the Java heap at virtual address zero, then zero-based compressed oops are used.</p>
+</blockquote>
+<p><img src="media/15599993168030/16476608109488.jpg" alt="" /></p>
+<p>第二个问题是关于为什么是三位而不是四位五位的问题， 压缩后的指针有可能是0x0(二进制0), 0x1(二进制1), 0x2(二进制10)， 解压后的指针则是0x0(二进制0), 0x8(二进制1000), 0x10(二进制10000), 中间有8个字节的空档，这个问题的答案和对象对齐有关，在JVM中对象是默认8字节对齐的，所以基本上着正好符合JVM本身的设计，(要注意的是对象对齐本身也会提高内存开销)。</p>
+<h2><a id="%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>最佳实践</h2>
+<p>在满足内存和吞吐量的情况下，JVM堆内存设置的越小越好； 如果不能，那么考虑分配的内存满足压缩指针的要求，从而达到优化的效果。</p>
+
+            </div>
+        </article>
+    </div>
+</div>
+
+<script src="asset/jquery-3.3.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#footer').show()
+    })
+</script>
+ <footer id="footer" class="cuckoo page-footer" style="display: none">
+    <div class="wrapper">
+        <p>Designed by <a href="mailto:forrestchang7@gmail.com">Jiayuan Zhang</a></p>
+    </div>
+</footer>
+
+

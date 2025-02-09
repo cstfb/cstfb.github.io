@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+         DDD小记 - 认识自己 认识世界 
+    </title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="埋下一颗种子">
+
+    <link rel="stylesheet" type="text/css" href="asset/cuckoo.css">
+    <link rel="stylesheet" type="text/css" href="asset/main.css">
+    <link rel="stylesheet" type="text/css" href="asset/atom-one-light.css">
+
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="认识自己 认识世界">
+
+    <script src="asset/highlight.pack.js"></script>
+<!--    <script>hljs.initHighlightingOnLoad();</script>-->
+</head>
+
+<body>
+    <header class="site-header cuckoo">
+        <div class="wrapper">
+            <a class="site-title" href="index.html">认识自己 认识世界</a>
+            <nav class="site-nav">
+                <a href="#" class="menu-icon">
+                    <svg viewBox="0 0 18 15">
+                        <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+                        <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+                        <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+                    </svg>
+                </a>
+                <div class="trigger">
+                    
+                        <a class="page-link" href="index.html">目录</a>
+                    
+                        <a class="page-link" href="reading.html">阅读</a>
+                    
+                        <a class="page-link" href="bikes.html">骑行</a>
+                    
+                        <a class="page-link" href="sumup.html">灌水</a>
+                    
+                        <a class="page-link" href="fav.html">收藏</a>
+                    
+                        <a class="page-link" href="z7z8.html">z7z8</a>
+                    
+                </div>
+            </nav>
+        </div>
+    </header>
+</body>
+
+</html>
+ <div class="page-content cuckoo">
+    <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+            <header class="post-header">
+                <h1 class="post-title" itemprop="name headline">DDD小记</h1>
+                <div class="post-description">
+                    
+                </div>
+            </header>
+            <div class="post-content" itemprop="articleBody">
+                <h2><a id="%E4%BB%80%E4%B9%88%E6%98%AFddd" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>什么是DDD</h2>
+<p>DDD（Domain Driven Design），定义了一系列的术语与规范，用于指导如何构建一个结构清晰、核心稳定、高可维护性、高代码复用性的工程实现；</p>
+<h2><a id="%E4%BC%98%E7%BC%BA%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>优缺点</h2>
+<p>优点：结构清晰，代码可复用性高（单一职责）、可维护性高（依赖路径清晰）<br />
+缺点：代码量高、实现冗余</p>
+<h2><a id="%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>核心概念</h2>
+<p>领域-&gt; 限界上下文 -&gt; 子域 -&gt; 实体、聚合<br />
+领域（核心域、通用域、支撑域）<br />
+限界上下文（业务流程划分）<br />
+实体对象、值对象<br />
+聚合、聚合根 （对外只操作聚合根）<br />
+事件风暴</p>
+<h2><a id="%E6%A0%B8%E5%BF%83%E6%96%B9%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>核心方法</h2>
+<p>交互与业务原子语义分离：所见（交互）不等于所得（实现），这一点自己感觉还是至关重要的，即要把一个功能进行拆解和抽象，这是一个优秀的项目的核心要素；<br />
+聚合：能力内聚</p>
+<h2><a id="%E5%88%86%E5%B1%82%E6%96%B9%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分层方法</h2>
+<p>交互层（对外接口） -&gt; 服务层（尽量只处理逻辑编排） -&gt; 领域层（域服务、聚合(值对象、实体)） -&gt; 基础层<br />
+可通过控制反转（依赖倒置）方法增强稳定性（防腐层）</p>
+<h2><a id="%E5%85%85%E8%A1%80or%E8%B4%AB%E8%A1%80%E6%A8%A1%E5%9E%8B%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>充血 or 贫血模型？</h2>
+<p>充血模型的实体包含业务逻辑，尽量会和业务形态（非交互形态）保持一致，但通常依赖较多的情况下会比较复杂，需要取舍；<br />
+贫血模型更像数据库模型；<br />
+可以相互结合，例如把对数据库外部中间件的依赖去掉，只做内存操作，但对于依赖较多的业务，比较难以达成。</p>
+<h2><a id="%E6%80%8E%E4%B9%88%E9%98%B2%E6%AD%A2%E6%89%A9%E6%95%A3%E3%80%81%E8%BE%B9%E7%95%8C%E6%89%A9%E5%B1%95%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>怎么防止扩散、边界扩展？</h2>
+<p>控制反转<br />
+依赖DDD的核心概念指导隔离（对开发人员有要求）</p>
+<h2><a id="%E5%85%B6%E4%BB%96%E5%8F%AF%E7%94%A8%E7%9A%84%E5%B7%A5%E5%85%B7%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>其他可用的工具？</h2>
+<p>code generator<br />
+设计模式</p>
+<h2><a id="%E5%B0%8F%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>小结</h2>
+<p>DDD不是一套具体的设计准则，但通过一系列的术语，然后利用手上的一些工具，可以帮我们构建一个良好的(交互与业务原子语义分离的)工程实现；</p>
+
+            </div>
+            <div>
+                
+                
+                
+            </div>
+        </article>
+    </div>
+</div>
+
+<script src="asset/jquery-3.3.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#footer').show()
+    })
+</script>
+  <footer id="footer" class="cuckoo page-footer" style="display: none">
+    <div class="wrapper">
+        <p>Designed by <a href="mailto:forrestchang7@gmail.com">Jiayuan Zhang</a></p>
+    </div>
+</footer>
+
+

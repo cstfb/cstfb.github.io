@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+         MWEB网站--自定义 - 认识自己 认识世界 
+    </title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="埋下一颗种子">
+
+    <link rel="stylesheet" type="text/css" href="asset/cuckoo.css">
+    <link rel="stylesheet" type="text/css" href="asset/main.css">
+    <link rel="stylesheet" type="text/css" href="asset/atom-one-light.css">
+
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="认识自己 认识世界">
+
+    <script src="asset/highlight.pack.js"></script>
+<!--    <script>hljs.initHighlightingOnLoad();</script>-->
+</head>
+
+<body>
+    <header class="site-header cuckoo">
+        <div class="wrapper">
+            <a class="site-title" href="index.html">认识自己 认识世界</a>
+            <nav class="site-nav">
+                <a href="#" class="menu-icon">
+                    <svg viewBox="0 0 18 15">
+                        <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+                        <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+                        <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+                    </svg>
+                </a>
+                <div class="trigger">
+                    
+                        <a class="page-link" href="index.html">目录</a>
+                    
+                        <a class="page-link" href="reading.html">阅读</a>
+                    
+                        <a class="page-link" href="bikes.html">骑行</a>
+                    
+                        <a class="page-link" href="sumup.html">灌水</a>
+                    
+                        <a class="page-link" href="fav.html">收藏</a>
+                    
+                        <a class="page-link" href="z7z8.html">z7z8</a>
+                    
+                </div>
+            </nav>
+        </div>
+    </header>
+</body>
+
+</html>
+ <div class="page-content cuckoo">
+    <div class="wrapper">
+        <article class="post">
+            <header class="post-header">
+                <h1 class="post-title">MWEB网站--自定义</h1>
+            </header>
+            <div class="post-content">
+                <h2><a id="%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%8F%90%E4%BA%A4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>搜索引擎提交</h2>
+<p>改模版的header的meta元数据</p>
+<h2><a id="%E8%87%AA%E5%AE%9A%E4%B9%89css" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>自定义css</h2>
+<p>改样式模版的css的文件<br />
+例如阴影文字:</p>
+<pre><code class="language-plain_text">.markdown-body p {
+  letter-spacing: 0.01rem;
+  margin: 0px 0px 20px;
+  line-height: 2em;
+  text-shadow: 0 0 1px rgba(0,0,0,0.22);
+}
+</code></pre>
+<h2><a id="%E6%B7%BB%E5%8A%A0dc-word-cloud" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>添加dc word cloud</h2>
+<p>在首页添加对应的js代码<br />
+其中<code>d3.select()</code> 需要自定义一个元素, 用作单词云的容易</p>
+<pre><code class="language-plain_text">&lt;script src=&quot;//d3js.org/d3.v3.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;asset/js/d3.layout.cloud.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    var fill = d3.scale.category20();
+    var words = [{&quot;text&quot;:&quot;This&quot;, &quot;url&quot;:&quot;http://google.com/&quot;},
+                 {&quot;text&quot;:&quot;is&quot;, &quot;url&quot;:&quot;http://bing.com/&quot;},
+                 {&quot;text&quot;:&quot;some&quot;, &quot;url&quot;:&quot;http://somewhere.com/&quot;},
+                 {&quot;text&quot;:&quot;random&quot;, &quot;url&quot;:&quot;http://random.org/&quot;},
+                 {&quot;text&quot;:&quot;text&quot;, &quot;url&quot;:&quot;http://text.com/&quot;}]
+    var width = 800;
+    var height = 300;
+    for (var i = 0; i &lt; words.length; i++) {
+        words[i].size = 10 + Math.random() * 90;
+    }
+    
+    d3.layout.cloud()
+      .size([width, height])
+      .words(words)
+      .padding(5)
+      .rotate(function() { return ~~ (Math.random() * 2) * 90; })
+      .font(&quot;Impact&quot;)
+      .fontSize(function(d) { return d.size;})
+      .on(&quot;end&quot;, draw)
+      .start();
+    
+    function draw(words) {
+        d3.select(&quot;#wcloud&quot;)
+          .append(&quot;svg&quot;)
+          .attr(&quot;width&quot;, width)
+          .attr(&quot;height&quot;, height)
+          .append(&quot;g&quot;)
+          .attr(&quot;transform&quot;, &quot;translate(&quot;+ width/2 +&quot;,&quot;+ height/2 +&quot;)&quot;)
+          .selectAll(&quot;text&quot;)
+          .data(words)
+          .enter()
+          .append(&quot;text&quot;)
+          .style(&quot;font-size&quot;, function(d) { return d.size + &quot;px&quot;; })
+          .style(&quot;font-family&quot;, &quot;Impact&quot;)
+          .style(&quot;fill&quot;, function(d, i) { return fill(i); })
+          .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+          .attr(&quot;transform&quot;, function(d) {
+              return &quot;translate(&quot; + [d.x, d.y] + &quot;)rotate(&quot; + d.rotate + &quot;)&quot;; 
+          })
+          .text(function(d) { return d.text; })
+          .on(&quot;click&quot;, function (d, i){
+                window.location.href = d.url;
+          });
+    }
+&lt;/script&gt;
+</code></pre>
+<h2><a id="%E9%85%8D%E8%89%B2%E8%A1%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>配色表</h2>
+<p><a href="https://flatuicolors.com/">flatUi配色表</a><br />
+<img src="media/15460796439586/15528379979534.jpg" alt="" style="width:1237px;" /></p>
+<p><a href="http://metrocolor.live/index.html">香港地铁配色表</a><br />
+<img src="media/15460796439586/15528380200720.jpg" alt="" style="width:1200px;" /></p>
+
+            </div>
+        </article>
+    </div>
+</div>
+
+<script src="asset/jquery-3.3.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#footer').show()
+    })
+</script>
+ <footer id="footer" class="cuckoo page-footer" style="display: none">
+    <div class="wrapper">
+        <p>Designed by <a href="mailto:forrestchang7@gmail.com">Jiayuan Zhang</a></p>
+    </div>
+</footer>
+
+

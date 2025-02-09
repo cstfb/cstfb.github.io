@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+         小记-代码世界中的并发控制 - 认识自己 认识世界 
+    </title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="埋下一颗种子">
+
+    <link rel="stylesheet" type="text/css" href="asset/cuckoo.css">
+    <link rel="stylesheet" type="text/css" href="asset/main.css">
+    <link rel="stylesheet" type="text/css" href="asset/atom-one-light.css">
+
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="认识自己 认识世界">
+
+    <script src="asset/highlight.pack.js"></script>
+<!--    <script>hljs.initHighlightingOnLoad();</script>-->
+</head>
+
+<body>
+    <header class="site-header cuckoo">
+        <div class="wrapper">
+            <a class="site-title" href="index.html">认识自己 认识世界</a>
+            <nav class="site-nav">
+                <a href="#" class="menu-icon">
+                    <svg viewBox="0 0 18 15">
+                        <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+                        <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+                        <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+                    </svg>
+                </a>
+                <div class="trigger">
+                    
+                        <a class="page-link" href="index.html">目录</a>
+                    
+                        <a class="page-link" href="reading.html">阅读</a>
+                    
+                        <a class="page-link" href="bikes.html">骑行</a>
+                    
+                        <a class="page-link" href="sumup.html">灌水</a>
+                    
+                        <a class="page-link" href="fav.html">收藏</a>
+                    
+                        <a class="page-link" href="z7z8.html">z7z8</a>
+                    
+                </div>
+            </nav>
+        </div>
+    </header>
+</body>
+
+</html>
+ <div class="page-content cuckoo">
+    <div class="wrapper">
+        <article class="post">
+            <header class="post-header">
+                <h1 class="post-title">小记-代码世界中的并发控制</h1>
+            </header>
+            <div class="post-content">
+                <h2><a id="%E5%BC%95%E5%AD%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>引子</h2>
+<p>  凡是和程序打交道的人，不管是软件或硬件工程师，锁（lock）都是代码开发过程中不可绕过的一个话题，对于互联网民工的我而言，我通常是在业务以及数据库领域遇到关于锁的一些问题，例如秒杀库存、多人编辑等场景，这些场景的共同特征是会面临因为并发而导致冲突的情况，而锁的出现则是为了解决并发过程中的冲突问题，当多个业务需要同时访问修改同一块资源的时候，加锁可以保障资源可以被以正确的方式进行处理，即逻辑上是串行化的（serializability -- 这一通常出现在数据库事务中的隔离(ACID中的I)级别中），因此这种方式保障了代码按照我们预想的方式运行，但锁的获取以及释放是需要时间、资源以及能量的，这也同时带来了程序的性能问题。<br />
+<br /><br />
+  如同现实世界一样，程序的世界中也需要左右权衡、寻求中道。例如有时候算法为了吞吐不得不放弃一些精度，分布式系统也有经典的CAP理论（CP和AP模型分别对一致性和可用性做出了取舍，性能和一致性一直是分布式领域的鱼和熊掌的问题）。同样，在并发系统中，性能和准确性之间也是互相缠绕，此消彼长的关系，为了解决并发而出现的冲突问题，我们通常会引入锁的概念，因为现实中的场景各异所以发生冲突的概率也是大相径庭，因此在技术选型或是系统设计的时候，我们通常要进行选择。<br />
+<br /><br />
+  对于并发产生冲突的概率而言，我们通常可以从乐观和悲观的视角出发，由此产生出两种思想：乐观并发控制（Optimistic Concurrency Control, OCC）代表的是对于冲突发生的乐观预期，即认为冲突发生的概率不高，所以宁愿出现冲突的时候处理冲突（abort、回滚）； 与之相对的则是悲观锁并发控制（Pessmistic Concurrency Control, PCC），会尽量避免冲突的发生，以避免系统性能的不确定性以及系统开销的产生。对于这两种思想，则分别衍生出了一些实现的方法，这些方法在不同的层面或者领域的实现不尽不同，但本质是同源的。<br />
+<br/></p>
+<h2><a id="occ%E4%B9%8Bmvcc" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>OCC之MVCC</h2>
+<p>  MVCC是多版本并发控制的的意思（Mulit-Version Concurrency Control），现代的多数数据库系统都已经运用了这种方法，是数据库领域比较成功的并发控制手段。它的核心思想是通过比较数据提交时候的版本来判断数据是否发生了更改，如果发生了更改那么会导致事务被拒绝而回滚。这种方式的好处是在冲突比较少的时候做到较高的并发，因为可以省去一部分为了防止冲突而产生的一些开销；坏处是当冲突比较多的时候，中断和回滚操作会产生很大的开销。多版本并发控制的思想比较好理解。<br />
+<br /><br />
+<em><strong>MV(Multi-Version)的定义:</strong></em></p>
+<hr />
+<p><em>事务的多版本表示可以由一系列的偏序关系（happens-before）（局部有序，和java中的happens-before类似）的集合组成：</em><br />
+$（1） \sum = h(U^n_{i=1}\sum_i)$   <em>for some translation function,</em><br />
+$（2） $<em>for each</em> $T_i$ <em>and all operations</em> $op_i$ <em>and</em> $op^{'}<em>i$ <em>, if</em> $op_i &lt;</em>{i} op^{'}<em>i$ <em>, and</em><br />
+$（3） $<em>if</em> $h(r</em>{j}[x]) = r_{j}[x_{i}]$ <em>, then</em> $w_{i}[x_{i}] &lt; r_{j}[x_{i}]$<br />
+$h$<em>表示将操作转换成带版本的操作（读和写），</em> $\sum_i$ <em>表示事务</em>$i$<em>的读写操作的集合，</em>$r_{j}[x]$ <em>表示读操作</em> $j$<em>，读的对象是</em> $x$<em>，</em>$r_{j}[x_{i}]$<em>表示读操作</em> $j$<em>，读的对象是</em> $x$ <em>的</em> $i$ <em>版本，</em>$w_{i}[x_{i}]$ <em>表示写入操作。</em><br />
+<em>条件(1)表示将所有事务中所有的操作转换成了多版本的操作</em><br />
+<em>条件(2)表示转换后的操作保存了原事务所有的happens-before关系</em><br />
+<em>条件(3)表示事务只能读取写入在前的版本的数据，整体来说定义是比较符合直觉的。</em></p>
+<hr />
+<br/>
+***CC(Concurrency Control)的无锁版本（TS版本）（Reed 1978年提出）算法描述：***
+___
+*每个事务开始执行时被分配唯一的timestamp，* $TS(i)$ *，因此事务执行的顺序就是timestamp的顺序。每个版本都携带了写入它的事务对应的timestamp。*
+$（1） r_{i}[x]$ *is translated into* $r_{i}[x_{k}]$, *where* $x_k$ *is the version of $x$ with largest timestamp* $≤ TS(i)$ *.*
+$（2） w_{i}[x]$ *has two cases. If the DBS has already processed* $r_{j}[x_{k}]$ *such that* $TS(k) < TS(i) < TS(j)$*, then* $w_{i}[x]$ *is rejected. Otherwise* $w_{i}[x]$ *is translated into* $w_{i}[x_{i}]$*. Intuitively,* $w_{i}[x]$ *is rejected if it would invalidate* $r_{j}[x_{k}]$*.* 
+$x_{k}$ *读取距离事务* $i$ *发生前最近的一个版本* 
+$w_i$ *写入操作发生前如果已经有了更新的* $j$ *版本的读取操作发生，那么* $w_i$ *被拒绝。并且如果* $r_{j}[x_{k}]$ *被作废那么* $w_i$ *同样会被拒绝。*
+___
+&emsp;&emsp;可以看到MVCC的实现可以是无锁的， 除了无锁的版本，论文$_{[1]}$中还提到了另外两种CC的实现方法：LOCK以及LOCK+TS。多版本并发控制的思想在业务代码开发过程中我们也可能会使用到，比如当我们做库存扣减的时候，先查询（Shared）库存：
+```
+select stock_cnt from stock_table where item_id = ${itemId} [for share];
+```
+&emsp;&emsp;此时如果是事务执行的话，那么数据库对当前行加的是共享锁，当库存足够的时候再获取排它锁执行库存的扣减操作：
+```
+update stock_table set stock_cnt = stock_cnt - ${quantity} 
+where stock_cnt = ${latestStockCnt} and item_id = ${itemId};
+```
+&emsp;&emsp;我们可以在业务过程中先读取最新库存，如果库存不够，那么返回失败，如果库存足够，那么再执行扣减库存的操作，通过核对商品的库存可以保证有足够的库存可供扣减（ *latestStockCnt* 此时可以看作库存的最新版本），然后通过数据库底层的事务一致性保障业务的正常运行。这样做的好处就是不用事先锁定库存，其他的查询操作也可以正常进行。对应的，如果先锁定（Exclusive）库存的话：
+```
+select stock_cnt from stock_table where item_id = ${itemId} for update;
+```
+&emsp;&emsp;此时如果库存足够，那么再执行扣减操作：
+```
+update stock_table set stock_cnt = stock_cnt - ${quantity} where item_id = ${itemId};
+```
+&emsp;&emsp;这样做也是可以的，但是是悲观锁的做法（此时如果有其他用户想要查询库存则需要等待），先锁定资源，然后再进行操作。
+![](media/16921004913043/16922424716327.jpg)
+<br/>
+&emsp;&emsp;MVCC在数据库中一般需要结合隔离级别来使用，即ACID中 I（Isolation），常见的四种隔离级别分别是：$Read Uncommitted，Read Committed，Repeatable Read，Serializability$。
+- 未提交读$Read Committed$是最弱的隔离级别了，可能导致脏读和脏写。
+- 已提交读$Read Committed$是最基本的事务隔离级别，可以防止脏读以及脏写，从MVCC的定义可知，MVCC是支持$Read Committed$的，因为MVCC访问的都是已提交的数据。
+- 可重复读$Repeatable Read$在$Read Committed$的基础上可以防止不可重复读的问题，通过MVCC也可以解决这个问题，因为从MVCC的定义来看，事务的读取操作总是读取ts之前最近的一个快照，所以读取到的数据总是一致不变的。
+- 前述的隔离级别仍然可以导致幻读等问题，串行化读写$Serializability$则是终极解决方案，它是最严格的事务隔离级别，它的实现有一种被广泛使用的算法-2PL（two-phase locking，两阶段加锁）。
+<br/>
+<h2><a id="pcc%E4%B9%8B2pl" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>PCC之2PL</h2>
+<p>  上面说到2PL（Two-Phase Locking，两阶段加锁）是一种广泛使用的串行化的算法。在多个事务交替运行时，它通过下面的协议将锁的获取以及释放分为两个阶段，保证了事务的冲突可串行化（Conflict Serializability）：<br />
+<br/><br />
+<em><strong>Protocal:</strong></em></p>
+<hr />
+<ul>
+<li>Expanding phase (aka Growing phase): locks are acquired and no locks are released (the number of locks can only increase).</li>
+<li>Shrinking phase (aka Contracting phase): locks are released and no locks are acquired.</li>
+</ul>
+<p><em>事务进行的第一阶段只能获取锁而不能释放锁，第二阶段一旦开始释放锁后则不能再申请新的锁。</em></p>
+<hr />
+<br/>
+***往下看Conflict Serializability相关的一些概念:***
+_____
+- *serializable：如果一个schedule* $S=(\tau, <_s)$ *等价于某个serial schedule* $S^{'}=(\tau, <_{s^{'}})$  *，那么* $S$ *就是serializable（可串行）的。serial schedule就表示一个按照顺序执行的事务调度，即一个事务开始之前必须等到前一个事务执行完毕。*
+- *conflict serializable：如果一个schedule* $S=(\tau, <_s)$ 冲突等价于（*conflict equivalent to） 某个serial schedule* $S^{'}=(\tau, <_{s^{'}})$ *，那么* $S$ *就是conflict serializable的。*
+- *conflict equivalent：我们说两个schedule* $S_1$ *和 $S_2$ *是冲突等价的（conflict equivalent），如果它们满足：它们涉及的transactions相同；以及它们对冲突操作（conflicting operations） 的排序相同，换句话说* $S_1$ *和* $S_2$ *的区别是其序列中的非冲突操作（non-conflicting operations）的顺序不同（即通过交换non-conflicting operations）。*
+- *conflicting operations：两个数据操作* $o_i$ *和* $o_j$ *是一对冲突操作（conflicting operations），如果它们满足：它们属于不同的transaction；以及其中至少一个操作是写操作。*
+_____
+&emsp;&emsp;也就是说冲突可串行化定义的是可将一系列并发执行事务排列通过交换 *non-conflicting* 的操作转换成一个 *serial schedule* ，文档$_{5}$使用归纳法证明了2PL是 *Conflict Serializability* 的。
+<br/>
+&emsp;&emsp;以上对于Conflict Serializability的描述只是从理论的层面进行定义，在数据库中为了实现$Serializability$的隔离级别，通常为每个对象分配读写锁，读锁可以共享，写锁排他。
+***《数据密集型系统设计》一书中定义了如下主要操作：***
+____
+- *如果事务要读取对象， 必须先以共享模式获得锁。可以有多个事务同时获得一个对象的共享锁， 但是如果某个事务已经获得了对象的独占锁， 则所有其他事务必须等待。*
+- *如果事务要修改对象， 必须以独占模式获取锁。不允许多个事务同时持有该锁（包括共享或独占模式），换言之，如果对象上已被加锁， 则修改事务必须等待。*
+- *如果事务首先读取对象， 然后尝试写入对象， 则需要将共享锁升级为独占锁。升级锁的流程等价千直接获得独占锁。*
+- *事务获得锁之后，一直持有锁直到事务结束（包括提交或中止）。这也是名字“ 两阶段” 的来由， 在第一阶段即事务执行之前要获取锁， 第二阶段（即事务结束时）则释放锁。*
+____
+&emsp;&emsp;*通过以上操作，所有可能发生读写冲突的操作将会产生等待，直到其中一个事务完成之后释放相应的锁。另外，尽管2PL可以满足串行化需求，但是它仍然有导致级联失败（Cascading Rollback）和死锁（Deadlocks）的可能。*
+<br/>
+<h2><a id="occ%E4%B9%8B%E8%87%AA%E6%97%8Bcas" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>OCC之自旋CAS</h2>
+<p>  CAS是比较然后交换的意思（Compare And Swap），是编程语言中常见的一种原子操作，通常基于CPU提供的特性完成，它提供了原子化的语义，它的作用等价于如下代码：</p>
+<pre><code class="language-plain_text">function cas(p: pointer to int, old: int, new: int) is
+    if *p ≠ old
+        return false
+
+    *p ← new
+
+    return true
+</code></pre>
+<p>  在Java中，多线程竞争条件下的CAS实现位于Unsafe类中，它是native的方法，翻找OpenJDK$_3$的实现可以发现一些端倪，以下是ARM架构处理器的CAS实现方法：<br />
+<br /></p>
+<p><em><strong>atomic_bsd_zero.hpp:</strong></em></p>
+<pre><code class="language-plain_text">/*
+ * __kernel_cmpxchg
+ *
+ * Atomically store newval in *ptr if *ptr is equal to oldval for user space.
+ * Return zero if *ptr was changed or non-zero if no exchange happened.
+ * The C flag is also set if *ptr was changed to allow for assembly
+ * optimization in the calling code.
+ */
+typedef int (__kernel_cmpxchg_t)(int oldval, int newval, volatile int *ptr);
+#define __kernel_cmpxchg (*(__kernel_cmpxchg_t *) 0xffff0fc0)
+
+
+
+/* Perform an atomic compare and swap: if the current value of `*PTR'
+   is OLDVAL, then write NEWVAL into `*PTR'.  Return the contents of
+   `*PTR' before the operation.*/
+static inline int arm_compare_and_swap(int newval,
+                                       volatile int *ptr,
+                                       int oldval) {
+  for (;;) {
+      int prev = *ptr;
+      if (prev != oldval)
+        return prev;
+
+      if (__kernel_cmpxchg (prev, newval, ptr) == 0)
+        // Success.
+        return prev;
+
+      // We failed even though prev == oldval.  Try again.
+    }
+}
+</code></pre>
+<p>  <code>0xffff0fc0</code>是一个比较特殊的地址，从文档$<em>{2}$可知这是ARM处理器提供的原生的原子化cas能力（底层应该实现了竞争条件），当多线程并发竞争的时候，通过不断的自旋<code>for(;;)</code>操作，可以提供并发场景下原子化的能力。不同架构的CPU底层的指令不同，可以看OpenJDK源码$</em>{3}$中hotspot目录下<code>atomic_*</code>相关的文件。由于CPU原子运行非常快，并且通常只对一小块内存操作，因此就算是存在多线程的竞争速度也非常的快。<br />
+  CAS比较常见遇到的问题是ABA问题，Java中没有指针，所以相比于C++由ABA引起的疑难杂症会少一些，为了解决ABA的问题，Java中有$AtomicStampedRefrence$可以使用。</p>
+<br/>
+<h2><a id="%E6%95%B0%E6%8D%AE%E5%BA%93acid%E4%B8%AD%E7%9A%84a" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>数据库ACID中的A</h2>
+<p>  数据库ACID中的A指的是Atomic（原子性），表示的是对于一个事务，要么全部完成，要么都不完成，没有中间状态。和CAS在Java中的作用不一样，在数据库领域中，Atomic不对并发性做任何保证，它只管任务的执行，数据库中的并发性是通过Isolation（隔离级别，I）来完成的，因为涉及到Context上下文相关的读写操作，因此要实现隔离级别也非常的困难。</p>
+<h2><a id="%E5%85%88%E8%BF%9B%E7%9A%84%E7%A1%AC%E4%BB%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>先进的硬件</h2>
+<p>  以前数据库为了兼顾并发性和正确性，通常两者需要牺牲掉一部分，可能部分原因是因为那个年代的硬件资源相对昂贵，所以数据库领域这方面的研究非常的活跃，在并发性和正确性的天平之间出现了非常多的理论和方法，如今研究的热度早已经没有以前那么高了，依靠先进的硬件，很多场景下业务可以无脑堆代码，不用太顾虑性能的问题。但是关于数据库、关于并发依然是非常有深度且有价值的话题。</p>
+<h2><a id="%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考资料</h2>
+<ul>
+<li>[1] <a href="https://web.archive.org/web/20170808114521/http://sites.fas.harvard.edu/~cs265/papers/bernstein-1983.pdf">Concurrency Control in Distributed Database Systems</a></li>
+<li>[2] <a href="https://www.kernel.org/doc/Documentation/arm/kernel_user_helpers.txt">kernel.org &gt;&gt; kernel_user_helpers</a></li>
+<li>[3] <a href="https://github.com/openjdk/jdk">Source Code of OpenJDK</a></li>
+<li>[4] <a href="https://en.wikipedia.org/wiki/Two-phase_locking">Two-phase locking</a></li>
+<li>[5] <a href="http://www.cs.emory.edu/~cheung/Courses/554/Syllabus/7-serializability/2PL2.html">Proof of 2PL</a></li>
+<li>[6] <a href="https://zhuanlan.zhihu.com/p/57579023">serializability</a></li>
+</ul>
+
+            </div>
+        </article>
+    </div>
+</div>
+
+<script src="asset/jquery-3.3.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#footer').show()
+    })
+</script>
+ <footer id="footer" class="cuckoo page-footer" style="display: none">
+    <div class="wrapper">
+        <p>Designed by <a href="mailto:forrestchang7@gmail.com">Jiayuan Zhang</a></p>
+    </div>
+</footer>
+
+

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+         发布脚本 - 认识自己 认识世界 
+    </title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="埋下一颗种子">
+
+    <link rel="stylesheet" type="text/css" href="asset/cuckoo.css">
+    <link rel="stylesheet" type="text/css" href="asset/main.css">
+    <link rel="stylesheet" type="text/css" href="asset/atom-one-light.css">
+
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="认识自己 认识世界">
+
+    <script src="asset/highlight.pack.js"></script>
+<!--    <script>hljs.initHighlightingOnLoad();</script>-->
+</head>
+
+<body>
+    <header class="site-header cuckoo">
+        <div class="wrapper">
+            <a class="site-title" href="index.html">认识自己 认识世界</a>
+            <nav class="site-nav">
+                <a href="#" class="menu-icon">
+                    <svg viewBox="0 0 18 15">
+                        <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+                        <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+                        <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+                    </svg>
+                </a>
+                <div class="trigger">
+                    
+                        <a class="page-link" href="index.html">目录</a>
+                    
+                        <a class="page-link" href="reading.html">阅读</a>
+                    
+                        <a class="page-link" href="bikes.html">骑行</a>
+                    
+                        <a class="page-link" href="sumup.html">灌水</a>
+                    
+                        <a class="page-link" href="fav.html">收藏</a>
+                    
+                        <a class="page-link" href="z7z8.html">z7z8</a>
+                    
+                </div>
+            </nav>
+        </div>
+    </header>
+</body>
+
+</html>
+ <div class="page-content cuckoo">
+    <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+            <header class="post-header">
+                <h1 class="post-title" itemprop="name headline">发布脚本</h1>
+                <div class="post-description">
+                    
+                </div>
+            </header>
+            <div class="post-content" itemprop="articleBody">
+                <div class="mweb_toc"><ul>
+<li><a href="#mweb%E5%8F%91%E5%B8%83%E8%84%9A%E6%9C%AC%E8%AE%BE%E7%BD%AE">mweb 发布脚本设置</a></li>
+<li><a href="#mweb%E8%AE%BE%E7%BD%AE%E7%BD%91%E7%AB%99%E5%85%B6%E4%BB%96%E4%BB%A3%E7%A0%81">mweb 设置 - 网站其他代码</a></li>
+<li><a href="#bash-profile%E5%8F%91%E5%B8%83%E8%84%9A%E6%9C%AC%E8%AE%BE%E7%BD%AE">bash_profile 发布脚本设置</a></li>
+<li><a href="#%E4%BF%AE%E6%94%B9%E5%8D%9A%E5%AE%A2%E9%A6%96%E9%A1%B5index-html%E7%9A%84%E6%96%B9%E6%B3%95">修改博客首页index.html的方法</a></li>
+</ul>
+</div>
+<h2><a id="mweb%E5%8F%91%E5%B8%83%E8%84%9A%E6%9C%AC%E8%AE%BE%E7%BD%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mweb 发布脚本设置</h2>
+<pre><code class="language-plain_text">echo &quot;===step1===&gt; 上传pages代码开始&quot;
+touch CNAME
+echo fengbo.cool &gt; CNAME
+echo &quot;google-site-verification: google2ac6f2ac5c6f12c9.html&quot; &gt; google2ac6f2ac5c6f12c9.html
+echo &quot;f6fdd197249a95db0d788d9c3fc4144d&quot; &gt; baidu_verify_code-Nhc99SD0vc.html
+git add .
+git commit -m &quot;{{year}}-{{month}}-{{day}} {{time}}&quot;
+git push origin master --force
+echo &quot;&lt;===step1=== 上传pages代码完成&quot;
+
+echo &quot;&quot;
+echo &quot;—————————————————————分割线—————————————————————————————————&quot;
+echo &quot;&quot;
+
+echo &quot;===step2===&gt; 上传pages source代码开始&quot;
+cd /Users/xiyang/TeamFile/Seafile/Seafile/Documents/mweb
+git add .
+git commit -m &quot;update&quot;
+git push origin master
+echo &quot;&lt;===step2=== 上传pages source代码完成&quot;
+
+echo &quot;&quot;
+echo &quot;—————————————————————分割线—————————————————————————————————&quot;
+echo &quot;&quot;
+
+
+echo &quot;===step3===&gt; 上传pages theme代码开始&quot;
+cd /Users/xiyang/Documents/themes/SiteThemes
+git add .
+git commit -m &quot;update&quot;
+git push origin master
+echo &quot;&lt;===step3=== 上传pages theme代码完成&quot;
+
+</code></pre>
+<h2><a id="mweb%E8%AE%BE%E7%BD%AE%E7%BD%91%E7%AB%99%E5%85%B6%E4%BB%96%E4%BB%A3%E7%A0%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mweb 设置 - 网站其他代码</h2>
+<pre><code class="language-plain_text">&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css&quot;&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+const gitalk = new Gitalk({
+  clientID: '061e9dae39dfcc210c6d',
+  clientSecret: 'fdef1405042524ea432ef6413a7da43828188e5d',
+  repo: 'gitalk_store',      // The repository of store comments,
+  owner: 'cstfb',
+  admin: ['cstfb'],
+  id: location.pathname,      // Ensure uniqueness and length less than 50
+  distractionFreeMode: false  // Facebook-like distraction free mode
+})
+
+gitalk.render('gitalk-container')
+&lt;/script&gt;
+</code></pre>
+<h2><a id="bash-profile%E5%8F%91%E5%B8%83%E8%84%9A%E6%9C%AC%E8%AE%BE%E7%BD%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>bash_profile 发布脚本设置</h2>
+<p><a href="https://zh.mweb.im/how_to_use_shell_script.html">自动化发布脚本</a><br />
+当点击“复制发布脚本并打开终端时，会自动执行脚本，不需要手动操作，很方便”<br />
+<img src="media/16476562410444/17083187589607.jpg" alt="" /></p>
+<pre><code class="language-plain_text">## below is for mweb::auto publish code
+if (pbpaste  | grep -Eq  '^cd &quot;[^&quot;]*&quot; &amp;&amp; sh &quot;[^&quot;]*/site_publish_logs/sh_\d*\.sh&quot; &amp;&amp; open &quot;[^&quot;]*&quot;') 
+then
+    echo &quot;========== MWEB AUTO PUBLISH START ==========&quot; 
+    echo &quot;Runing command:&quot;
+    pbpaste
+
+    if pbpaste | sh
+    then
+
+        echo &quot;Success!&quot;
+        echo &quot;Clean pasteboard...&quot;
+        echo -n &quot;&quot; | pbcopy
+        echo &quot;==========  MWEB AUTO PUBLISH END  ==========&quot;
+        echo &quot;Close terminal 5s later...&quot;
+        sleep 5
+        exit
+
+    else
+
+        echo &quot;Failed!&quot;
+        echo &quot;Clean pasteboard...&quot;
+        echo -n &quot;&quot; | pbcopy
+        echo &quot;==========  MWEB AUTO PUBLISH END  ==========&quot;
+
+    fi
+
+fi
+</code></pre>
+<h2><a id="%E4%BF%AE%E6%94%B9%E5%8D%9A%E5%AE%A2%E9%A6%96%E9%A1%B5index-html%E7%9A%84%E6%96%B9%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>修改博客首页index.html的方法</h2>
+<p>文档Html名称设置为index的是首页，修改对应的文档即可</p>
+
+            </div>
+            <div>
+                
+                
+                
+            </div>
+        </article>
+    </div>
+</div>
+
+<script src="asset/jquery-3.3.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#footer').show()
+    })
+</script>
+  <footer id="footer" class="cuckoo page-footer" style="display: none">
+    <div class="wrapper">
+        <p>Designed by <a href="mailto:forrestchang7@gmail.com">Jiayuan Zhang</a></p>
+    </div>
+</footer>
+
+

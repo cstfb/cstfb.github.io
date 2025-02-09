@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+         如何解决MAC打开Zwift时的"Update server connection error - Error ZLM01"问题 - 认识自己 认识世界 
+    </title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="埋下一颗种子">
+
+    <link rel="stylesheet" type="text/css" href="asset/cuckoo.css">
+    <link rel="stylesheet" type="text/css" href="asset/main.css">
+    <link rel="stylesheet" type="text/css" href="asset/atom-one-light.css">
+
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="认识自己 认识世界">
+
+    <script src="asset/highlight.pack.js"></script>
+<!--    <script>hljs.initHighlightingOnLoad();</script>-->
+</head>
+
+<body>
+    <header class="site-header cuckoo">
+        <div class="wrapper">
+            <a class="site-title" href="index.html">认识自己 认识世界</a>
+            <nav class="site-nav">
+                <a href="#" class="menu-icon">
+                    <svg viewBox="0 0 18 15">
+                        <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+                        <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+                        <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+                    </svg>
+                </a>
+                <div class="trigger">
+                    
+                        <a class="page-link" href="index.html">目录</a>
+                    
+                        <a class="page-link" href="reading.html">阅读</a>
+                    
+                        <a class="page-link" href="bikes.html">骑行</a>
+                    
+                        <a class="page-link" href="sumup.html">灌水</a>
+                    
+                        <a class="page-link" href="fav.html">收藏</a>
+                    
+                        <a class="page-link" href="z7z8.html">z7z8</a>
+                    
+                </div>
+            </nav>
+        </div>
+    </header>
+</body>
+
+</html>
+ <div class="page-content cuckoo">
+    <div class="wrapper">
+        <article class="post">
+            <header class="post-header">
+                <h1 class="post-title">如何解决MAC打开Zwift时的"Update server connection error - Error ZLM01"问题</h1>
+            </header>
+            <div class="post-content">
+                <p>前几天安装了zwift的APP， 然后打开的时候遇到了&quot;zwift can't connect to the update server...Error ZLM01&quot;这样的问题， 因此记录一下解决的过程， 过程参考了<a href="https://zhuanlan.zhihu.com/p/31958059">Zwift 联网问题解决方案 ZLM01——大x小视频1</a>这片文章， 解决过程也大多相似。然后以下是问题描述以及解决步骤:</p>
+<h2><a id="%E9%97%AE%E9%A2%98%E5%8E%9F%E5%9B%A0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>问题原因</h2>
+<p>我下载的zwift版本是1.0，由于zwift启动的时候由于某种原因需要访问google等墙外网站，但是由于GFW的存在， 访问不同应用则会提示上面的错误；那么通过连接例如shadowsocks这样的vpn能不能解决问题呢？ 不能，因为shadowsocks仅能将HTTP协议的请求转发到shadowsocks代理端口，zwift使用的不是http协议，因此仅仅通过shadowsocks无法解决这个问题， 解决这个问题的办法也很简单，就是借助另外一种工具将zwift的请求转发到shadowsocks代理端口, 即 proxifier + shadowsocks的解决方案;</p>
+<h2><a id="%E6%AD%A5%E9%AA%A4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>步骤</h2>
+<h3><a id="%E5%87%86%E5%A4%87%E5%85%B7%E6%9C%89socket%E4%BB%A3%E7%90%86%E5%8A%9F%E8%83%BD%E7%9A%84vpn" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>准备具有socket代理功能的VPN</h3>
+<p>常见的工具有例如Shadowsocks,OpenVpn等，网上教程有许多，可以选择自己搭建，也可以购买现成的服务；<br />
+目标: 能够翻墙访问google, 然后需要了解vpn的sockV5的监听端口以及ip(shadowsocks默认是<code>127.0.0.1:1086</code>, 也可以在shadowsocks的偏好设置中查看)<br />
+<img src="media/15442868225544/15442881552211.jpg" alt="" style="width:242px;" /><br />
+<img src="media/15442868225544/15442881820659.jpg" alt="" style="width:470px;" /><br />
+VPN安装完成之后，设置成自动代理模式即可</p>
+<h3><a id="%E5%87%86%E5%A4%87proxifier" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>准备proxifier</h3>
+<p>proxifier可以自行去<a href="https://www.proxifier.com/">官网</a>下载， 软件收费，自己找破解码破解；<br />
+完了之后按照VPN的代理配置添加一个代理:<br />
+<img src="media/15442868225544/15442883833656.jpg" alt="" style="width:469px;" /><br />
+然后就是设置一个规则:<br />
+<img src="media/15442868225544/15442884203782.jpg" alt="" style="width:833px;" /><br />
+<img src="media/15442868225544/15442884481244.jpg" alt="" style="width:526px;" /></p>
+<h3><a id="%E6%9C%80%E5%90%8E" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>最后</h3>
+<p>打开app，在proxifier应该会出现一些应用与外部通信的日志，例如：<br />
+<img src="media/15442868225544/15442885848326.jpg" alt="" style="width:978px;" /><br />
+如果sent/received正常的话代表连接成功，直观一点就是zwift应用正常了:<br />
+<img src="media/15442868225544/15442886504433.jpg" alt="" style="width:796px;" /></p>
+<h3><a id="%E6%88%91%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>我遇到的问题?</h3>
+<h4><a id="shadowsocks%E7%9A%84%E4%BB%A3%E7%90%86%E5%9C%B0%E5%9D%80%E5%92%8C%E7%AB%AF%E5%8F%A3%E5%8F%B7%E6%89%BE%E4%B8%8D%E5%88%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>shadowsocks的代理地址和端口号找不到</h4>
+<p><img src="media/15442868225544/15442886915954.jpg" alt="" style="width:215px;" /><br />
+我一开始用的shadowsocks的客户端找不到对应的配置,推荐使用开发者重新开发的一个客户端，那个里面有: <a href="https://github.com/shadowsocks/ShadowsocksX-NG/releases/">ShadowsocksX-NG</a></p>
+<h4><a id="%E8%83%BD%E8%AE%BF%E9%97%AEgoogle%E4%BA%86%EF%BC%8Cproxiefier%E4%B9%9F%E6%8C%89%E7%85%A7%E6%95%99%E7%A8%8B%E8%AE%BE%E7%BD%AE%E4%BA%86%EF%BC%8C%E4%BD%86%E8%BF%98%E6%98%AF%E6%89%93%E4%B8%8D%E5%BC%80app" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>能访问google了，proxiefier也按照教程设置了，但还是打不开app</h4>
+<p>检查一下shadowsocks的模式是否是自动模式<br />
+检查一下zwift的请求是否正确代理到了响应的ip+端口，如果没有，那么需要检查规则或者代理的配置</p>
+<h4><a id="%E5%85%B3%E4%BA%8E%E8%87%AA%E5%BB%BAshadowsocks" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>关于自建shadowsocks</h4>
+<p>推荐使用搬瓦工这个提供商，用了很久了， 比较好用，游戏没有测试过，正常科学上网还是比较靠谱的， 并且自己搭建的话也比较稳定，很多付费的用了一段时间就被查了。<br />
+<a href="https://bwh8.net/aff.php?aff=45197">国内地址1</a><br />
+<a href="https://bwh88.net/aff.php?aff=45197">国内地址2</a><br />
+<a href="https://bandwagonhost.com/aff.php?aff=45197">国外地址</a><br />
+关于自建的时候线路的选择也有一些道道，自己晚上搜索接口， 尽量选择直连大陆的那一条。</p>
+
+            </div>
+        </article>
+    </div>
+</div>
+
+<script src="asset/jquery-3.3.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#footer').show()
+    })
+</script>
+ <footer id="footer" class="cuckoo page-footer" style="display: none">
+    <div class="wrapper">
+        <p>Designed by <a href="mailto:forrestchang7@gmail.com">Jiayuan Zhang</a></p>
+    </div>
+</footer>
+
+

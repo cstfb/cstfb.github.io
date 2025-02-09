@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+         卡尔曼滤波笔记 - 认识自己 认识世界 
+    </title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="埋下一颗种子">
+
+    <link rel="stylesheet" type="text/css" href="asset/cuckoo.css">
+    <link rel="stylesheet" type="text/css" href="asset/main.css">
+    <link rel="stylesheet" type="text/css" href="asset/atom-one-light.css">
+
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="认识自己 认识世界">
+
+    <script src="asset/highlight.pack.js"></script>
+<!--    <script>hljs.initHighlightingOnLoad();</script>-->
+</head>
+
+<body>
+    <header class="site-header cuckoo">
+        <div class="wrapper">
+            <a class="site-title" href="index.html">认识自己 认识世界</a>
+            <nav class="site-nav">
+                <a href="#" class="menu-icon">
+                    <svg viewBox="0 0 18 15">
+                        <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+                        <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+                        <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+                    </svg>
+                </a>
+                <div class="trigger">
+                    
+                        <a class="page-link" href="index.html">目录</a>
+                    
+                        <a class="page-link" href="reading.html">阅读</a>
+                    
+                        <a class="page-link" href="bikes.html">骑行</a>
+                    
+                        <a class="page-link" href="sumup.html">灌水</a>
+                    
+                        <a class="page-link" href="fav.html">收藏</a>
+                    
+                        <a class="page-link" href="z7z8.html">z7z8</a>
+                    
+                </div>
+            </nav>
+        </div>
+    </header>
+</body>
+
+</html>
+ <div class="page-content cuckoo">
+    <div class="wrapper">
+        <article class="post">
+            <header class="post-header">
+                <h1 class="post-title">卡尔曼滤波笔记</h1>
+            </header>
+            <div class="post-content">
+                <p><code>滤波器</code> <code>状态估计</code><br />
+之前在看文章的时候偶然看到了这个东西，原文中使用了卡尔曼滤波器来估计系统目前的状态，所以就想了解一下这是个什么东西；然后又为什么叫卡尔曼滤波器，‘滤波器’这个词在其中的意义又是什么？</p>
+<p>[TOC]<br />
+##What is Kalman Filter<br />
+<code>鲁道夫卡尔曼</code> <code>递归</code> <code>离散</code> <code>系统状态</code><br />
+1960年，鲁道夫.卡尔曼发表了他著名的用递归方法解决离散数据线性滤波问题的论文。经过了几十年的发展，卡尔曼滤波器广泛的应用在了自主或者协助导航领域(大部分学习控制系统的人都知道卡尔曼滤波器吧)。<br />
+卡尔曼滤波器能够仅根据上一次的系统状态估计将来的状态，并且提供一种高效的递归方法来不断的优化估计的准确性（通过使得估计均方差最小）,并且即使在不知道物体的实际状况并不确切符合模型的时候也能提供良好的估计结果。</p>
+<blockquote>
+<p>卡尔曼滤波器使用以下公式估计系统实际状态$x_k, x\in{R^n}$，以离散模型为例:<br />
+$x_k=Ax_{k-1}+Bu_{k-1}+w_{k-1}..........(1.1)$<br />
+$z_k=Hx_k+v_k.........(1.2)$<br />
+$A_{n<em>n}$表示从第$k-1$步到第$k$步的状态转移矩阵,在这里$A$是可能随着时间变化的;$B_{n</em>l}$表示对于控制向量$u\in{R^l}$的增益矩阵;$H_{m*n}$表示测量时的转移矩阵;$w_k v_k$为过程和测量噪音，模型中假定它们相互独立且分别服从方差为$Q$和$R$的高斯分布,$z_k$即为测量状态;</p>
+</blockquote>
+<p>##How it works?<br />
+<code>模型系数</code> <code>预测</code> <code>预估过程(时间更新)</code> <code>校正过程(测量更新)</code><br />
+作为一个数据其实不是很好的人，也可以理解上述的表达式，但是想要弄明白上述模型，还需要解决以下几个问题:</p>
+<ol>
+<li>系统的初始状态，即系数如何确定?</li>
+<li>模型如何预测</li>
+<li>如何进行递归优化，要知道现实中测量值往往是包含噪音的，例如雷达，那么如何根据测量值估计更加精确的值呢?</li>
+<li>模型的整个过程<br />
+###初始状态与系统参数<br />
+<code>系数</code><br />
+###如何预测<br />
+<code>预测</code><br />
+预测值根据式1.1直接得到$\hat{x}^{-}<em>{k}$,我们称之为先验估计;<br />
+$\hat{x}^{-}</em>{k}=A\hat{x}<em>{k-1}+Bu</em>{k-1}........(2.1)$,同时引入后验估计$\hat{x}<em>{k}$<br />
+可以看出第$k$步的先验估计由第$k-1$步的后验估计得到,然后是整个模型的关键等式:<br />
+$\hat{x}</em>{k}=\hat{x}^{-}<em>{k} + K(z_k - H\hat{x}^{-}</em>{k}).........(2.2)$, 即把先验估计和观测值与估计观测值$H\hat{x}^{-}<em>{k}$的差的线性组合作为后验估计，那么$K</em>{n*m}$怎么来呢？这里引入<br />
+$e_k=\hat{x}<em>k - x_k.........(2.3)$ 为后验估计误差,同样有对应的先验估计误差$e_k^-$<br />
+$P_k=E[e_ke_k^T].........(2.4)$,后验估计误差的协方差(同样存在对应的$P_k^-$),然后$K$使得$P_k$最小<br />
+具体来说$K$的求法为将$2.2$式代入$2.4$然后对$K$求导，使一阶导数为$0$,求得$K$,在本例中<br />
+$K_k=P_k^-H^T(HP^-<em>kH^T+R)^{-1}.........(2.5)$<br />
+###更新过程<br />
+<code>更新</code><br />
+为了使得模型可以继续递归的迭代下去, 我们需要知道几个值$\hat{x}^{-}</em>{k-1}$和$P^-</em>{k}$,用于根据$2.2$求得$\hat{x}<em>k$和$P_k$,具体的有:<br />
+$\hat{x}^{-}</em>{k}=A\hat{x}<em>{k-1}+Bu</em>{k-1}........(2.1)$<br />
+$P_k^-=AP_{k-1}A^T+Q.........(2.6)$</li>
+</ol>
+<hr />
+<p>$K_k=P_k^-H^T(HP^-<em>kH^T+R)^{-1}.........(2.5)$<br />
+$\hat{x}</em>{k}=\hat{x}^{-}<em>{k} + K(z_k - H\hat{x}^{-}</em>{k}).........(2.2)$<br />
+$P_k=(I-K_kH)P_k^-.........(2.7)$</p>
+<p>第一部分称之为时间更新过程，即预测过程，第二部分称之为测量更新过程，即修正过程<br />
+<strong>需要注意的是，$\hat{x}<em>{k-1}^-$和$P</em>{k-2}$需要设置初始值</strong><br />
+###整个过程<br />
+$initial.\hat{x}<em>{k-1}^- , P</em>{k-2}$ $\Rightarrow$ $\hat{x}<em>{k-1}^- , P</em>{k-1}^-$ $\Rightarrow$ $K_{k-1},\hat{x}<em>{k-1},P</em>{k-1}$ $\Rightarrow$ $\hat{x}^{-}<em>{k},P_k^-$ $\Rightarrow$ $K_k,\hat{x}</em>{k},P_k$ $\Rightarrow$ $...$<br />
+##Why it works？<br />
+解释为什么这有用，即需要解释等式$2.2$的合理性.<br />
+解释来源于贝叶斯规则： $x_k$ 的更新取决于在已知先前的测量变量$z_k$的情况下的先验估计$\hat{x}^-_k$ 的概率分布.卡尔曼滤波器表达式中包含 了状态分布的前二阶矩.<br />
+$E[x_k]=\hat{x}_k$<br />
+$E[(x_k-\hat{x}_k)(x_k-\hat{x}_k)^T]=P_k$<br />
+后验状态估计$2.2$式反应了状态分布的均值(一阶矩)――如果$w_kv_k$服从正态分布的条件成立，均值的估计便是正态分布的。后验估计误差协方差$2.4$式反映了状态分布的方差(二阶非中心矩)。在已知$z_k$的情况下,$x_k$的分布可写为:<br />
+$p(x_k|z_k) \sim N(E[x_k],E[(x_k-\hat{x}_k)(x_k-\hat{x}_k)^T])$<br />
+$=N(\hat{x}_k,P_k)$</p>
+<p>##Problems i met before<br />
+1.为什么叫做滤波器</p>
+<blockquote>
+<p>滤波器特性体现在估计值要比观测值平滑的多</p>
+</blockquote>
+<p>2.等式2.5的推导</p>
+<blockquote>
+<p>unkown</p>
+</blockquote>
+<p>3.等式2.5的意义</p>
+<blockquote>
+<p>等式2.5也可以写成以下形式:<br />
+$K_k=\frac{P^-_kH^T}{HP^-_kH^T+R}$<br />
+可以看见当$R$趋于0的时候$K$接近于$H^{-1}$，此时后验估计更接近于观测值；反之当$P_k^-$接近于0时$K$也接近0，此时后验估计更接近于估计值</p>
+</blockquote>
+<p>4.等式2.6的推导</p>
+<blockquote>
+<p>$P_k^- = E[(x_k-\hat{x}<em>k^-)(x_k-\hat{x}<em>k^-)^T]$<br />
+由于有:<br />
+$x_k=Ax</em>{k-1}+Bu</em>{k-1}+w_k$<br />
+$\hat{x}<em>k^-=A\hat{x}</em>{k-1}+Bu_{k-1}$<br />
+因此<br />
+$x_k-\hat{x}<em>k^- = Ax</em>{k-1} - A\hat{x}<em>{k-1}+w_k$<br />
+那么<br />
+$P_k^- = E[(Ax</em>{k-1} - A\hat{x}<em>{k-1}+w_k)(Ax</em>{k-1} - A\hat{x}<em>{k-1}+w_k)^T]$<br />
+$=Cov(Ax</em>{k-1} - A\hat{x}<em>{k-1}+w_k, Ax</em>{k-1} - A\hat{x}<em>{k-1}+w_k)$<br />
+$=Var(Ax</em>{k-1} - A\hat{x}<em>{k-1}+w_k)$<br />
+$=Var(Ax</em>{k-1} - A\hat{x}<em>{k-1}) + Var(w_k) + 2Cov(Ax</em>{k-1} - A\hat{x}<em>{k-1},w_k)$<br />
+$=Var(Ax</em>{k-1} - A\hat{x}<em>{k-1}) + Var(w_k)$<br />
+$=Var(Ax</em>{k-1} - A\hat{x}<em>{k-1}) + Q$<br />
+$=Cov(Ax</em>{k-1} - A\hat{x}<em>{k-1},Ax</em>{k-1} - A\hat{x}<em>{k-1}) + Q$<br />
+$=E[(Ax</em>{k-1} - A\hat{x}<em>{k-1})(Ax</em>{k-1} - A\hat{x}<em>{k-1})^T] + Q$<br />
+$=AE[(x</em>{k-1} - \hat{x}<em>{k-1})(x</em>{k-1} - \hat{x}<em>{k-1})^T]A^T + Q$<br />
+$=AP</em>{k-1}A^T + Q$</p>
+</blockquote>
+<p>5.等式2.7的推导</p>
+<blockquote>
+<p>unkown</p>
+</blockquote>
+<p>##参考资料<br />
+<a href="http://www.cs.unc.edu/~welch/media/pdf/kalman_intro.pdf">kalman_introduction.pdf</a><br />
+<a href="http://www.cs.unc.edu/~welch/kalman/media/misc/kalman_intro_chinese.zip">kalman_introduction_chinese.download</a><br />
+<a href="https://zh.wikipedia.org/wiki/%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2">卡尔曼滤波.wiki</a><br />
+<a href="https://github.com/scipy/scipy-cookbook/blob/master/ipython/KalmanFiltering.ipynb">simple_implementation.matlab</a><br />
+<a href="http://www.cs.unc.edu/~welch/kalman/">other_resources.html</a></p>
+
+            </div>
+        </article>
+    </div>
+</div>
+
+<script src="asset/jquery-3.3.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#footer').show()
+    })
+</script>
+ <footer id="footer" class="cuckoo page-footer" style="display: none">
+    <div class="wrapper">
+        <p>Designed by <a href="mailto:forrestchang7@gmail.com">Jiayuan Zhang</a></p>
+    </div>
+</footer>
+
+

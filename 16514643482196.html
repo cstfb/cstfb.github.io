@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+         学习Antlr之二：实现一个简单的Java Bean表达式解析器并运行 - 认识自己 认识世界 
+    </title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="埋下一颗种子">
+
+    <link rel="stylesheet" type="text/css" href="asset/cuckoo.css">
+    <link rel="stylesheet" type="text/css" href="asset/main.css">
+    <link rel="stylesheet" type="text/css" href="asset/atom-one-light.css">
+
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="认识自己 认识世界">
+
+    <script src="asset/highlight.pack.js"></script>
+<!--    <script>hljs.initHighlightingOnLoad();</script>-->
+</head>
+
+<body>
+    <header class="site-header cuckoo">
+        <div class="wrapper">
+            <a class="site-title" href="index.html">认识自己 认识世界</a>
+            <nav class="site-nav">
+                <a href="#" class="menu-icon">
+                    <svg viewBox="0 0 18 15">
+                        <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+                        <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+                        <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+                    </svg>
+                </a>
+                <div class="trigger">
+                    
+                        <a class="page-link" href="index.html">目录</a>
+                    
+                        <a class="page-link" href="reading.html">阅读</a>
+                    
+                        <a class="page-link" href="bikes.html">骑行</a>
+                    
+                        <a class="page-link" href="sumup.html">灌水</a>
+                    
+                        <a class="page-link" href="fav.html">收藏</a>
+                    
+                        <a class="page-link" href="z7z8.html">z7z8</a>
+                    
+                </div>
+            </nav>
+        </div>
+    </header>
+</body>
+
+</html>
+ <div class="page-content cuckoo">
+    <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+            <header class="post-header">
+                <h1 class="post-title" itemprop="name headline">学习Antlr之二：实现一个简单的Java Bean表达式解析器并运行</h1>
+                <div class="post-description">
+                    
+                </div>
+            </header>
+            <div class="post-content" itemprop="articleBody">
+                <p>理解工具的最好的方法就是动手实践</p>
+<h3><a id="lexer%E6%96%87%E4%BB%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Lexer文件</h3>
+<pre><code class="language-plain_text">lexer grammar MethodTaskLexer;
+
+OPEN : '(' -&gt; pushMode(INSIDE)
+;
+
+// bean.method
+BEAN_DOT_METHOD
+    : [a-zA-Z]+[0-9a-zA-Z_]*'.'[a-zA-Z]+[0-9a-zA-Z_]*
+    ;
+
+mode INSIDE;
+
+CLOSE : ')' -&gt; popMode
+;
+
+// 参数值
+// 允许两种参数类型 - 一种是占位符；另一种是指定的JDK原生类型
+PARAM_VALUE
+    : STRING    // 字符串
+    | DIGIT+    // 数字
+    | DIGIT+ '.' DIGIT*     // 浮点
+    | '.' DIGIT+    // 浮点
+    | 'true'|'false'   // bool
+//    | '\''
+    ;
+
+// 占位符 -- 例如 ${instance} 表示instance参数
+PARAM_PLACEHOLDER
+    : '${'[_0-9a-zA-Z]+'}'
+    ;
+
+PRIMITIVE_TYPE_EXT
+    : 'decimal'     // for BigDecimal
+    ;
+
+// jdk原生类型 以及 classpath一般正则匹配
+PRIMITIVE_TYPE
+    : 'boolean'
+    | 'int'
+    | 'String'
+    | 'float'
+    | 'long'
+    | 'double'
+    | 'short'
+    | 'byte'
+    | 'char'
+    | 'Boolean'
+    | 'Integer'
+    | 'Float'
+    | 'Long'
+    | 'Double'
+    | 'Short'
+    | 'Byte'
+    | 'Character'
+    ;
+
+CLASS_PATH
+    : [0-9a-zA-Z_]+(.[0-9a-zA-Z_]+)*'.'[a-zA-Z]+[0-9a-zA-Z_]*
+    ;
+
+STRING
+//    : '&quot;' (ESC|.)*? '&quot;'    // 匹配在双引号中的任意字符
+    : '&quot;' .*? '&quot;'    // 匹配在双引号中的任意字符
+    ;
+
+COMMA: ',' ;
+
+WS : [ \n\t\r]+ -&gt; skip;
+
+fragment
+DIGIT: [0-9] ;
+ESC : '\\&quot;' | '\\\\' ;    // 匹配字符\&quot;和\\
+</code></pre>
+<h3><a id="parser%E6%96%87%E4%BB%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parser文件</h3>
+<pre><code class="language-plain_text">parser grammar MethodTaskParser;
+options { tokenVocab=MethodTaskLexer; }
+
+//prog
+//    : expr +
+//    ;
+
+expr
+    : BEAN_DOT_METHOD OPEN CLOSE
+    | BEAN_DOT_METHOD OPEN paramDefGroup CLOSE
+    ;
+
+paramDefGroup
+    : paramDef (COMMA paramDef)*
+    ;
+
+paramDef
+    : CLASS_PATH PARAM_VALUE
+    | CLASS_PATH PARAM_PLACEHOLDER
+    | PRIMITIVE_TYPE PARAM_VALUE
+    | PRIMITIVE_TYPE PARAM_PLACEHOLDER
+    | PRIMITIVE_TYPE_EXT PARAM_VALUE
+    | PRIMITIVE_TYPE_EXT PARAM_PLACEHOLDER
+    ;
+
+</code></pre>
+<p><code>lexer</code>和<code>parser</code>也可以写在一个文件里面，不过antlr存在一些限制，如果写在一个文件中就不能在定义<code>token</code>的时候使用<code>词法模型</code>特性了；</p>
+<h3><a id="%E6%A8%A1%E7%89%88%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%A1%AB%E5%85%85%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>模版代码生成 &amp; 填充业务逻辑</h3>
+<p>本文中，我们使用<code>listener</code>模式计算结果，<code>antlr</code>除了支持<code>listener</code>模式之外也支持<code>visitor</code>模式， 第一步是先使用antlr生成相关的基础设施，我使用了<code>intellij idea</code>的<code>antlr</code>的插件（也可以命令行，这里需要注意的是antlr版本需要和插件版本保持一致，否则会失败）：</p>
+<p><img src="media/16514643482196/16514993710686.jpg" alt="" style="width:604px;" /></p>
+<p><img src="media/16514643482196/16514993883314.jpg" alt="" style="width:699px;" /></p>
+<p>然后就可以看到相关的文件：<br />
+<img src="media/16514643482196/16514994563072.jpg" alt="" style="width:409px;" /></p>
+<p>把相关的java class拷贝到项目目录下， 继承 <code>MethodTaskParserBaseListener</code>，在基础设施的实现中会对生成的<code>AST</code>语法树进行深度优先遍历，因此我们就可以针对相关的语法做出对应的响应从而实现DSL的逻辑。</p>
+<pre><code class="language-plain_text">class Runner extends MethodTaskParserBaseListener {
+        // 任务上下文
+        private final JobContext jobContext;
+        // 表达式原文
+        private final String expression;
+
+        private String beanName;
+        private String methodName;
+        private final List&lt;Class&gt; paramTypes = new ArrayList&lt;&gt;();
+        private final List&lt;Object&gt; paramValues = new ArrayList&lt;&gt;();
+
+        private boolean isWalkingPlaceHolder = false;
+
+        private Object result;
+
+        public Runner(JobContext jobContext, String expression) {
+            super();
+            this.jobContext = jobContext;
+            this.expression = expression;
+        }
+
+        @Override
+        public void enterExpr(ExprContext ctx) {
+            //System.out.println(&quot;enterExpr&quot;);
+            log.info(&quot;开始解析任务表达式, expr：{}, parsed_expr: {}&quot;, expression, ctx.toStringTree());
+
+            String beanDotMethod = ctx.BEAN_DOT_METHOD().getText();
+            String[] a = beanDotMethod.split(&quot;\\.&quot;);
+            setBeanName(a[0]);
+            setMethodName(a[1]);
+        }
+
+        @Override
+        public void exitExpr(ExprContext ctx) {
+            //System.out.println(&quot;exitExpr&quot;);
+            //运行脚本
+            try {
+                // find bean
+                Object obj = SpringContext.getBeanByName(beanName);
+                if (null != obj) {
+                    // find method
+                    Method method;
+                    try {
+                        method = obj.getClass().getMethod(methodName, paramTypes.toArray(new Class[0]));
+                    } catch (Exception e) {
+                        throw new RuntimeException(&quot;找不到对应的方法&quot;, e);
+                    }
+                    // invoke method
+                    result = method.invoke(obj, paramValues.toArray());
+                } else {
+                    // bean不存在
+                    throw new RuntimeException(&quot;bean:&quot; + beanName + &quot;不存在&quot;);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void enterParamDef(ParamDefContext ctx) {
+            //System.out.println(&quot;enterParamDef: &quot; + ctx.toStringTree());
+
+            Function&lt;String, Object&gt; converter = null;
+            try {
+                // 先解析类型
+                if (ctx.CLASS_PATH() != null) {
+                    Class&lt;?&gt; clazz = Class.forName(ctx.CLASS_PATH().getText());
+                    paramTypes.add(clazz);
+                    converter = (s) -&gt; GsonUtil.fromJson(s, clazz);
+                } else if (ctx.PRIMITIVE_TYPE() != null) {
+                    String primitiveType = ctx.PRIMITIVE_TYPE().getText();
+                    switch (primitiveType) {
+                        case &quot;boolean&quot;:
+                            paramTypes.add(boolean.class);
+                            converter = Boolean::parseBoolean;
+                            break;
+                        case &quot;int&quot;:
+                            paramTypes.add(int.class);
+                            converter = Integer::parseInt;
+                            break;
+                        case &quot;String&quot;:
+                            paramTypes.add(String.class);
+                            converter = (s) -&gt; {
+                                return isWalkingPlaceHolder ? s : s.substring(1, s.length() - 1);
+                            };
+                            break;
+                        case &quot;float&quot;:
+                            paramTypes.add(float.class);
+                            converter = Float::parseFloat;
+                            break;
+                        case &quot;long&quot;:
+                            paramTypes.add(long.class);
+                            converter = Long::parseLong;
+                            break;
+                        case &quot;double&quot;:
+                            paramTypes.add(double.class);
+                            converter = Double::parseDouble;
+                            break;
+                        case &quot;short&quot;:
+                            paramTypes.add(short.class);
+                            converter = Short::parseShort;
+                            break;
+                        case &quot;byte&quot;:
+                            paramTypes.add(byte.class);
+                            converter = Byte::parseByte;
+                            break;
+                        case &quot;char&quot;:
+                            paramTypes.add(char.class);
+                            converter = (s) -&gt; s.charAt(0);
+                            break;
+                        case &quot;Boolean&quot;:
+                            paramTypes.add(Boolean.class);
+                            converter = Boolean::valueOf;
+                            break;
+                        case &quot;Integer&quot;:
+                            paramTypes.add(Integer.class);
+                            converter = Integer::valueOf;
+                            break;
+                        case &quot;Float&quot;:
+                            paramTypes.add(Float.class);
+                            converter = Float::valueOf;
+                            break;
+                        case &quot;Long&quot;:
+                            paramTypes.add(Long.class);
+                            converter = Long::valueOf;
+                            break;
+                        case &quot;Double&quot;:
+                            paramTypes.add(Double.class);
+                            converter = Double::valueOf;
+                            break;
+                        case &quot;Short&quot;:
+                            paramTypes.add(Short.class);
+                            converter = Short::valueOf;
+                            break;
+                        case &quot;Byte&quot;:
+                            paramTypes.add(Byte.class);
+                            converter = Byte::valueOf;
+                            break;
+                        case &quot;Character&quot;:
+                            paramTypes.add(Character.class);
+                            converter = (s) -&gt; Character.valueOf(s.charAt(0));
+                            break;
+                        default:
+                            throw new RuntimeException(&quot;error, primitiveType:&quot; + primitiveType + &quot; not supported&quot;);
+                    }
+                } else if (ctx.PRIMITIVE_TYPE_EXT() != null) {
+                    String primitiveTypeExt = ctx.PRIMITIVE_TYPE_EXT().getText();
+                    if (&quot;decimal&quot;.equals(primitiveTypeExt)) {
+                        paramTypes.add(BigDecimal.class);
+                        converter = BigDecimal::new;
+                    } else {
+                        throw new RuntimeException(&quot;error, primitiveTypeExt:&quot; + primitiveTypeExt + &quot; not supported&quot;);
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            // 再解析参数值
+            if (ctx.PARAM_VALUE() != null) {
+                String paramValue = ctx.PARAM_VALUE().getText();
+                try {
+                    paramValues.add(converter.apply(paramValue));
+                } catch (Exception e) {
+                    throw new RuntimeException(&quot;参数值解析异常&quot;, e);
+                }
+            } else if (ctx.PARAM_PLACEHOLDER() != null) {
+                try {
+                    isWalkingPlaceHolder = true;
+                    String placeHolder = ctx.PARAM_PLACEHOLDER().getText();
+                    if (&quot;${instanceParam}&quot;.equalsIgnoreCase(placeHolder)) {
+                        paramValues.add(converter.apply(jobContext.getInstanceParam()));
+                    } else if (&quot;${taskParam}&quot;.equalsIgnoreCase(placeHolder)) {
+                        paramValues.add(converter.apply(jobContext.getTaskParam()));
+                    } else {
+                        throw new RuntimeException(&quot;error, placeholder &quot; + placeHolder + &quot; not supported&quot;);
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(&quot;参数值解析异常&quot;, e);
+                } finally {
+                    isWalkingPlaceHolder = false;
+                }
+            }
+        }
+
+        @Override
+        public void exitParamDef(ParamDefContext ctx) {
+            //System.out.println(&quot;exitParamDef: &quot; + ctx.toStringTree());
+        }
+
+        @Override
+        public void visitErrorNode(org.antlr.v4.runtime.tree.ErrorNode node) {
+            log.error(&quot;解析任务表达式失败，msg:{}&quot;, node.toString());
+            throw new RuntimeException(&quot;解析任务表达式失败，msg:&quot; + node.toString());
+        }
+
+        public Object getResult() {
+            return result;
+        }
+
+        void setBeanName(String beanName) {
+            this.beanName = beanName;
+        }
+
+        void setMethodName(String methodName) {
+            this.methodName = methodName;
+        }
+    }
+</code></pre>
+<p>这样表达式解析的雏形就基本上完成了。<br />
+antlr真是一件非常棒的工具，通过它的帮助你甚至不需要从0开始编写词法&amp;语法解析就可以实现自己的语言！实现一个解析器简直是太大材小用了！从业务编程的视角来看，它可以成为一件强大的武器，例如帮助我们在配置化驱动和硬编码之间找到第三种解决方案，在不失扩展性的同时也不需要很高的系统复杂性！</p>
+
+            </div>
+            <div>
+                
+                
+                
+            </div>
+        </article>
+    </div>
+</div>
+
+<script src="asset/jquery-3.3.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#footer').show()
+    })
+</script>
+  <footer id="footer" class="cuckoo page-footer" style="display: none">
+    <div class="wrapper">
+        <p>Designed by <a href="mailto:forrestchang7@gmail.com">Jiayuan Zhang</a></p>
+    </div>
+</footer>
+
+
