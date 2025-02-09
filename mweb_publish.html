@@ -72,6 +72,7 @@
 </div>
 <h2><a id="mweb%E5%8F%91%E5%B8%83%E8%84%9A%E6%9C%AC%E8%AE%BE%E7%BD%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mweb 发布脚本设置</h2>
 <pre><code class="language-plain_text">echo &quot;===step1===&gt; 上传pages代码开始&quot;
+cd /Users/fengbotian/Library/Containers/com.coderforart.iOS.MWeb/Data/Documents/themes/Site/MyGitHubBlog
 touch CNAME
 echo fengbo.cool &gt; CNAME
 echo &quot;google-site-verification: google2ac6f2ac5c6f12c9.html&quot; &gt; google2ac6f2ac5c6f12c9.html
@@ -86,7 +87,7 @@ echo &quot;—————————————————————分割
 echo &quot;&quot;
 
 echo &quot;===step2===&gt; 上传pages source代码开始&quot;
-cd /Users/xiyang/TeamFile/Seafile/Seafile/Documents/mweb
+cd /Users/fengbotian/Documents/Mweb Github/pages_source
 git add .
 git commit -m &quot;update&quot;
 git push origin master
